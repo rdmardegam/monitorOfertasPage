@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Monitor Ofertas ML — Abrindo grupo…</title>
+<meta name="theme-color" content="#0A1424">
+<meta name="description" content="Grupo VIP de ofertas e cupons do Mercado Livre no WhatsApp.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<meta property="og:title" content="Monitor Ofertas ML">
+<meta property="og:description" content="Cupons reais do Mercado Livre direto no seu WhatsApp.">
+<meta property="og:image" content="https://www.monitorofertas.com.br/invite/assets/og-image.jpg">
+<meta property="og:url" content="https://www.monitorofertas.com.br/invite/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --yellow: #FFCC00;
+    --navy: #0A1424;
+    --navy-2: #111E33;
+    --navy-3: #182A44;
+    --white: #F4F7FB;
+    --gray: #8A9BB0;
+    --green: #25D366;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Manrope', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,204,0,0.22) 0%, transparent 60%),
+      radial-gradient(circle at 50% 100%, rgba(37,211,102,0.12) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .wrap {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    gap: 14px;
+  }
+  .logo {
+    width: 86px; height: 86px;
+    border-radius: 50%;
+    filter: drop-shadow(0 12px 30px rgba(255,204,0,0.45));
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 12px 30px rgba(255,204,0,0.45)); }
+    50%      { transform: scale(1.05); filter: drop-shadow(0 16px 44px rgba(255,204,0,0.7)); }
+  }
+  .title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+  .title .accent { color: var(--yellow); }
+  .hype {
+    font-size: 13.5px;
+    color: var(--gray);
+    max-width: 340px;
+    line-height: 1.45;
+  }
+  .hype strong { color: var(--white); font-weight: 700; }
+
+  /* Deals strip */
+  .deals {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: 100%;
+    max-width: 340px;
+    margin-top: 4px;
+  }
+  .deal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--navy-2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-left: 3px solid var(--yellow);
+    border-radius: 10px;
+    padding: 8px 11px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: pop 0.45s cubic-bezier(.2,.85,.3,1.2) forwards;
+  }
+  .deal:nth-child(1) { animation-delay: 0.15s; }
+  .deal:nth-child(2) { animation-delay: 0.35s; }
+  .deal:nth-child(3) { animation-delay: 0.55s; }
+  .deal:nth-child(4) { animation-delay: 0.75s; }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(10px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .deal__icon {
+    width: 34px; height: 34px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(255,204,0,0.18), rgba(255,204,0,0.04));
+    border: 1px solid rgba(255,204,0,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--yellow);
+  }
+  .deal__icon svg { width: 20px; height: 20px; }
+  .deal__body { flex: 1; min-width: 0; text-align: left; }
+  .deal__name {
+    font-size: 12px;
+    color: var(--white);
+    font-weight: 600;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 1px;
+  }
+  .deal__prices { display: flex; align-items: baseline; gap: 6px; }
+  .deal__old { color: var(--gray); text-decoration: line-through; font-size: 10px; }
+  .deal__new { color: var(--yellow); font-weight: 800; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .deal__pct {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #04280F;
+    background: var(--green);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* Status line */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--green);
+    font-weight: 700;
+    margin-top: 6px;
+    opacity: 0;
+    animation: pop 0.5s 0.95s ease forwards;
+  }
+  .spin {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(37,211,102,0.25);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Progress bar */
+  .bar {
+    width: 100%;
+    max-width: 280px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.07);
+    overflow: hidden;
+    margin-top: 2px;
+  }
+  .bar__fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--yellow), var(--green));
+    border-radius: 99px;
+    animation: fill 1.5s linear forwards;
+    animation-delay: 0.1s;
+    box-shadow: 0 0 10px rgba(255,204,0,0.5);
+  }
+  @keyframes fill {
+    to { width: 100%; }
+  }
+
+  /* Fallback */
+  .fallback {
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .fallback.is-visible { opacity: 1; }
+  .fallback p { font-size: 12px; color: var(--gray); }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(180deg, #2BE875 0%, var(--green) 100%);
+    color: #04280F;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 15px;
+    padding: 14px 22px;
+    border-radius: 12px;
+    box-shadow: 0 10px 26px rgba(37,211,102,0.4);
+  }
+  .cta svg { width: 20px; height: 20px; }
+  .cta:active { transform: scale(0.97); }
+
+  @media (max-height: 640px) {
+    .deals { gap: 5px; }
+    .deal { padding: 6px 10px; }
+    .deal__icon { width: 30px; height: 30px; }
+    .title { font-size: 26px; }
+    .logo { width: 72px; height: 72px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo, .spin, .deal, .status, .bar__fill { animation: none; opacity: 1; transform: none; }
+    .bar__fill { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <img class="logo" src="assets/logo.png" alt="Monitor Ofertas ML">
+
+  <h1 class="title">Abrindo o grupo<br><span class="accent">no WhatsApp</span></h1>
+
+  <p class="hype">Você está prestes a receber as <strong>melhores ofertas e cupons</strong> do Mercado Livre:</p>
+
+  <div class="deals" aria-hidden="true">
+    <div class="deal">
+      <div class="deal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="16" rx="3"/><circle cx="12" cy="13" r="3"/><line x1="9" y1="8" x2="15" y2="8" stroke-linecap="round"/></svg></div>
+      <div class="deal__body">
+        <div class="deal__name">Air Fryer Mondial 4L</div>
+        <div class="deal__prices">
+          <span class="deal__old">R$ 449</span>
+          <span class="deal__new">R$ 139</span>
+          <span class="deal__pct">-69%</span>
+        </div>
+      </div>
+    </div>
+    <div class="deal">
+      <div class="deal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="19" x2="13" y2="19" stroke-linecap="round"/></svg></div>
+      <div class="deal__body">
+        <div class="deal__name">iPhone XR 64GB Renovado</div>
+        <div class="deal__prices">
+          <span class="deal__old">R$ 2.499</span>
+          <span class="deal__new">R$ 1.299</span>
+          <span class="deal__pct">-48%</span>
+        </div>
+      </div>
+    </div>
+    <div class="deal">
+      <div class="deal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+      <div class="deal__body">
+        <div class="deal__name">AirTag Apple Original</div>
+        <div class="deal__prices">
+          <span class="deal__old">R$ 255</span>
+          <span class="deal__new">R$ 110</span>
+          <span class="deal__pct">-57%</span>
+        </div>
+      </div>
+    </div>
+    <div class="deal">
+      <div class="deal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="12" rx="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="17" x2="12" y2="20"/></svg></div>
+      <div class="deal__body">
+        <div class="deal__name">Smart TV 32" HD</div>
+        <div class="deal__prices">
+          <span class="deal__old">R$ 1.299</span>
+          <span class="deal__new">R$ 650</span>
+          <span class="deal__pct">-50%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar" aria-hidden="true"><div class="bar__fill"></div></div>
+
+  <p class="status"><span class="spin" aria-hidden="true"></span>Conectando ao WhatsApp…</p>
+
+  <div class="fallback" id="fallback" aria-hidden="true">
+    <p>Não abriu sozinho? Toque aqui:</p>
+    <a href="https://chat.whatsapp.com/BX6UTeMokc1F3aXNd97r7W" rel="noopener" class="cta" id="ctaManual">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      ENTRAR NO GRUPO
+    </a>
+  </div>
+</main>
+
+<script>
+  const WHATSAPP_LINK = "https://chat.whatsapp.com/BX6UTeMokc1F3aXNd97r7W";
+  const NS = 'mof-ml-x9k2';
+  const BASE = 'https://abacus.jasoncameron.dev';
+
+  function hit(k) {
+    try {
+      if (navigator.sendBeacon) navigator.sendBeacon(`${BASE}/hit/${NS}/${k}`);
+      else fetch(`${BASE}/hit/${NS}/${k}`, { mode: 'cors', keepalive: true }).catch(() => {});
+    } catch (e) {}
+  }
+
+  if (!sessionStorage.getItem('_entry_visit')) {
+    hit('entry-visit');
+    hit('auto-redirect');
+    sessionStorage.setItem('_entry_visit', '1');
+  } else {
+    hit('entry-revisit');
+  }
+
+  // Redirect após 1.5s — tempo da animação completa
+  setTimeout(() => {
+    try {
+      window.top.location.href = WHATSAPP_LINK;
+    } catch (e) {
+      window.location.href = WHATSAPP_LINK;
+    }
+  }, 1500);
+
+  // Fallback: se em 3.5s ainda estiver na página, mostra botão manual
+  setTimeout(() => {
+    const fb = document.getElementById('fallback');
+    fb.classList.add('is-visible');
+    fb.setAttribute('aria-hidden', 'false');
+  }, 3500);
+
+  document.getElementById('ctaManual').addEventListener('click', () => {
+    hit('entry-manual-click');
+  });
+
+  // ============================================================
+  // 📊 statsEntry() — métricas do redirect direto
+  // Disponível no console (F12) de qualquer página do site
+  // ============================================================
+  function readK(k) {
+    return fetch(`${BASE}/get/${NS}/${k}`)
+      .then(r => r.ok ? r.json() : { value: 0 })
+      .then(j => j.value || 0)
+      .catch(() => 0);
+  }
+  window.statsEntry = async function() {
+    const [visits, revisits, redirects, manual] = await Promise.all([
+      readK('entry-visit'),
+      readK('entry-revisit'),
+      readK('auto-redirect'),
+      readK('entry-manual-click'),
+    ]);
+    const total = visits + revisits;
+    const taxa = total > 0 ? ((redirects / total) * 100).toFixed(1) + '%' : '0%';
+    console.log(
+      '%c📊 Entry — Redirect direto pro WhatsApp',
+      'font-size:14px;font-weight:700;color:#FFCC00;background:#0A1424;padding:4px 10px;border-radius:4px'
+    );
+    console.table({
+      '👁  Pessoas que entraram (únicas)':    visits,
+      '🔄 Recarregamentos / refresh':         revisits,
+      '👥 Total de aberturas':                total,
+      '🚀 Redirecionadas pro WhatsApp':       redirects,
+      '🆘 Precisaram do botão manual':        manual,
+      '📈 % redirecionadas':                  taxa,
+    });
+    return { unicas: visits, refresh: revisits, total, redirecionadas: redirects, manual, taxa };
+  };
+
+  // Dica no console
+  setTimeout(() => {
+    console.log(
+      '%c💡 Digite %cstatsEntry()%c no console pra ver as métricas',
+      'color:#8A9BB0;font-size:11px',
+      'color:#FFCC00;font-weight:700;font-size:11px',
+      'color:#8A9BB0;font-size:11px'
+    );
+  }, 800);
+</script>
+
+</body>
+</html>
