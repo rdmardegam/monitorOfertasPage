@@ -1,7 +1,7 @@
 /* Service worker mínimo do Monitor Ofertas.
    Network-first: o catálogo é regerado a cada publicação, então online sempre
    busca o mais novo; o cache serve só de fallback (offline / falha de rede). */
-const CACHE = 'mo-v1';
+const CACHE = 'mo-v2';
 const SHELL = ['/', '/index.html', '/og.jpg', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', function (e) {
