@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Monitor de Ofertas ML — abrindo oferta…</title>
+<meta property="og:title" content="Monitor de Ofertas ML">
+<meta property="og:description" content="Oferta selecionada — abrindo no Mercado Livre">
+<meta property="og:image" content="https://www.monitorofertas.com.br/og.jpg">
+<style>
+  body{font-family:system-ui,sans-serif;background:#0e1116;color:#dfe3ea;display:flex;
+       align-items:center;justify-content:center;min-height:100vh;margin:0}
+  .box{text-align:center;padding:24px}
+  a{color:#5aa9ff}
+  .spin{width:28px;height:28px;border:3px solid #2a3140;border-top-color:#ffd700;
+        border-radius:50%;margin:0 auto 14px;animation:g .8s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="spin"></div>
+  <div>Abrindo a oferta no Mercado Livre…</div>
+  <div style="margin-top:10px;font-size:.9rem"><a id="fallback" href="https://www.monitorofertas.com.br">ir manualmente</a></div>
+</div>
+<script>
+// Redirect rastreável: /r/?to=<id meli.la>&o=<MLB>&c=<canal g|f|k>
+// 1) conta o clique no GA4 (ping COOKIELESS — client_id aleatório, nada pessoal,
+//    independe do banner de consentimento porque não grava cookie nenhum);
+// 2) redireciona pro link de AFILIADO meli.la/<id> (o mesmo de sempre).
+// Whitelist: só aceita id alfanumérico → destino sempre meli.la/* (ninguém usa
+// nosso domínio como redirecionador aberto).
+(function () {
+  var q = new URLSearchParams(location.search);
+  var to = (q.get('to') || '').trim();
+  var ok = /^[A-Za-z0-9]{4,16}$/.test(to);
+  var dest = ok ? 'https://meli.la/' + to : 'https://www.monitorofertas.com.br';
+  document.getElementById('fallback').href = dest;
+
+  if (ok) {
+    try {
+      var cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+      var p = new URLSearchParams({
+        v: '2', tid: 'G-6959NQX27C', cid: cid, en: 'click_oferta',
+        dl: location.href, dt: 'redirect',
+        'ep.oferta': (q.get('o') || '').slice(0, 30),
+        'ep.canal': (q.get('c') || '').slice(0, 10),
+        'ep.link': to
+      });
+      // sendBeacon sobrevive à navegação — não precisamos esperar resposta.
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* contagem é best-effort; redirect nunca espera por ela */ }
+  }
+  location.replace(dest);
+})();
+</script>
+<noscript><meta http-equiv="refresh" content="0;url=https://www.monitorofertas.com.br"></noscript>
+</body>
+</html>
