@@ -4,16 +4,16 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cupons Mercado Livre Válidos Hoje (04/07) — Testados | Monitor Ofertas</title>
-<meta name="description" content="15 cupons de desconto do Mercado Livre funcionando em 4 de julho de 2026, com até 20% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom." />
+<meta name="description" content="14 cupons de desconto do Mercado Livre funcionando em 4 de julho de 2026, com até 20% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom." />
 <link rel="canonical" href="https://www.monitorofertas.com.br/cupons/" />
-<meta name="theme-color" content="#f1f3f6" />
+<meta name="theme-color" content="#0e1c33" />
 <link rel="icon" href="../icon-192.png" />
 <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.monitorofertas.com.br/cupons/" />
 <meta property="og:title" content="Cupons Mercado Livre Válidos Hoje (04/07) — Testados | Monitor Ofertas" />
-<meta property="og:description" content="15 cupons de desconto do Mercado Livre funcionando em 4 de julho de 2026, com até 20% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom." />
+<meta property="og:description" content="14 cupons de desconto do Mercado Livre funcionando em 4 de julho de 2026, com até 20% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom." />
 <meta property="og:image" content="https://www.monitorofertas.com.br/og.jpg" />
 <meta property="og:locale" content="pt_BR" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -37,10 +37,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
 <style>
+  /* Paleta = identidade do catálogo (navy + amarelo; cupom dourado) */
   :root{
-    --line:#e8eaef; --bg:#f1f3f6; --card:#fff; --ink:#1c2330; --mut:#6b7486;
-    --green:#16a34a; --green-dark:#15803d; --amber:#b45309; --red:#b91c1c;
-    --maxw:1080px; --r:16px;
+    --navy:#0e1c33; --navy-2:#16294a; --navy-3:#1d3358;
+    --yellow:#ffd60a; --yellow-deep:#f5b800;
+    --green:#16a34a; --green-dark:#0f8a3c;
+    --coupon-line:#f3d97a; --coupon-text:#8a5a00;
+    --ink:#16202e; --ink-soft:#3a4658; --muted:#76808f;
+    --line:#e8eaef; --bg:#f1f3f6; --card:#ffffff;
+    --shadow:0 1px 2px rgba(16,26,46,.06), 0 6px 18px -8px rgba(16,26,46,.18);
+    --rad:18px; --maxw:1080px;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
@@ -51,16 +57,27 @@
   a{color:inherit;}
   .wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px;}
 
-  header.site{padding:18px 0 6px;}
-  .brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
-  .brand img{width:34px; height:34px; border-radius:9px;}
-  .brand b{font-family:"Baloo 2",sans-serif; font-size:19px;}
-  .crumbs{font-size:12.5px; color:var(--mut); margin-top:12px;}
-  .crumbs a{color:var(--mut);}
+  /* topo navy com brilho amarelo + fio amarelo — igual ao site */
+  .top{
+    position:relative; color:#fff; padding:14px 0 12px;
+    background:
+      radial-gradient(120% 140% at 88% -10%, rgba(255,214,10,.22), transparent 55%),
+      radial-gradient(90% 120% at 6% 0%, rgba(255,214,10,.10), transparent 50%),
+      linear-gradient(165deg,#16294a 0%, #0e1c33 64%, #0a1426 100%);
+  }
+  .top::after{content:""; position:absolute; left:0; right:0; bottom:0; height:4px;
+    background:linear-gradient(90deg,var(--yellow),var(--yellow-deep));}
+  .brand{display:flex; align-items:center; gap:11px; text-decoration:none;}
+  .brand img{width:40px; height:40px; border-radius:12px; box-shadow:0 6px 18px -6px rgba(0,0,0,.6);}
+  .brand b{font-family:"Baloo 2",sans-serif; font-size:19px; letter-spacing:.2px;}
+  .brand small{display:block; font-size:11.5px; font-weight:600; color:#c7d2e0; margin-top:1px;}
 
-  .hero{padding:10px 0 4px;}
-  .hero h1{font-size:clamp(24px,4.6vw,36px); font-weight:800;}
-  .hero p.sub{color:var(--mut); font-size:14.5px; margin-top:6px; max-width:640px;}
+  .crumbs{font-size:12.5px; color:var(--muted); padding:14px 0 0;}
+  .crumbs a{color:var(--muted);}
+
+  .hero{padding:8px 0 4px;}
+  .hero h1{font-size:clamp(24px,4.6vw,36px); font-weight:800; color:var(--navy);}
+  .hero p.sub{color:var(--ink-soft); font-size:14.5px; margin-top:6px; max-width:640px;}
   .verif{
     display:inline-flex; align-items:center; gap:8px; margin-top:12px;
     background:#e9f9ef; color:var(--green-dark); border:1px solid #c7ecd4;
@@ -72,123 +89,149 @@
   .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; margin:20px 0;}
 
   .cup{
-    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    background:var(--card); border:1px solid var(--line); border-radius:var(--rad);
     padding:16px 16px 14px; display:flex; flex-direction:column; gap:8px;
-    box-shadow:0 1px 2px rgba(16,24,40,.04);
+    box-shadow:var(--shadow);
   }
-  .cup--exp{opacity:.55;}
-  .cup--exp .code b{text-decoration:line-through;}
-  .cup__top{display:flex; align-items:center; justify-content:space-between;}
+  .cup__top{display:flex; align-items:center; gap:8px;}
   .badge{
-    font-family:"Baloo 2",sans-serif; font-weight:800; font-size:13.5px;
-    background:var(--green); color:#fff; padding:4px 11px; border-radius:999px;
+    font-family:"Baloo 2",sans-serif; font-weight:800; font-size:14px; line-height:1;
+    letter-spacing:-.01em; white-space:nowrap; color:var(--navy);
+    background:linear-gradient(180deg,var(--yellow),var(--yellow-deep));
+    padding:6px 10px 5px; border-radius:999px;
   }
-  .badge.plain{background:#eef1f6; color:var(--ink);}
-  .badge.exp{background:#e5e7eb; color:#6b7280;}
-  .cup h3{font-size:17px; font-weight:800;}
-  .rules{color:var(--mut); font-size:13px;}
-  .vence{font-size:12.5px; font-weight:700; color:var(--amber);}
+  .badge.plain{background:#eef1f5; color:var(--navy-2); border:1px solid var(--line);}
+  .badge.exp{background:#e3e6ea; color:var(--muted);}
+  .share{
+    margin-left:auto; flex:0 0 auto; width:34px; height:34px; border:none; cursor:pointer;
+    border-radius:9px; background:rgba(16,26,46,.06); color:var(--navy);
+    display:inline-flex; align-items:center; justify-content:center; transition:transform .1s, background .14s;
+  }
+  .share:hover{background:rgba(16,26,46,.12);}
+  .share:active{transform:scale(.9);}
+  .share svg{width:17px; height:17px;}
+  .cup h3{font-size:17px; font-weight:800; color:var(--navy-2);}
+  .rules{color:var(--muted); font-size:13px;}
+  .vence{font-size:12.5px; font-weight:700; color:#b45309;}
   .testado{font-size:12px; color:var(--green-dark); font-weight:600;}
-  .pend{font-size:12px; color:var(--mut); font-weight:600;}
+  .pend{font-size:12px; color:var(--muted); font-weight:600;}
 
+  /* caixa do código: tracejado dourado + código âmbar (idêntico ao catálogo).
+     É um botão inteiro clicável — toque copia só o código. */
   .codebox{
-    display:flex; align-items:stretch; gap:8px; margin-top:auto; padding-top:10px;
-    border-top:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin-top:auto; background:#fff; border:1.5px dashed var(--coupon-line);
+    border-radius:12px; padding:9px 14px; min-height:48px; width:100%;
+    cursor:pointer; font-family:inherit; text-align:left;
+    transition:background .14s, transform .1s;
   }
-  .code{
-    flex:1; display:flex; align-items:center; justify-content:center;
-    background:#f6f7fa; border:1.5px dashed #cfd6e2; border-radius:11px;
-    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-    font-size:14px; font-weight:700; letter-spacing:.6px; padding:9px 8px;
-    min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  .codebox:hover{background:#fffdf3;}
+  .codebox:active{transform:scale(.98);}
+  .codebox b{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:17px;
+    font-weight:700; color:var(--coupon-text); letter-spacing:.8px; word-break:break-all;
   }
-  .btn{
-    font-family:"Baloo 2",sans-serif; font-weight:700; font-size:13.5px;
-    border:none; border-radius:11px; padding:9px 14px; cursor:pointer;
-    background:var(--green); color:#fff; white-space:nowrap; transition:transform .1s;
+  .codebox svg{width:16px; height:16px; color:var(--coupon-text); opacity:.6; flex:0 0 auto;}
+  .get{
+    height:44px; border:none; cursor:pointer; border-radius:11px;
+    background:var(--green-dark); color:#fff; font-family:inherit; font-weight:800;
+    font-size:13.5px; display:flex; align-items:center; justify-content:center; gap:7px;
+    transition:transform .1s, background .14s;
   }
-  .btn:active{transform:scale(.97);}
-  .btn.ghost{background:#eef1f6; color:var(--ink);}
+  .get:hover{background:#0a7d38;}
+  .get:active{transform:scale(.98);}
+
+  .cup--exp{opacity:.62; filter:grayscale(.55);}
+  .cup--exp .codebox{border-style:solid; border-color:rgba(16,26,46,.12); background:#f4f5f7;}
+  .cup--exp .codebox b{color:#8a8f99; text-decoration:line-through;}
 
   .toast{
     position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(80px);
-    background:var(--ink); color:#fff; padding:10px 18px; border-radius:12px;
+    background:var(--navy); color:#fff; padding:10px 18px; border-radius:12px;
     font-size:13.5px; font-weight:600; opacity:0; transition:all .25s; z-index:50;
-    pointer-events:none;
+    pointer-events:none; max-width:88vw; text-align:center;
   }
   .toast.on{opacity:1; transform:translateX(-50%) translateY(0);}
 
   .cta-zap{
     display:flex; align-items:center; justify-content:space-between; gap:14px;
-    background:#0f5132; color:#fff; border-radius:var(--r); padding:16px 18px; margin:8px 0 22px;
-    flex-wrap:wrap;
+    color:#fff; border-radius:var(--rad); padding:16px 18px; margin:8px 0 22px;
+    flex-wrap:wrap; box-shadow:var(--shadow);
+    background:linear-gradient(165deg,#16294a 0%, #0e1c33 70%, #0a1426 100%);
   }
   .cta-zap b{font-family:"Baloo 2",sans-serif; font-size:16px;}
-  .cta-zap p{font-size:13px; opacity:.85;}
+  .cta-zap p{font-size:13px; color:#c7d2e0;}
   .cta-zap a{
     background:#25c15a; color:#fff; text-decoration:none; font-family:"Baloo 2",sans-serif;
     font-weight:700; font-size:14px; padding:10px 18px; border-radius:11px; white-space:nowrap;
   }
 
   section.bloco{margin:26px 0;}
-  section.bloco h2{font-size:20px; margin-bottom:10px;}
+  section.bloco h2{font-size:20px; margin-bottom:10px; color:var(--navy);}
   .faq details{
     background:var(--card); border:1px solid var(--line); border-radius:12px;
     padding:12px 16px; margin-bottom:8px;
   }
-  .faq summary{font-weight:700; cursor:pointer; font-size:14.5px;}
-  .faq p{color:var(--mut); font-size:13.5px; margin-top:8px;}
-  .faq .codeInline{font-family:ui-monospace,Menlo,Consolas,monospace; background:#f6f7fa; padding:1px 6px; border-radius:6px; font-size:12.5px;}
+  .faq summary{font-weight:700; cursor:pointer; font-size:14.5px; color:var(--navy-2);}
+  .faq p{color:var(--ink-soft); font-size:13.5px; margin-top:8px;}
+  .faq .codeInline{font-family:ui-monospace,Menlo,Consolas,monospace; background:#fff8e0; border:1px solid var(--coupon-line); color:var(--coupon-text); padding:1px 6px; border-radius:6px; font-size:12.5px;}
 
   footer.site{
     border-top:1px solid var(--line); margin-top:30px; padding:18px 0 26px;
-    color:var(--mut); font-size:12.5px;
+    color:var(--muted); font-size:12.5px;
   }
-  footer.site a{color:var(--mut);}
+  footer.site a{color:var(--muted);}
   .aviso-af{margin-top:6px;}
 
   .consent{
     position:fixed; left:12px; right:12px; bottom:12px; z-index:60;
     background:var(--card); border:1px solid var(--line); border-radius:14px;
     padding:12px 14px; display:none; gap:10px; align-items:center; flex-wrap:wrap;
-    box-shadow:0 8px 30px rgba(16,24,40,.14); font-size:13px;
+    box-shadow:0 8px 30px rgba(16,26,46,.25); font-size:13px;
     max-width:560px; margin:0 auto;
   }
   .consent.on{display:flex;}
-  .consent .btn{padding:7px 14px;}
+  .consent button{
+    font-family:"Baloo 2",sans-serif; font-weight:700; font-size:13px; border:none;
+    cursor:pointer; border-radius:10px; padding:8px 14px;
+  }
+  .consent .sim{background:var(--yellow); color:var(--navy);}
+  .consent .nao{background:#eef1f5; color:var(--navy-2);}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.monitorofertas.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Cupons", "item": "https://www.monitorofertas.com.br/cupons/"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Cupons Mercado Livre válidos hoje", "dateModified": "2026-07-04T20:51:01", "numberOfItems": 15, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cupom TORCEDOR — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 2, "name": "Cupom DEFESAMAGICA — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 3, "name": "Cupom GOLEADATOTAL — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 4, "name": "Cupom VALEPROMO — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 5, "name": "Cupom MELHORCUPOM — 18% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 6, "name": "Cupom 15MELIMAISDAYS — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 7, "name": "Cupom CONTRAATAQUE — Mercado Livre"}, {"@type": "ListItem", "position": 8, "name": "Cupom ACHADOSDOMELI — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 9, "name": "Cupom CORREAQUI — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 10, "name": "Cupom SNEAKERS — Mercado Livre"}, {"@type": "ListItem", "position": 11, "name": "Cupom TVCASASBAHIA — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 12, "name": "Cupom DISPON — Mercado Livre"}, {"@type": "ListItem", "position": 13, "name": "Cupom MELIOFERTA — Mercado Livre"}, {"@type": "ListItem", "position": 14, "name": "Cupom BEAUTY20 — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 15, "name": "Cupom ELUX15 — Mercado Livre"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como usar um cupom do Mercado Livre?", "acceptedAnswer": {"@type": "Answer", "text": "Copie o código, adicione os produtos ao carrinho no Mercado Livre e cole no campo 'Cupom de desconto' antes de finalizar. O desconto aparece no resumo do pedido; confira o valor mínimo."}}, {"@type": "Question", "name": "Esses cupons são confiáveis?", "acceptedAnswer": {"@type": "Answer", "text": "Sim. Um robô testa cada código direto no Mercado Livre e a página remove automaticamente os que expiram ou esgotam."}}, {"@type": "Question", "name": "Com que frequência a página é atualizada?", "acceptedAnswer": {"@type": "Answer", "text": "Várias vezes ao dia, sempre que um cupom novo é validado ou um antigo expira."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.monitorofertas.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Cupons", "item": "https://www.monitorofertas.com.br/cupons/"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Cupons Mercado Livre válidos hoje", "dateModified": "2026-07-04T21:06:08", "numberOfItems": 14, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cupom MELHORCUPOM — 18% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 2, "name": "Cupom TORCEDOR — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 3, "name": "Cupom DEFESAMAGICA — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 4, "name": "Cupom VALEPROMO — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 5, "name": "Cupom 15MELIMAISDAYS — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 6, "name": "Cupom CONTRAATAQUE — Mercado Livre"}, {"@type": "ListItem", "position": 7, "name": "Cupom ACHADOSDOMELI — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 8, "name": "Cupom CORREAQUI — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 9, "name": "Cupom SNEAKERS — Mercado Livre"}, {"@type": "ListItem", "position": 10, "name": "Cupom TVCASASBAHIA — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 11, "name": "Cupom DISPON — Mercado Livre"}, {"@type": "ListItem", "position": 12, "name": "Cupom MELIOFERTA — Mercado Livre"}, {"@type": "ListItem", "position": 13, "name": "Cupom BEAUTY20 — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 14, "name": "Cupom ELUX15 — Mercado Livre"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como usar um cupom do Mercado Livre?", "acceptedAnswer": {"@type": "Answer", "text": "Copie o código, adicione os produtos ao carrinho no Mercado Livre e cole no campo 'Cupom de desconto' antes de finalizar. O desconto aparece no resumo do pedido; confira o valor mínimo."}}, {"@type": "Question", "name": "Esses cupons são confiáveis?", "acceptedAnswer": {"@type": "Answer", "text": "Sim. Um robô testa cada código direto no Mercado Livre e a página remove automaticamente os que expiram ou esgotam."}}, {"@type": "Question", "name": "Com que frequência a página é atualizada?", "acceptedAnswer": {"@type": "Answer", "text": "Várias vezes ao dia, sempre que um cupom novo é validado ou um antigo expira."}}]}</script>
 </head>
 <body>
 
-<header class="site wrap">
-  <a class="brand" href="/"><img src="../icon-192.png" alt="" width="34" height="34" /><b>Monitor Ofertas</b></a>
-  <nav class="crumbs" aria-label="breadcrumb"><a href="/">Início</a> › <span>Cupons</span></nav>
-</header>
+<div class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="../icon-192.png" alt="" width="40" height="40" />
+      <span><b>Monitor Ofertas</b><small>cupons testados de verdade</small></span></a>
+  </div>
+</div>
 
 <main class="wrap">
+  <nav class="crumbs" aria-label="breadcrumb"><a href="/">Início</a> › <span>Cupons</span></nav>
   <div class="hero">
     <h1>Cupons Mercado Livre válidos hoje</h1>
-    <p class="sub">15 cupons de desconto do Mercado Livre funcionando em 4 de julho de 2026, com até 20% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom.</p>
-    <span class="verif"><span class="dot"></span> Testados automaticamente no Mercado Livre — última verificação: 20:51 de hoje</span>
+    <p class="sub">14 cupons de desconto do Mercado Livre funcionando em 4 de julho de 2026, com até 20% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom.</p>
+    <span class="verif"><span class="dot"></span> Testados automaticamente no Mercado Livre — última verificação: 21:06 de hoje</span>
   </div>
 
   <div class="grid" id="grid">
-<article class="cup"><div class="cup__top"><span class="badge">15% OFF</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 40 · Em produtos selecionados</p><p class="vence">⏰ Termina em 3 horas!</p><p class="testado">✓ Testado no Mercado Livre às 20:47 de 04/07</p><div class="codebox"><span class="code"><b>TORCEDOR</b></span><button class="btn" type="button" data-code="TORCEDOR" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">10% OFF</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:46 de 04/07</p><div class="codebox"><span class="code"><b>DEFESAMAGICA</b></span><button class="btn" type="button" data-code="DEFESAMAGICA" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">10% OFF</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40 · produto</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 18:01 de 04/07</p><div class="codebox"><span class="code"><b>GOLEADATOTAL</b></span><button class="btn" type="button" data-code="GOLEADATOTAL" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">10% OFF</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 129 · desconto máx. R$ 200 · Em produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:50 de 04/07</p><div class="codebox"><span class="code"><b>VALEPROMO</b></span><button class="btn" type="button" data-code="VALEPROMO" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">18% OFF</span></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 50 · Em produtos selecionados</p><p class="vence">⏰ Vence em segunda-feira</p><p class="testado">✓ Testado no Mercado Livre às 20:49 de 04/07</p><div class="codebox"><span class="code"><b>MELHORCUPOM</b></span><button class="btn" type="button" data-code="MELHORCUPOM" data-destino="https://meli.la/2RMTa2R">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">15% OFF</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 129 · desconto máx. R$ 40 · carrinho</p><p class="vence">⏰ Termina em 6 horas!</p><p class="testado">✓ Testado no Mercado Livre às 20:50 de 04/07</p><div class="codebox"><span class="code"><b>15MELIMAISDAYS</b></span><button class="btn" type="button" data-code="15MELIMAISDAYS" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge plain">Cupom</span></div><h3>Cupom Mercado Livre</h3><p class="pend">Visto hoje — aguardando validação automática</p><div class="codebox"><span class="code"><b>CONTRAATAQUE</b></span><button class="btn" type="button" data-code="CONTRAATAQUE" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">15% OFF</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 30 · compras</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:51 de 04/07</p><div class="codebox"><span class="code"><b>ACHADOSDOMELI</b></span><button class="btn" type="button" data-code="ACHADOSDOMELI" data-destino="https://meli.la/2wGcLyC">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">20% OFF</span></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 80 · Em produtos selecionados</p><p class="vence">⏰ Vence em segunda-feira</p><p class="testado">✓ Testado no Mercado Livre às 20:49 de 04/07</p><div class="codebox"><span class="code"><b>CORREAQUI</b></span><button class="btn" type="button" data-code="CORREAQUI" data-destino="https://meli.la/32k5r7x">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge plain">Cupom</span></div><h3>Cupom Mercado Livre</h3><p class="pend">Visto hoje — aguardando validação automática</p><div class="codebox"><span class="code"><b>SNEAKERS</b></span><button class="btn" type="button" data-code="SNEAKERS" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">10% OFF</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 199 · desconto máx. R$ 300 · Em produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:48 de 04/07</p><div class="codebox"><span class="code"><b>TVCASASBAHIA</b></span><button class="btn" type="button" data-code="TVCASASBAHIA" data-destino="https://meli.la/1X43uRA">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge plain">Cupom</span></div><h3>Cupom Mercado Livre</h3><p class="pend">Visto hoje — aguardando validação automática</p><div class="codebox"><span class="code"><b>DISPON</b></span><button class="btn" type="button" data-code="DISPON" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge plain">Cupom</span></div><h3>Cupom Mercado Livre</h3><p class="testado">✓ Testado no Mercado Livre às 20:49 de 04/07</p><div class="codebox"><span class="code"><b>MELIOFERTA</b></span><button class="btn" type="button" data-code="MELIOFERTA" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge">20% OFF</span></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 149 · desconto máx. R$ 100 · carrinho</p><p class="vence">⏰ Vence amanhã!</p><p class="testado">✓ Testado no Mercado Livre às 20:48 de 04/07</p><div class="codebox"><span class="code"><b>BEAUTY20</b></span><button class="btn" type="button" data-code="BEAUTY20" data-destino="https://meli.la/1GVy8gp">Pegar cupom</button></div></article>
-<article class="cup"><div class="cup__top"><span class="badge plain">Cupom</span></div><h3>Cupom Mercado Livre</h3><p class="testado">✓ Testado no Mercado Livre às 18:01 de 04/07</p><div class="codebox"><span class="code"><b>ELUX15</b></span><button class="btn" type="button" data-code="ELUX15" data-destino="https://mercadolivre.com/sec/1KDyJVq">Pegar cupom</button></div></article>
+<article class="cup" data-code="MELHORCUPOM" data-pct="18" data-min="49" data-max="50" data-escopo="Em produtos selecionados" data-destino="https://meli.la/2RMTa2R"><div class="cup__top"><span class="badge">18% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 50 · Em produtos selecionados</p><p class="vence">⏰ Vence em segunda-feira</p><p class="testado">✓ Testado no Mercado Livre às 20:49 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MELHORCUPOM</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="TORCEDOR" data-pct="15" data-min="79" data-max="40" data-escopo="Em produtos selecionados" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">15% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 40 · Em produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:47 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>TORCEDOR</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="DEFESAMAGICA" data-pct="10" data-min="99" data-max="40" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:46 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>DEFESAMAGICA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="VALEPROMO" data-pct="10" data-min="129" data-max="200" data-escopo="Em produtos selecionados" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 129 · desconto máx. R$ 200 · Em produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:50 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>VALEPROMO</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="15MELIMAISDAYS" data-pct="15" data-min="129" data-max="40" data-escopo="carrinho" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">15% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 129 · desconto máx. R$ 40 · carrinho</p><p class="vence">⏰ Termina em 6 horas!</p><p class="testado">✓ Testado no Mercado Livre às 20:50 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>15MELIMAISDAYS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="CONTRAATAQUE" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="pend">Visto hoje — aguardando validação automática</p><button class="codebox" type="button" title="Toque para copiar o código"><b>CONTRAATAQUE</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="ACHADOSDOMELI" data-pct="15" data-min="49" data-max="30" data-escopo="compras" data-destino="https://meli.la/2wGcLyC"><div class="cup__top"><span class="badge">15% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 30 · compras</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:51 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>ACHADOSDOMELI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="CORREAQUI" data-pct="20" data-min="99" data-max="80" data-escopo="Em produtos selecionados" data-destino="https://meli.la/32k5r7x"><div class="cup__top"><span class="badge">20% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 80 · Em produtos selecionados</p><p class="vence">⏰ Vence em segunda-feira</p><p class="testado">✓ Testado no Mercado Livre às 20:49 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>CORREAQUI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="SNEAKERS" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="pend">Visto hoje — aguardando validação automática</p><button class="codebox" type="button" title="Toque para copiar o código"><b>SNEAKERS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="TVCASASBAHIA" data-pct="10" data-min="199" data-max="300" data-escopo="Em produtos selecionados" data-destino="https://meli.la/1X43uRA"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 199 · desconto máx. R$ 300 · Em produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:48 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>TVCASASBAHIA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="DISPON" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="pend">Visto hoje — aguardando validação automática</p><button class="codebox" type="button" title="Toque para copiar o código"><b>DISPON</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="MELIOFERTA" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="testado">✓ Testado no Mercado Livre às 20:49 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MELIOFERTA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="BEAUTY20" data-pct="20" data-min="149" data-max="100" data-escopo="carrinho" data-destino="https://meli.la/1GVy8gp"><div class="cup__top"><span class="badge">20% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 149 · desconto máx. R$ 100 · carrinho</p><p class="vence">⏰ Vence amanhã!</p><p class="testado">✓ Testado no Mercado Livre às 20:48 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>BEAUTY20</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="ELUX15" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="testado">✓ Testado no Mercado Livre às 18:01 de 04/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>ELUX15</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
   </div>
 
   <div class="cta-zap">
@@ -197,27 +240,28 @@
     <a href="/invite/" data-ev="cta_grupo">Entrar no grupo</a>
   </div>
 
-<section class="bloco"><h2>Encerrados nas últimas horas</h2><div class="grid"><article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><div class="codebox"><span class="code"><b>7DO7ELETRONICOS</b></span><button class="btn ghost" type="button" data-code="7DO7ELETRONICOS">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 50 · itens selecionados</p><div class="codebox"><span class="code"><b>MODAPROMO</b></span><button class="btn ghost" type="button" data-code="MODAPROMO">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><div class="codebox"><span class="code"><b>7DO7INFORMATICA</b></span><button class="btn ghost" type="button" data-code="7DO7INFORMATICA">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 50 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>DESCONTOMELI</b></span><button class="btn ghost" type="button" data-code="DESCONTOMELI">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 119 · desconto máx. R$ 79 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>CASA77</b></span><button class="btn ghost" type="button" data-code="CASA77">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><div class="codebox"><span class="code"><b>LOJASOFICIAIS77</b></span><button class="btn ghost" type="button" data-code="LOJASOFICIAIS77">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 199 · desconto máx. R$ 50</p><div class="codebox"><span class="code"><b>FASHIONBEAUTY77</b></span><button class="btn ghost" type="button" data-code="FASHIONBEAUTY77">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><div class="codebox"><span class="code"><b>MEGAMODA20</b></span><button class="btn ghost" type="button" data-code="MEGAMODA20">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 60 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>OFERTAMELI</b></span><button class="btn ghost" type="button" data-code="OFERTAMELI">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>30% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 19 · desconto máx. R$ 40 · site</p><div class="codebox"><span class="code"><b>TODOSITE</b></span><button class="btn ghost" type="button" data-code="TODOSITE">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40 · quase todo o site</p><div class="codebox"><span class="code"><b>BOLANAREDE</b></span><button class="btn ghost" type="button" data-code="BOLANAREDE">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>30% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 40 · compras</p><div class="codebox"><span class="code"><b>ALL7DO72</b></span><button class="btn ghost" type="button" data-code="ALL7DO72">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>12% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 80 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>CARRINHOCHEIOML</b></span><button class="btn ghost" type="button" data-code="CARRINHOCHEIOML">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 149 · desconto máx. R$ 200 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>SALVAESSA</b></span><button class="btn ghost" type="button" data-code="SALVAESSA">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40</p><div class="codebox"><span class="code"><b>ARQUIBANCADA</b></span><button class="btn ghost" type="button" data-code="ARQUIBANCADA">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40 · carrinho</p><div class="codebox"><span class="code"><b>PLACARZAO</b></span><button class="btn ghost" type="button" data-code="PLACARZAO">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 69 · desconto máx. R$ 59 · Seleconados</p><div class="codebox"><span class="code"><b>GAMES7DO7</b></span><button class="btn ghost" type="button" data-code="GAMES7DO7">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><div class="codebox"><span class="code"><b>TVNASCASASBAHIA</b></span><button class="btn ghost" type="button" data-code="TVNASCASASBAHIA">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 129 · desconto máx. R$ 60 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>BEBESEPETS</b></span><button class="btn ghost" type="button" data-code="BEBESEPETS">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">desconto máx. R$ 50</p><div class="codebox"><span class="code"><b>EXCLUSIVOMELIMAIS</b></span><button class="btn ghost" type="button" data-code="EXCLUSIVOMELIMAIS">Copiar</button></div></article>
-<article class="cup cup--exp"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 199 · desconto máx. R$ 40 · Em produtos selecionados</p><div class="codebox"><span class="code"><b>LOJASOFICIAIS7</b></span><button class="btn ghost" type="button" data-code="LOJASOFICIAIS7">Copiar</button></div></article></div></section>
+<section class="bloco"><h2>Encerrados nas últimas horas</h2><div class="grid"><article class="cup cup--exp" data-code="GOLEADATOTAL"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40 · produto</p><button class="codebox" type="button" title="Toque para copiar o código"><b>GOLEADATOTAL</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="7DO7ELETRONICOS"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><button class="codebox" type="button" title="Toque para copiar o código"><b>7DO7ELETRONICOS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="MODAPROMO"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 50 · itens selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MODAPROMO</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="7DO7INFORMATICA"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><button class="codebox" type="button" title="Toque para copiar o código"><b>7DO7INFORMATICA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="DESCONTOMELI"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 50 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>DESCONTOMELI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="CASA77"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 119 · desconto máx. R$ 79 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>CASA77</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="LOJASOFICIAIS77"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><button class="codebox" type="button" title="Toque para copiar o código"><b>LOJASOFICIAIS77</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="FASHIONBEAUTY77"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 199 · desconto máx. R$ 50</p><button class="codebox" type="button" title="Toque para copiar o código"><b>FASHIONBEAUTY77</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="MEGAMODA20"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><button class="codebox" type="button" title="Toque para copiar o código"><b>MEGAMODA20</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="OFERTAMELI"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 60 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>OFERTAMELI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="TODOSITE"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>30% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 19 · desconto máx. R$ 40 · site</p><button class="codebox" type="button" title="Toque para copiar o código"><b>TODOSITE</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="BOLANAREDE"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40 · quase todo o site</p><button class="codebox" type="button" title="Toque para copiar o código"><b>BOLANAREDE</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="ALL7DO72"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>30% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 40 · compras</p><button class="codebox" type="button" title="Toque para copiar o código"><b>ALL7DO72</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="CARRINHOCHEIOML"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>12% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 80 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>CARRINHOCHEIOML</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="SALVAESSA"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 149 · desconto máx. R$ 200 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>SALVAESSA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="ARQUIBANCADA"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40</p><button class="codebox" type="button" title="Toque para copiar o código"><b>ARQUIBANCADA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="PLACARZAO"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 99 · desconto máx. R$ 40 · carrinho</p><button class="codebox" type="button" title="Toque para copiar o código"><b>PLACARZAO</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="GAMES7DO7"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 69 · desconto máx. R$ 59 · Seleconados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>GAMES7DO7</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="TVNASCASASBAHIA"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>Cupom Mercado Livre</h3><button class="codebox" type="button" title="Toque para copiar o código"><b>TVNASCASASBAHIA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="BEBESEPETS"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 129 · desconto máx. R$ 60 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>BEBESEPETS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="EXCLUSIVOMELIMAIS"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">desconto máx. R$ 50</p><button class="codebox" type="button" title="Toque para copiar o código"><b>EXCLUSIVOMELIMAIS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article>
+<article class="cup cup--exp" data-code="LOJASOFICIAIS7"><div class="cup__top"><span class="badge exp">Expirado</span></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 199 · desconto máx. R$ 40 · Em produtos selecionados</p><button class="codebox" type="button" title="Toque para copiar o código"><b>LOJASOFICIAIS7</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button></article></div></section>
 
   <section class="bloco faq">
     <h2>Perguntas frequentes</h2>
@@ -251,12 +295,13 @@
 
 <div class="consent" id="consent">
   <span>Usamos o Google Analytics (sem anúncios) pra saber quais cupons ajudam mais. Tudo bem?</span>
-  <button class="btn" id="c-sim" type="button">Aceitar</button>
-  <button class="btn ghost" id="c-nao" type="button">Agora não</button>
+  <button class="sim" id="c-sim" type="button">Aceitar</button>
+  <button class="nao" id="c-nao" type="button">Agora não</button>
 </div>
 
 <script>
 (function () {
+  var SITE_CUPONS = 'monitorofertas.com.br/cupons';
   function track(nome, params) {
     if (typeof gtag === 'function') { try { gtag('event', nome, params || {}); } catch (e) {} }
   }
@@ -275,23 +320,77 @@
   var toast = document.getElementById('toast'), tHnd = null;
   function avisar(msg) {
     toast.textContent = msg; toast.classList.add('on');
-    clearTimeout(tHnd); tHnd = setTimeout(function () { toast.classList.remove('on'); }, 2200);
+    clearTimeout(tHnd); tHnd = setTimeout(function () { toast.classList.remove('on'); }, 2400);
+  }
+
+  function dadosDoCard(el) {
+    var a = el.closest('.cup');
+    if (!a) return null;
+    return {
+      code: a.getAttribute('data-code') || '',
+      pct: a.getAttribute('data-pct') || '',
+      min: a.getAttribute('data-min') || '',
+      max: a.getAttribute('data-max') || '',
+      escopo: a.getAttribute('data-escopo') || '',
+      destino: a.getAttribute('data-destino') || ''
+    };
+  }
+  // Texto de compartilhar: mesmo formato do catálogo + site + link afiliado
+  function textoShare(c) {
+    var titulo = c.pct ? c.pct + '% OFF no Mercado Livre' : 'Cupom Mercado Livre';
+    var regras = [];
+    if (c.min) regras.push('acima de R$ ' + c.min);
+    if (c.max) regras.push('limite R$ ' + c.max);
+    if (c.escopo) regras.push(c.escopo);
+    return '🏷️ *' + titulo + '*' +
+      (regras.length ? '\n' + regras.join(' · ') : '') +
+      '\n🎟️ Cupom: ' + c.code +
+      (c.destino ? '\n👇 ' + c.destino : '') +
+      '\n\n🌐 Cupons testados toda hora: ' + SITE_CUPONS;
   }
 
   document.addEventListener('click', function (ev) {
-    var b = ev.target.closest('[data-code]');
-    if (!b) return;
-    var code = b.getAttribute('data-code');
-    var destino = b.getAttribute('data-destino');
-    copiar(code, function () {
-      track('click_cupom', { nome: code, link: destino || '' });
-      if (destino) {
-        avisar('Cupom ' + code + ' copiado — abrindo produtos…');
-        setTimeout(function () { window.open(destino, '_blank', 'noopener'); }, 650);
+    var sh = ev.target.closest('.share');
+    if (sh) {
+      var c = dadosDoCard(sh);
+      if (!c) return;
+      track('compartilhar_cupom', { nome: c.code, link: c.destino });
+      var texto = textoShare(c);
+      var titulo = c.pct ? c.pct + '% OFF no Mercado Livre' : 'Cupom Mercado Livre';
+      if (navigator.share) {
+        navigator.share({ title: titulo, text: texto }).catch(function (e) {
+          if (e && e.name === 'AbortError') return;
+          copiar(texto, function () { avisar('Texto copiado — cola no WhatsApp 📲'); });
+        });
       } else {
-        avisar('Cupom ' + code + ' copiado!');
+        copiar(texto, function () { avisar('Texto copiado — cola no WhatsApp 📲'); });
       }
-    });
+      return;
+    }
+    var cp = ev.target.closest('.codebox');
+    if (cp) {
+      var c2 = dadosDoCard(cp);
+      if (!c2) return;
+      copiar(c2.code, function () {
+        track('copiar_cupom', { nome: c2.code });
+        avisar('Cupom ' + c2.code + ' copiado! 🏷️');
+      });
+      return;
+    }
+    var g = ev.target.closest('.get');
+    if (g) {
+      var c3 = dadosDoCard(g);
+      if (!c3) return;
+      copiar(c3.code, function () {
+        track('click_cupom', { nome: c3.code, link: c3.destino });
+        if (c3.destino) {
+          avisar('Cupom ' + c3.code + ' copiado — abrindo produtos…');
+          setTimeout(function () { window.open(c3.destino, '_blank', 'noopener'); }, 650);
+        } else {
+          avisar('Cupom ' + c3.code + ' copiado!');
+        }
+      });
+    }
   });
 
   var cta = document.querySelector('[data-ev="cta_grupo"]');
