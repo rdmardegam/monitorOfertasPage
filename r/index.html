@@ -56,10 +56,14 @@
   if (ok) {
     try {
       var cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+      // oferta = o id do produto: MLB (param 'o') no ML; no Amazon o 'o' vem
+      // vazio, então usa o ASIN ('to') — assim o clique Amazon cai no MESMO
+      // pipeline de cliques do painel (dimensão 'oferta' já registrada).
+      var oferta = ((q.get('o') || (mkt === 'amz' ? to : '')) || '').slice(0, 30);
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: 'click_oferta',
         dl: location.href, dt: 'redirect',
-        'ep.oferta': (q.get('o') || '').slice(0, 30),
+        'ep.oferta': oferta,
         'ep.canal': canal,
         'ep.mkt': mkt,
         'ep.link': to
