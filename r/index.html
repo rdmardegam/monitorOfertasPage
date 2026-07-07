@@ -72,6 +72,43 @@
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
     } catch (e) { /* contagem é best-effort; redirect nunca espera por ela */ }
   }
+
+  // ── Abrir o APP da Amazon no celular (deep link + fallback) ────────────────
+  // Universal/App Links só disparam no TOQUE em domínio associado — nunca num
+  // redirect nosso. Então no mobile tentamos o app explicitamente:
+  //   Android → intent:// (Chrome abre o app se instalado; senão usa o
+  //             browser_fallback_url = site com a tag, sozinho);
+  //   iOS     → scheme com.amazon.mobile.shopping.web:// + timer de fallback
+  //             pro site (cancelado se a página sumiu = app abriu).
+  // A tag de afiliado segue nos dois caminhos (a URL com ?tag= vai dentro).
+  var ua = navigator.userAgent || '';
+  var eAmz = ok && mkt === 'amz';
+  if (eAmz && /Android/i.test(ua)) {
+    var intent = 'intent://www.amazon.com.br/dp/' + to + '?tag=' + AMZ_TAG +
+      '&language=pt_BR' + (canal ? '&ascsubtag=' + encodeURIComponent(canal) : '') +
+      '#Intent;scheme=https;package=com.amazon.mShop.android.shopping;' +
+      'S.browser_fallback_url=' + encodeURIComponent(dest) + ';end';
+    // rede de segurança: browsers sem suporte a intent:// ficam parados — timer
+    // leva pro site; cancelado se a página sumiu (app abriu de verdade).
+    var tA = setTimeout(function () { location.replace(dest); }, 2000);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) clearTimeout(tA);
+    });
+    window.addEventListener('pagehide', function () { clearTimeout(tA); });
+    location.replace(intent);
+    return;
+  }
+  if (eAmz && /iPhone|iPad|iPod/i.test(ua)) {
+    var timer = setTimeout(function () { location.replace(dest); }, 1400);
+    // app abriu → página foi pro background → não navega pro site por cima
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) clearTimeout(timer);
+    });
+    window.addEventListener('pagehide', function () { clearTimeout(timer); });
+    location.href = 'com.amazon.mobile.shopping.web://amazon.com.br/dp/' + to +
+      '?tag=' + AMZ_TAG + (canal ? '&ascsubtag=' + encodeURIComponent(canal) : '');
+    return;
+  }
   location.replace(dest);
 })();
 </script>
