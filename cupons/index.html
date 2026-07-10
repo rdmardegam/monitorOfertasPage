@@ -7,6 +7,7 @@
 <meta name="description" content="17 cupons de desconto do Mercado Livre funcionando em 9 de julho de 2026, com até 25% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom." />
 <link rel="canonical" href="https://www.monitorofertas.com.br/cupons/" />
 <meta name="theme-color" content="#0e1c33" />
+<link rel="manifest" href="../manifest.webmanifest" />
 <link rel="icon" href="../icon-192.png" />
 <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
 
@@ -71,6 +72,27 @@
   .brand img{width:40px; height:40px; border-radius:12px; box-shadow:0 6px 18px -6px rgba(0,0,0,.6);}
   .brand b{font-family:"Baloo 2",sans-serif; font-size:19px; letter-spacing:.2px;}
   .brand small{display:block; font-size:11.5px; font-weight:600; color:#c7d2e0; margin-top:1px;}
+  /* pílulas de acesso (mesmo padrão do index e da /amazon/) */
+  .top .wrap{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .navlinks{display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:flex-end;}
+  .navlinks a, .navlinks button{display:inline-flex; align-items:center; gap:6px; text-decoration:none;
+    background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.22); color:#fff;
+    padding:6px 11px; border-radius:999px; font:inherit; font-size:12.5px; font-weight:700;
+    white-space:nowrap; cursor:pointer; line-height:1.1;}
+  .navlinks a:hover, .navlinks button:hover{background:rgba(255,255,255,.18);}
+  .navlinks svg{width:15px; height:15px; flex:0 0 auto;}
+  .navlinks .ico-img{width:18px; height:18px; border-radius:5px; object-fit:cover; flex:0 0 auto;}
+  .navlinks .nl-ml{background:rgba(255,229,0,.16); border-color:rgba(255,229,0,.4);}
+  .navlinks .ico-badge{width:18px; height:18px; border-radius:5px; display:inline-flex; align-items:center;
+    justify-content:center; flex:0 0 auto; overflow:hidden; background:#fff;}
+  .navlinks .ico-badge img{width:18px; height:18px; transform:scale(1.8);}
+  .navlinks .nl-wa svg{color:#25d366;}
+  @media(max-width:560px){
+    .navlinks a span, .navlinks button span{display:none;}
+    .navlinks{gap:6px; flex-wrap:nowrap;}
+    .navlinks a, .navlinks button{padding:6px 8px;}
+    .brand small{display:none;} .brand img{width:34px; height:34px;} .brand b{font-size:16px;}
+  }
 
   .crumbs{font-size:12.5px; color:var(--muted); padding:14px 0 0;}
   .crumbs a{color:var(--muted);}
@@ -200,30 +222,45 @@
   .consent .sim{background:var(--yellow); color:var(--navy);}
   .consent .nao{background:#eef1f5; color:var(--navy-2);}
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.monitorofertas.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Cupons", "item": "https://www.monitorofertas.com.br/cupons/"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Cupons Mercado Livre válidos hoje", "dateModified": "2026-07-09T20:45:59", "numberOfItems": 17, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cupom MEUSMIMOS — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 2, "name": "Cupom ARTILHEIRO — Mercado Livre"}, {"@type": "ListItem", "position": 3, "name": "Cupom MODASEMPRE — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 4, "name": "Cupom VARDOMELI — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 5, "name": "Cupom MELILIBERADO — Mercado Livre"}, {"@type": "ListItem", "position": 6, "name": "Cupom PROMOPRACASA — 18% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 7, "name": "Cupom CASAMELI — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 8, "name": "Cupom COMPRAML — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 9, "name": "Cupom DESCONTOAQUI — 25% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 10, "name": "Cupom ENTROU — Mercado Livre"}, {"@type": "ListItem", "position": 11, "name": "Cupom MANTECORP15 — Mercado Livre"}, {"@type": "ListItem", "position": 12, "name": "Cupom TVCASASBAHIA — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 13, "name": "Cupom GUARDA10 — Mercado Livre"}, {"@type": "ListItem", "position": 14, "name": "Cupom PROMOS — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 15, "name": "Cupom AFILIADOSCOMLOLA — Mercado Livre"}, {"@type": "ListItem", "position": 16, "name": "Cupom LEVAESSA — Mercado Livre"}, {"@type": "ListItem", "position": 17, "name": "Cupom FIGURINHAS10 — Mercado Livre"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como usar um cupom do Mercado Livre?", "acceptedAnswer": {"@type": "Answer", "text": "Copie o código, adicione os produtos ao carrinho no Mercado Livre e cole no campo 'Cupom de desconto' antes de finalizar. O desconto aparece no resumo do pedido; confira o valor mínimo."}}, {"@type": "Question", "name": "Esses cupons são confiáveis?", "acceptedAnswer": {"@type": "Answer", "text": "Sim. Um robô testa cada código direto no Mercado Livre e a página remove automaticamente os que expiram ou esgotam."}}, {"@type": "Question", "name": "Com que frequência a página é atualizada?", "acceptedAnswer": {"@type": "Answer", "text": "Várias vezes ao dia, sempre que um cupom novo é validado ou um antigo expira."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.monitorofertas.com.br/"}, {"@type": "ListItem", "position": 2, "name": "Cupons", "item": "https://www.monitorofertas.com.br/cupons/"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Cupons Mercado Livre válidos hoje", "dateModified": "2026-07-09T21:06:59", "numberOfItems": 17, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cupom ARTILHEIRO — Mercado Livre"}, {"@type": "ListItem", "position": 2, "name": "Cupom VARDOMELI — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 3, "name": "Cupom MODASEMPRE — 15% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 4, "name": "Cupom MEUSMIMOS — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 5, "name": "Cupom MELILIBERADO — Mercado Livre"}, {"@type": "ListItem", "position": 6, "name": "Cupom PROMOPRACASA — 18% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 7, "name": "Cupom CASAMELI — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 8, "name": "Cupom COMPRAML — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 9, "name": "Cupom DESCONTOAQUI — 25% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 10, "name": "Cupom ENTROU — Mercado Livre"}, {"@type": "ListItem", "position": 11, "name": "Cupom MANTECORP15 — Mercado Livre"}, {"@type": "ListItem", "position": 12, "name": "Cupom TVCASASBAHIA — 10% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 13, "name": "Cupom GUARDA10 — Mercado Livre"}, {"@type": "ListItem", "position": 14, "name": "Cupom PROMOS — 20% OFF no Mercado Livre"}, {"@type": "ListItem", "position": 15, "name": "Cupom AFILIADOSCOMLOLA — Mercado Livre"}, {"@type": "ListItem", "position": 16, "name": "Cupom LEVAESSA — Mercado Livre"}, {"@type": "ListItem", "position": 17, "name": "Cupom FIGURINHAS10 — Mercado Livre"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Como usar um cupom do Mercado Livre?", "acceptedAnswer": {"@type": "Answer", "text": "Copie o código, adicione os produtos ao carrinho no Mercado Livre e cole no campo 'Cupom de desconto' antes de finalizar. O desconto aparece no resumo do pedido; confira o valor mínimo."}}, {"@type": "Question", "name": "Esses cupons são confiáveis?", "acceptedAnswer": {"@type": "Answer", "text": "Sim. Um robô testa cada código direto no Mercado Livre e a página remove automaticamente os que expiram ou esgotam."}}, {"@type": "Question", "name": "Com que frequência a página é atualizada?", "acceptedAnswer": {"@type": "Answer", "text": "Várias vezes ao dia, sempre que um cupom novo é validado ou um antigo expira."}}]}</script>
 </head>
 <body>
 
 <div class="top">
   <div class="wrap">
-    <a class="brand" href="/"><img src="../icon-192.png" alt="" width="40" height="40" />
+    <a class="brand" href="../"><img src="../icon-192.png" alt="" width="40" height="40" />
       <span><b>Monitor Ofertas</b><small>cupons testados de verdade</small></span></a>
+    <!-- hrefs RELATIVOS: funcionam no site (/) e no preview (/catalogo/) -->
+    <nav class="navlinks">
+      <a class="nl-ml" href="../" title="Ofertas Mercado Livre">
+        <img class="ico-img" src="../logo-ml.png" alt="" />
+        <span>Mercado Livre</span></a>
+      <a href="../amazon/" title="Ofertas Amazon">
+        <span class="ico-badge"><img src="../logo-amz.svg" alt="" /></span>
+        <span>Amazon</span></a>
+      <a class="nl-wa" href="https://chat.whatsapp.com/BX6UTeMokc1F3aXNd97r7W" target="_blank" rel="noopener" title="Grupo no WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.73-.85-2-.95-.27-.1-.46-.15-.65.15-.2.3-.75.94-.92 1.13-.17.2-.34.22-.63.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.34.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.65-1.58-.9-2.16-.24-.57-.48-.5-.65-.5h-.56c-.2 0-.5.07-.77.37-.26.3-1 .98-1 2.4 0 1.4 1.02 2.76 1.17 2.95.14.2 2 3.05 4.85 4.28.68.3 1.2.47 1.62.6.68.22 1.3.18 1.78.11.54-.08 1.66-.68 1.9-1.33.23-.66.23-1.22.16-1.34-.07-.12-.26-.2-.55-.34z"/><path d="M12 2a10 10 0 0 0-8.53 15.27L2 22l4.85-1.27A10 10 0 1 0 12 2zm0 18.2c-1.5 0-2.96-.4-4.24-1.16l-.3-.18-2.88.75.77-2.8-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+        <span>Grupo</span></a>
+      <button class="nl-app" type="button" id="btnInstalar" title="Instalar o app">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        <span>App</span></button>
+    </nav>
   </div>
 </div>
 
 <main class="wrap">
-  <nav class="crumbs" aria-label="breadcrumb"><a href="/">Início</a> › <span>Cupons</span></nav>
+  <nav class="crumbs" aria-label="breadcrumb"><a href="../">Início</a> › <span>Cupons</span></nav>
   <div class="hero">
     <h1>Cupons Mercado Livre válidos hoje</h1>
     <p class="sub">17 cupons de desconto do Mercado Livre funcionando em 9 de julho de 2026, com até 25% OFF. Cada código é testado automaticamente — regras e valor mínimo em cada cupom.</p>
-    <span class="verif"><span class="dot"></span> Testados automaticamente no Mercado Livre — última verificação: 20:45 de hoje</span>
+    <span class="verif"><span class="dot"></span> Testados automaticamente no Mercado Livre — última verificação: 21:06 de hoje</span>
   </div>
 
   <div class="grid" id="grid">
-<article class="cup" data-code="MEUSMIMOS" data-pct="10" data-min="79" data-max="60" data-escopo="produtos selecionados" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 60 · produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 16:00 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MEUSMIMOS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
 <article class="cup" data-code="ARTILHEIRO" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="testado">✓ Testado no Mercado Livre às 18:40 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>ARTILHEIRO</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="VARDOMELI" data-pct="10" data-min="40" data-max="10" data-escopo="Em produtos selecionados" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 40 · desconto máx. R$ 10 · Em produtos selecionados</p><p class="vence">⏰ Termina em 2 horas!</p><p class="testado">✓ Testado no Mercado Livre às 18:05 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>VARDOMELI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
 <article class="cup" data-code="MODASEMPRE" data-pct="15" data-min="49" data-max="60" data-escopo="Em produtos selecionados" data-destino="https://meli.la/11awAaq"><div class="cup__top"><span class="badge">15% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>15% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 49 · desconto máx. R$ 60 · Em produtos selecionados</p><p class="vence">⏰ Vence em domingo</p><p class="testado">✓ Testado no Mercado Livre às 20:01 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MODASEMPRE</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
-<article class="cup" data-code="VARDOMELI" data-pct="10" data-min="40" data-max="10" data-escopo="Em produtos selecionados" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 40 · desconto máx. R$ 10 · Em produtos selecionados</p><p class="vence">⏰ Termina em 3 horas!</p><p class="testado">✓ Testado no Mercado Livre às 18:05 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>VARDOMELI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
+<article class="cup" data-code="MEUSMIMOS" data-pct="10" data-min="79" data-max="60" data-escopo="produtos selecionados" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge">10% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>10% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 60 · produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 16:00 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MEUSMIMOS</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
 <article class="cup" data-code="MELILIBERADO" data-destino="https://mercadolivre.com/sec/1KDyJVq"><div class="cup__top"><span class="badge plain">Cupom</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>Cupom Mercado Livre</h3><p class="testado">✓ Testado no Mercado Livre às 18:02 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>MELILIBERADO</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
 <article class="cup" data-code="PROMOPRACASA" data-pct="18" data-min="79" data-max="60" data-escopo="Em produtos selecionados" data-destino="https://meli.la/1KxRPFv"><div class="cup__top"><span class="badge">18% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>18% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 79 · desconto máx. R$ 60 · Em produtos selecionados</p><p class="vence">⏰ Vence em domingo</p><p class="testado">✓ Testado no Mercado Livre às 18:03 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>PROMOPRACASA</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
 <article class="cup" data-code="CASAMELI" data-pct="20" data-min="159" data-max="100" data-escopo="Em produtos selecionados" data-destino="https://meli.la/1m5ZrV7"><div class="cup__top"><span class="badge">20% OFF</span><button class="share" type="button" aria-label="Compartilhar cupom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg></button></div><h3>20% OFF no Mercado Livre</h3><p class="rules">compra mín. R$ 159 · desconto máx. R$ 100 · Em produtos selecionados</p><p class="vence">⏰ Está esgotando!</p><p class="testado">✓ Testado no Mercado Livre às 20:00 de 09/07</p><button class="codebox" type="button" title="Toque para copiar o código"><b>CASAMELI</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button><button class="get" type="button">Pegar cupom →</button></article>
@@ -274,7 +311,7 @@
 
 <footer class="site">
   <div class="wrap">
-    <p><a href="/">← Ver as ofertas de hoje</a> · <a href="/invite/">Grupo no WhatsApp</a></p>
+    <p><a href="../">← Ofertas Mercado Livre</a> · <a href="../amazon/">Ofertas Amazon</a> · <a href="/invite/">Grupo no WhatsApp</a></p>
     <p class="aviso-af">O Monitor Ofertas participa do programa de afiliados do Mercado Livre: podemos receber comissão por compras feitas pelos nossos links, sem custo extra pra você. Preços e cupons podem mudar sem aviso.</p>
   </div>
 </footer>
@@ -398,6 +435,23 @@
     try { localStorage.setItem('mo_consent', '0'); } catch (e) {}
     box.classList.remove('on');
   };
+
+  // Instalar o app (PWA) — mesmo fluxo da página /amazon/: prompt nativo quando
+  // disponível; senão dica manual (iOS/desktop). Some se já roda como app.
+  var btnInst = document.getElementById('btnInstalar'), deferido = null;
+  var jaApp = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+  if (jaApp && btnInst) btnInst.style.display = 'none';
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferido = e; });
+  if (btnInst) btnInst.addEventListener('click', function () {
+    if (deferido) {
+      deferido.prompt();
+      deferido.userChoice.then(function () { deferido = null; });
+    } else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+      avisar('No Safari: Compartilhar → "Adicionar à Tela de Início" 📲');
+    } else {
+      avisar('No menu do navegador (⋮), toque em "Instalar app" 📲');
+    }
+  });
 })();
 </script>
 </body>
