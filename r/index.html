@@ -11,18 +11,30 @@
 <style>
   body{font-family:system-ui,sans-serif;background:#0e1116;color:#dfe3ea;display:flex;
        align-items:center;justify-content:center;min-height:100vh;margin:0}
-  .box{text-align:center;padding:24px}
+  .box{text-align:center;padding:24px;max-width:340px}
   a{color:#5aa9ff}
   .spin{width:28px;height:28px;border:3px solid #2a3140;border-top-color:#ffd700;
         border-radius:50%;margin:0 auto 14px;animation:g .8s linear infinite}
   @keyframes g{to{transform:rotate(360deg)}}
+  #escolha{display:none}
+  .btn-app{display:block;background:#f5b800;color:#0d1b2e;font-weight:800;
+           text-decoration:none;padding:15px 20px;border-radius:12px;font-size:1.05rem}
+  .btn-site{display:inline-block;margin-top:16px;font-size:.92rem}
 </style>
 </head>
 <body>
 <div class="box">
-  <div class="spin"></div>
-  <div>Abrindo a oferta…</div>
-  <div style="margin-top:10px;font-size:.9rem"><a id="fallback" href="https://www.monitorofertas.com.br">ir manualmente</a></div>
+  <div id="carregando">
+    <div class="spin"></div>
+    <div>Abrindo a oferta…</div>
+    <div style="margin-top:10px;font-size:.9rem"><a id="fallback" href="https://www.monitorofertas.com.br">ir manualmente</a></div>
+  </div>
+  <!-- Só aparece quando o app não pôde ser aberto por script (PWA instalada /
+       WebView): o Chrome exige TOQUE do usuário pra lançar intent://. -->
+  <div id="escolha">
+    <a id="btnApp" class="btn-app" href="#">🛒 Abrir no app da Amazon</a>
+    <a id="btnSite" class="btn-site" href="https://www.monitorofertas.com.br">Continuar no site →</a>
+  </div>
 </div>
 <script>
 // Redirect rastreável multi-loja: /r/?to=<id>&o=<MLB>&c=<canal>&mkt=<ml|amz>
@@ -53,49 +65,109 @@
   var ok = dest.indexOf('monitorofertas.com.br') === -1;
   document.getElementById('fallback').href = dest;
 
-  if (ok) {
+  // cid fixo na sessão: os 2 eventos (clique + abertura do app) ficam no MESMO
+  // usuário do GA — dá pra medir a taxa "clicou → abriu no app".
+  var cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  // oferta = o id do produto: MLB (param 'o') no ML; no Amazon o 'o' vem vazio,
+  // então usa o ASIN ('to') — assim o clique Amazon cai no MESMO pipeline de
+  // cliques do painel (dimensão 'oferta' já registrada).
+  var oferta = ((q.get('o') || (mkt === 'amz' ? to : '')) || '').slice(0, 30);
+
+  function ga(evento, extras) {
+    if (!ok) return;
     try {
-      var cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
-      // oferta = o id do produto: MLB (param 'o') no ML; no Amazon o 'o' vem
-      // vazio, então usa o ASIN ('to') — assim o clique Amazon cai no MESMO
-      // pipeline de cliques do painel (dimensão 'oferta' já registrada).
-      var oferta = ((q.get('o') || (mkt === 'amz' ? to : '')) || '').slice(0, 30);
       var p = new URLSearchParams({
-        v: '2', tid: 'G-6959NQX27C', cid: cid, en: 'click_oferta',
+        v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento,
         dl: location.href, dt: 'redirect',
         'ep.oferta': oferta,
         'ep.canal': canal,
         'ep.mkt': mkt,
         'ep.link': to
       });
+      for (var k in (extras || {})) p.set('ep.' + k, extras[k]);
       // sendBeacon sobrevive à navegação — não precisamos esperar resposta.
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
     } catch (e) { /* contagem é best-effort; redirect nunca espera por ela */ }
   }
 
+  // Clique da oferta: contado SEMPRE, no load, antes de qualquer branch — o
+  // caminho (app automático, botão, site) não muda a contagem do painel.
+  ga('click_oferta');
+
   // ── Abrir o APP da Amazon no celular (deep link + fallback) ────────────────
   // Universal/App Links só disparam no TOQUE em domínio associado — nunca num
-  // redirect nosso. Então no mobile tentamos o app explicitamente:
-  //   Android → intent:// (Chrome abre o app se instalado; senão usa o
-  //             browser_fallback_url = site com a tag, sozinho);
-  //   iOS     → scheme com.amazon.mobile.shopping.web:// + timer de fallback
-  //             pro site (cancelado se a página sumiu = app abriu).
-  // A tag de afiliado segue nos dois caminhos (a URL com ?tag= vai dentro).
+  // redirect nosso. Então no mobile tentamos o app explicitamente. O QUE ABRE o
+  // link manda no que funciona:
+  //   • navegador de verdade / Custom Tab → intent:// resolve e abre o app;
+  //   • WebView in-app (o "navegador" do WhatsApp) → intent:// é ENGOLIDO em
+  //     silêncio, mas custom scheme costuma passar (o host delega pro Android).
+  // Daí duas tentativas encadeadas no Android (era só intent://, e quem caía no
+  // WebView ia sempre pro site). iOS já usava o scheme. A tag de afiliado vai
+  // dentro da URL nos dois caminhos.
   var ua = navigator.userAgent || '';
   var eAmz = ok && mkt === 'amz';
+  var amzQS = '?tag=' + AMZ_TAG + '&language=pt_BR' +
+              (canal ? '&ascsubtag=' + encodeURIComponent(canal) : '');
+  var amzScheme = 'com.amazon.mobile.shopping.web://amazon.com.br/dp/' + to + amzQS;
+
+  // Navega sem depender de location.replace: WebView que ignora replace() em
+  // scheme não-http muitas vezes honra o clique num <a> (parece gesto real).
+  function irPara(url) {
+    try {
+      var a = document.createElement('a');
+      a.href = url;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+    } catch (e) { location.href = url; }
+  }
+
   if (eAmz && /Android/i.test(ua)) {
-    var intent = 'intent://www.amazon.com.br/dp/' + to + '?tag=' + AMZ_TAG +
-      '&language=pt_BR' + (canal ? '&ascsubtag=' + encodeURIComponent(canal) : '') +
+    var intent = 'intent://www.amazon.com.br/dp/' + to + amzQS +
       '#Intent;scheme=https;package=com.amazon.mShop.android.shopping;' +
       'S.browser_fallback_url=' + encodeURIComponent(dest) + ';end';
-    // rede de segurança: browsers sem suporte a intent:// ficam parados — timer
-    // leva pro site; cancelado se a página sumiu (app abriu de verdade).
-    var tA = setTimeout(function () { location.replace(dest); }, 2000);
+
+    // Tela de escolha: o Chrome SÓ lança intent:// por script quando a página
+    // tem "user activation". Sem toque (nosso caso: chegamos por redirect), ele
+    // BLOQUEIA — é o que acontece na PWA instalada (manifest scope "/" faz a
+    // WebAPK capturar monitorofertas.com.br/r/) e em WebView in-app. O toque no
+    // botão é ativação de verdade → o intent passa e o app abre. Quem não tem o
+    // app cai no browser_fallback_url do próprio intent (= site com a tag).
+    var mostrarEscolha = function (motivo) {
+      var bApp = document.getElementById('btnApp');
+      var bSite = document.getElementById('btnSite');
+      bApp.href = intent;
+      bSite.href = dest;
+      // rastreio do desfecho: quantos VÊEM a tela (auto bloqueado) e quantos
+      // de fato tocam em cada botão — é como medimos se o app está abrindo.
+      ga('escolha_app', { via: motivo });
+      bApp.addEventListener('click', function () { ga('abrir_app', { via: motivo }); });
+      bSite.addEventListener('click', function () { ga('abrir_site', { via: motivo }); });
+      document.getElementById('carregando').style.display = 'none';
+      document.getElementById('escolha').style.display = 'block';
+    };
+    // PWA/standalone: o auto é bloqueado na certa — não perde 2s piscando spinner.
+    var standalone = false;
+    try {
+      standalone = (window.matchMedia &&
+                    window.matchMedia('(display-mode: standalone)').matches) ||
+                   navigator.standalone === true;
+    } catch (e) { /* sem matchMedia → segue o caminho automático */ }
+    if (standalone) { mostrarEscolha('pwa'); return; }
+
+    // Navegador normal: 1ª tentativa intent:// (abre o app direto), 2ª o scheme
+    // (WebView costuma barrar intent mas deixar passar custom scheme). Nenhuma
+    // pegou → tela de escolha (NÃO manda pro site sozinho: aqui o auto foi
+    // bloqueado, então quem tem o app merece o botão).
+    var t2 = setTimeout(function () { irPara(amzScheme); }, 700);
+    var t3 = setTimeout(function () { mostrarEscolha('auto_falhou'); }, 2000);
+    var cancelar = function () { clearTimeout(t2); clearTimeout(t3); };
+    // página sumiu = o app abriu → aborta o resto (nada por cima)
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) clearTimeout(tA);
+      if (document.hidden) cancelar();
     });
-    window.addEventListener('pagehide', function () { clearTimeout(tA); });
-    location.replace(intent);
+    window.addEventListener('pagehide', cancelar);
+    irPara(intent);
     return;
   }
   if (eAmz && /iPhone|iPad|iPod/i.test(ua)) {
@@ -105,8 +177,7 @@
       if (document.hidden) clearTimeout(timer);
     });
     window.addEventListener('pagehide', function () { clearTimeout(timer); });
-    location.href = 'com.amazon.mobile.shopping.web://amazon.com.br/dp/' + to +
-      '?tag=' + AMZ_TAG + (canal ? '&ascsubtag=' + encodeURIComponent(canal) : '');
+    location.href = amzScheme;
     return;
   }
   location.replace(dest);
