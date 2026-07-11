@@ -326,16 +326,49 @@
     } catch (e) {}
   }
 
+  // ── GA4 (Measurement Protocol, igual ao /r/) ────────────────────────────────
+  // Esta página não tinha rastreio NENHUM no GA (auditoria 11/07): quem chega no
+  // convite — o link que a gente mais divulga — era invisível. Vai por sendBeacon
+  // e não por gtag porque o redirect dispara em 1,5s: o gtag pode nem ter
+  // carregado. Ping cookieless (sem cookie, sem consentimento a pedir); se a
+  // pessoa já navegou o site, reusa o cid/sid dela pra cair no MESMO usuário.
+  const GA_ID = 'G-6959NQX27C';
+  let _cid = '', _sid = '';
+  try {
+    const ck = document.cookie || '';
+    const mc = /(?:^|;\s*)_ga=GA\d\.\d\.([\d.]+)/.exec(ck);
+    if (mc) _cid = mc[1];
+    const ms = /(?:^|;\s*)_ga_6959NQX27C=GS\d\.\d\.(\d+)/.exec(ck);
+    if (ms) _sid = ms[1];
+  } catch (e) { /* anônimo */ }
+  if (!_cid) _cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  if (!_sid) _sid = String(Math.floor(Date.now() / 1000));
+
+  function ga(evento, extras) {
+    // localhost/preview não conta (senão polui os relatórios de produção)
+    if (!/monitorofertas\.com\.br$/.test(location.hostname)) return;
+    try {
+      const p = new URLSearchParams(Object.assign({
+        v: '2', tid: GA_ID, cid: _cid, sid: _sid, en: evento,
+        dl: location.href, dt: 'convite'
+      }, extras || {}));
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* contagem é best-effort; o redirect nunca espera por ela */ }
+  }
+
   if (!sessionStorage.getItem('_entry_visit')) {
     hit('entry-visit');
     hit('auto-redirect');
     sessionStorage.setItem('_entry_visit', '1');
+    ga('page_view');
   } else {
     hit('entry-revisit');
+    ga('page_view', { 'ep.revisita': '1' });
   }
 
   // Redirect após 1.5s — tempo da animação completa
   setTimeout(() => {
+    ga('entrar_grupo', { 'ep.via': 'auto' });   // mandado pro WhatsApp sozinho
     try {
       window.top.location.href = WHATSAPP_LINK;
     } catch (e) {
@@ -352,6 +385,7 @@
 
   document.getElementById('ctaManual').addEventListener('click', () => {
     hit('entry-manual-click');
+    ga('entrar_grupo', { 'ep.via': 'manual' });  // o auto falhou; tocou no botão
   });
 
   // ============================================================

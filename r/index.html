@@ -37,20 +37,46 @@
   </div>
 </div>
 <script>
-// Redirect rastreável multi-loja: /r/?to=<id>&o=<MLB>&c=<canal>&mkt=<ml|amz>
-// 1) conta o clique no GA4 (ping COOKIELESS — client_id aleatório, nada pessoal,
-//    independe do banner de consentimento porque não grava cookie nenhum);
-// 2) redireciona pro link de AFILIADO da loja certa:
+// Redirect rastreável multi-loja. DOIS formatos de entrada:
+//
+//   COMPACTO (atual, o que a gente envia):
+//     /r/?A-<ASIN>-<canal>              Amazon   → /r/?A-B0BP2TGK6W-k
+//     /r/?M-<id>-<MLB>-<canal>          ML       → /r/?M-1zaYcYa-MLB46013144-f
+//     /r/?M-<id>-<canal>                ML sem MLB (3 partes)
+//   LONGO (legado): /r/?to=<id>&o=<MLB>&c=<canal>&mkt=<ml|amz>
+//
+// O legado FICA PRA SEMPRE: as mensagens já enviadas no WhatsApp apontam pra ele
+// e continuam clicáveis anos depois. O compacto só encurta o que sai daqui pra
+// frente (~12 chars a menos e sem "&" no meio, que suja a prévia do WhatsApp).
+//
+// O que a página faz: 1) conta o clique no GA4; 2) redireciona pro link de
+// AFILIADO da loja certa:
 //      ML   (default): meli.la/<id>
 //      amz  (Amazon):  amazon.com.br/dp/<ASIN>?tag=...  (a tag mora AQUI, não na
 //                      URL curta — link branded e a comissão fica escondida).
 // Whitelist por loja → nunca vira redirecionador aberto.
 (function () {
-  var q = new URLSearchParams(location.search);
-  var to = (q.get('to') || '').trim();
-  var mkt = (q.get('mkt') || 'ml').toLowerCase();
-  var canal = (q.get('c') || '').slice(0, 10);
   var AMZ_TAG = 'monitorofer03-20';
+  var to = '', mkt = 'ml', canal = '', mlb = '';
+
+  // "?A-B0BP2TGK6W-k" → query sem "=" nenhum. Não usa PATH (/r/A-...) porque o
+  // site é GitHub Pages: path inexistente cai no 404 (status 404 de verdade).
+  var bruto = decodeURIComponent((location.search || '').replace(/^\?/, ''));
+  var comp = /^([AM])-([A-Za-z0-9]{4,16})(?:-([A-Za-z0-9]{3,20}))?(?:-([a-z]{1,10}))?$/.exec(bruto);
+  if (comp && bruto.indexOf('=') === -1) {
+    mkt = comp[1] === 'A' ? 'amz' : 'ml';
+    to = comp[2];
+    // 3 partes → o 3º campo é o CANAL; 4 partes → é o MLB e o 4º é o canal.
+    if (comp[4]) { mlb = comp[3] || ''; canal = comp[4]; }
+    else { canal = (comp[3] || '').toLowerCase(); }
+    if (mkt === 'amz') { mlb = to; canal = canal || ''; }
+  } else {
+    var q = new URLSearchParams(location.search);
+    to = (q.get('to') || '').trim();
+    mkt = (q.get('mkt') || 'ml').toLowerCase();
+    canal = (q.get('c') || '').slice(0, 10);
+    mlb = (q.get('o') || '').trim();
+  }
 
   var dest = 'https://www.monitorofertas.com.br';
   if (mkt === 'amz') {
@@ -65,19 +91,34 @@
   var ok = dest.indexOf('monitorofertas.com.br') === -1;
   document.getElementById('fallback').href = dest;
 
-  // cid fixo na sessão: os 2 eventos (clique + abertura do app) ficam no MESMO
-  // usuário do GA — dá pra medir a taxa "clicou → abriu no app".
-  var cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
-  // oferta = o id do produto: MLB (param 'o') no ML; no Amazon o 'o' vem vazio,
-  // então usa o ASIN ('to') — assim o clique Amazon cai no MESMO pipeline de
-  // cliques do painel (dimensão 'oferta' já registrada).
-  var oferta = ((q.get('o') || (mkt === 'amz' ? to : '')) || '').slice(0, 30);
+  // cid: REAPROVEITA o do site quando existe (cookie _ga do próprio domínio) —
+  // aí o clique cai no MESMO usuário que navegou o site, e não num usuário novo.
+  // Sem isso, cada clique inventava um cid aleatório e virava um "usuário": em
+  // 28 dias o GA acusou 857 usuários, sendo 825 fantasmas do /r/ (auditoria
+  // 11/07). Quem chega do WhatsApp sem nunca ter visitado o site segue anônimo —
+  // não dá pra identificá-lo sem gravar storage, e isso o consentimento nega.
+  var cid = '', sid = '';
+  try {
+    var ck = document.cookie || '';
+    var m = /(?:^|;\s*)_ga=GA\d\.\d\.([\d.]+)/.exec(ck);
+    if (m) cid = m[1];
+    // _ga_<ID> guarda a SESSÃO ativa: "GS1.1.<session_id>.<n>..." — reusando o
+    // session_id, o clique entra na MESMA sessão do site, não numa solta.
+    var s = /(?:^|;\s*)_ga_6959NQX27C=GS\d\.\d\.(\d+)/.exec(ck);
+    if (s) sid = s[1];
+  } catch (e) { /* sem cookie → anônimo */ }
+  if (!cid) cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  if (!sid) sid = String(Math.floor(Date.now() / 1000));
+  // oferta = id do produto. ML: o MLB; sem MLB na URL, cai no id do meli.la (100
+  // cliques iam com a dimensão VAZIA). Amazon: o próprio ASIN.
+  var oferta = (mlb || to || '').slice(0, 30);
 
   function ga(evento, extras) {
     if (!ok) return;
     try {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento,
+        sid: sid,                       // sem sid o evento não entra em sessão nenhuma
         dl: location.href, dt: 'redirect',
         'ep.oferta': oferta,
         'ep.canal': canal,
