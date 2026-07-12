@@ -91,13 +91,20 @@
   var ok = dest.indexOf('monitorofertas.com.br') === -1;
   document.getElementById('fallback').href = dest;
 
-  // Consentimento: MESMA chave do banner do site (localStorage `mo_consent`, mesma
-  // origem). '0' = o visitante NEGOU → não medimos nada, só redirecionamos. Antes
-  // esta página media sempre, ignorando a escolha feita no site.
+  // MEDIR e GRAVAR são coisas diferentes aqui — não junte as duas:
+  //
+  //  • MEDIR o clique acontece SEMPRE. Esta página é um redirect de 1 segundo, não
+  //    mostra banner nenhum, e o beacon é cookieless: não grava nada no aparelho e
+  //    não leva dado pessoal (vai só o id do produto, a loja e o canal). O clique é
+  //    a métrica central — é o que diz qual oferta funcionou.
+  //  • GRAVAR o cookie exige SIM explícito no banner do site (`mo_consent = '1'`,
+  //    mesma origem). Storage é o que o consentimento governa.
+  //
+  // Sem cookie o clicador segue anônimo (cada clique vira um "usuário" novo no GA) —
+  // por isso o painel mede o WhatsApp por CLIQUES, nunca por usuários.
   var consent = null;
   try { consent = localStorage.getItem('mo_consent'); } catch (e) { /* modo restrito */ }
-  var podeMedir = consent !== '0';
-  var podeGravar = consent === '1';   // storage só com SIM explícito (LGPD)
+  var podeGravar = consent === '1';
 
   // cid: REAPROVEITA o do site quando existe (cookie _ga do próprio domínio) — aí o
   // clique cai no MESMO usuário que navegou o site. E, com consentimento, GRAVA o
@@ -130,7 +137,7 @@
   var oferta = (mlb || to || '').slice(0, 30);
 
   function ga(evento, extras) {
-    if (!ok || !podeMedir) return;
+    if (!ok) return;
     try {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento,
