@@ -91,12 +91,20 @@
   var ok = dest.indexOf('monitorofertas.com.br') === -1;
   document.getElementById('fallback').href = dest;
 
-  // cid: REAPROVEITA o do site quando existe (cookie _ga do próprio domínio) —
-  // aí o clique cai no MESMO usuário que navegou o site, e não num usuário novo.
-  // Sem isso, cada clique inventava um cid aleatório e virava um "usuário": em
-  // 28 dias o GA acusou 857 usuários, sendo 825 fantasmas do /r/ (auditoria
-  // 11/07). Quem chega do WhatsApp sem nunca ter visitado o site segue anônimo —
-  // não dá pra identificá-lo sem gravar storage, e isso o consentimento nega.
+  // Consentimento: MESMA chave do banner do site (localStorage `mo_consent`, mesma
+  // origem). '0' = o visitante NEGOU → não medimos nada, só redirecionamos. Antes
+  // esta página media sempre, ignorando a escolha feita no site.
+  var consent = null;
+  try { consent = localStorage.getItem('mo_consent'); } catch (e) { /* modo restrito */ }
+  var podeMedir = consent !== '0';
+  var podeGravar = consent === '1';   // storage só com SIM explícito (LGPD)
+
+  // cid: REAPROVEITA o do site quando existe (cookie _ga do próprio domínio) — aí o
+  // clique cai no MESMO usuário que navegou o site. E, com consentimento, GRAVA o
+  // cookie: sem isso cada clique inventava um cid e virava um "usuário" novo (em 28
+  // dias o GA marcou 869 cliques e 857 "usuários" — ratio 1,00, tudo fantasma).
+  // Quem só clica no WhatsApp e nunca aceitou o banner segue anônimo de propósito:
+  // identificá-lo exigiria gravar storage sem consentimento.
   var cid = '', sid = '';
   try {
     var ck = document.cookie || '';
@@ -107,14 +115,22 @@
     var s = /(?:^|;\s*)_ga_6959NQX27C=GS\d\.\d\.(\d+)/.exec(ck);
     if (s) sid = s[1];
   } catch (e) { /* sem cookie → anônimo */ }
+  var cidNovo = !cid;
   if (!cid) cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
   if (!sid) sid = String(Math.floor(Date.now() / 1000));
+  // Persiste no formato do próprio GA (GA1.1.<cid>), 1º-party, 2 anos: o próximo
+  // clique — e a visita ao site — reconhecem a MESMA pessoa.
+  if (podeGravar && cidNovo) {
+    try {
+      document.cookie = '_ga=GA1.1.' + cid + '; path=/; max-age=63072000; SameSite=Lax; Secure';
+    } catch (e) { /* cookie bloqueado → segue anônimo */ }
+  }
   // oferta = id do produto. ML: o MLB; sem MLB na URL, cai no id do meli.la (100
   // cliques iam com a dimensão VAZIA). Amazon: o próprio ASIN.
   var oferta = (mlb || to || '').slice(0, 30);
 
   function ga(evento, extras) {
-    if (!ok) return;
+    if (!ok || !podeMedir) return;
     try {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento,
