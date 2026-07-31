@@ -3,7 +3,7 @@
    a cada publicação, então a página SEMPRE vem fresca da rede (sem passar pelo
    cache HTTP do navegador, que servia produtos/horário velhos). O cache só entra
    como fallback offline. Assets estáticos (ícones/og) = cache-first (rápidos). */
-const CACHE = 'mo-v3';
+const CACHE = 'mo-v4';
 const SHELL = ['/', '/index.html', '/og.jpg', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', function (e) {
