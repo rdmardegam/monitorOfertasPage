@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Monitor Ofertas ML — Entrando no grupo de Links…</title>
+<meta name="theme-color" content="#0A1424">
+<meta name="robots" content="noindex">
+<meta name="description" content="Cole o link de qualquer produto do Mercado Livre e receba o melhor preço com cupom, na hora.">
+<link rel="icon" type="image/png" href="/links/assets/logo.png">
+
+<meta property="og:title" content="Monitor Ofertas ML — Grupo de Links">
+<meta property="og:description" content="Cole o link de qualquer produto do Mercado Livre e receba o melhor preço com cupom, na hora.">
+<meta property="og:image" content="https://www.monitorofertas.com.br/links/assets/logo.png">
+<meta property="og:url" content="https://www.monitorofertas.com.br/links/">
+
+<style>
+  :root {
+    --yellow: #FFCC00;
+    --navy: #0A1424;
+    --navy-2: #111E33;
+    --white: #F4F7FB;
+    --gray: #8A9BB0;
+    --green: #25D366;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,204,0,0.22) 0%, transparent 60%),
+      radial-gradient(circle at 50% 100%, rgba(37,211,102,0.14) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .wrap {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    gap: 16px;
+  }
+  .logo {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    filter: drop-shadow(0 12px 30px rgba(255,204,0,0.45));
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.05); }
+  }
+  .title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.2px;
+  }
+  .title .accent { color: var(--yellow); }
+  .hype {
+    font-size: 13.5px;
+    color: var(--gray);
+    max-width: 320px;
+    line-height: 1.45;
+  }
+  .hype strong { color: var(--white); font-weight: 700; }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12.5px;
+    color: var(--green);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .spin {
+    width: 15px; height: 15px;
+    border: 2px solid rgba(37,211,102,0.25);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .bar {
+    width: 100%;
+    max-width: 260px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.07);
+    overflow: hidden;
+  }
+  .bar__fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--yellow), var(--green));
+    border-radius: 99px;
+    animation: fill 0.9s linear forwards;
+    box-shadow: 0 0 10px rgba(255,204,0,0.5);
+  }
+  @keyframes fill { to { width: 100%; } }
+
+  .fallback {
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .fallback.is-visible { opacity: 1; }
+  .fallback p { font-size: 12px; color: var(--gray); }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(180deg, #2BE875 0%, var(--green) 100%);
+    color: #04280F;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 15px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 26px rgba(37,211,102,0.4);
+  }
+  .cta svg { width: 20px; height: 20px; }
+  .cta:active { transform: scale(0.97); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo, .spin, .bar__fill { animation: none; }
+    .bar__fill { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <img class="logo" src="/links/assets/logo.png" alt="Cola Link ML — Monitor Ofertas">
+
+  <h1 class="title">Entrando no grupo<br><span class="accent">de Links</span></h1>
+
+  <p class="hype">Cole o link de qualquer produto do Mercado Livre e receba o <strong>melhor preço com cupom</strong>, na hora.</p>
+
+  <div class="bar" aria-hidden="true"><div class="bar__fill"></div></div>
+
+  <p class="status"><span class="spin" aria-hidden="true"></span>Conectando ao WhatsApp…</p>
+
+  <div class="fallback" id="fallback" aria-hidden="true">
+    <p>Não abriu sozinho? Toque aqui:</p>
+    <a href="https://chat.whatsapp.com/J84MnMeIq3bI5apdM9xnIg" rel="noopener" class="cta" id="ctaManual">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      ENTRAR NO GRUPO
+    </a>
+  </div>
+</main>
+
+<script>
+  // Trilha /links — redirect rastreado pro grupo DE LINKS (cola link, recebe
+  // preço+cupom), embutido na assinatura das mensagens desse grupo. Espelha
+  // /whats (grupo principal) mas com namespace/eventos próprios — não mistura
+  // as métricas dos 2 grupos.
+  const WHATSAPP_LINK = "https://chat.whatsapp.com/J84MnMeIq3bI5apdM9xnIg";
+  const NS = 'mof-ml-links-p4h7';
+  const BASE = 'https://abacus.jasoncameron.dev';
+
+  function hit(k) {
+    try {
+      if (navigator.sendBeacon) navigator.sendBeacon(`${BASE}/hit/${NS}/${k}`);
+      else fetch(`${BASE}/hit/${NS}/${k}`, { mode: 'cors', keepalive: true }).catch(() => {});
+    } catch (e) {}
+  }
+
+  // ── GA4 (Measurement Protocol, mesmo padrão do /whats, /r/ e do /invite) ────
+  // Vai por sendBeacon e não por gtag porque o redirect dispara em <1s: o gtag
+  // pode nem ter carregado. Ping cookieless; se a pessoa já navegou o site, reusa
+  // o cid/sid dela pra cair no MESMO usuário. dt='links' separa a trilha no GA.
+  const GA_ID = 'G-6959NQX27C';
+  let _cid = '', _sid = '';
+  try {
+    const ck = document.cookie || '';
+    const mc = /(?:^|;\s*)_ga=GA\d\.\d\.([\d.]+)/.exec(ck);
+    if (mc) _cid = mc[1];
+    const ms = /(?:^|;\s*)_ga_6959NQX27C=GS\d\.\d\.(\d+)/.exec(ck);
+    if (ms) _sid = ms[1];
+  } catch (e) { /* anônimo */ }
+  if (!_cid) _cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  if (!_sid) _sid = String(Math.floor(Date.now() / 1000));
+
+  function ga(evento, extras) {
+    // localhost/preview não conta (senão polui os relatórios de produção)
+    if (!/monitorofertas\.com\.br$/.test(location.hostname)) return;
+    try {
+      const p = new URLSearchParams(Object.assign({
+        v: '2', tid: GA_ID, cid: _cid, sid: _sid, en: evento,
+        dl: location.href, dt: 'links'
+      }, extras || {}));
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* contagem é best-effort; o redirect nunca espera por ela */ }
+  }
+
+  if (!sessionStorage.getItem('_links_visit')) {
+    hit('links-visit');
+    hit('links-redirect');
+    sessionStorage.setItem('_links_visit', '1');
+    ga('page_view');
+  } else {
+    hit('links-revisit');
+    ga('page_view', { 'ep.revisita': '1' });
+  }
+
+  // Redirect rápido (~0.9s = tempo da barra) — direto pro grupo.
+  setTimeout(() => {
+    ga('entrar_grupo_links', { 'ep.via': 'assinatura' });   // veio pelo rodapé da msg
+    try {
+      window.top.location.href = WHATSAPP_LINK;
+    } catch (e) {
+      window.location.href = WHATSAPP_LINK;
+    }
+  }, 900);
+
+  // Fallback: se em 2.8s ainda estiver na página, mostra botão manual
+  setTimeout(() => {
+    const fb = document.getElementById('fallback');
+    fb.classList.add('is-visible');
+    fb.setAttribute('aria-hidden', 'false');
+  }, 2800);
+
+  document.getElementById('ctaManual').addEventListener('click', () => {
+    hit('links-manual');
+    ga('entrar_grupo_links', { 'ep.via': 'assinatura_manual' });  // o auto falhou; tocou no botão
+  });
+
+  // ============================================================
+  // 📊 statsLinks() — métricas da trilha /links (rodapé das msgs)
+  // Disponível no console (F12) de qualquer página do site
+  // ============================================================
+  function readK(k) {
+    return fetch(`${BASE}/get/${NS}/${k}`)
+      .then(r => r.ok ? r.json() : { value: 0 })
+      .then(j => j.value || 0)
+      .catch(() => 0);
+  }
+  window.statsLinks = async function() {
+    const [visits, revisits, redirects, manual] = await Promise.all([
+      readK('links-visit'),
+      readK('links-revisit'),
+      readK('links-redirect'),
+      readK('links-manual'),
+    ]);
+    const total = visits + revisits;
+    const taxa = total > 0 ? ((redirects / total) * 100).toFixed(1) + '%' : '0%';
+    console.log(
+      '%c📊 /links — Entrar no grupo de Links',
+      'font-size:14px;font-weight:700;color:#FFCC00;background:#0A1424;padding:4px 10px;border-radius:4px'
+    );
+    console.table({
+      '👁  Pessoas que abriram (únicas)':     visits,
+      '🔄 Recarregamentos / refresh':          revisits,
+      '👥 Total de aberturas':                 total,
+      '🚀 Redirecionadas pro WhatsApp':        redirects,
+      '🆘 Precisaram do botão manual':         manual,
+      '📈 % redirecionadas':                   taxa,
+    });
+    return { unicas: visits, refresh: revisits, total, redirecionadas: redirects, manual, taxa };
+  };
+</script>
+
+</body>
+</html>
