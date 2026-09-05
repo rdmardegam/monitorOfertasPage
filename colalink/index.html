@@ -160,31 +160,36 @@
     border-radius: 6px; padding: 2px 6px;
   }
 
-  /* ── a linha do tempo: um ciclo de 10s, tudo amarrado no mesmo relógio ──
+  /* ── a linha do tempo: um ciclo de 6s, tudo amarrado no mesmo relógio ──
      0,0s  a pessoa manda o link
-     1,2s  o bot começa a procurar
-     4,0s  volta o produto com o cupom
-     9,0s  recomeça  */
+     0,8s  o bot começa a procurar
+     2,6s  volta o produto com o cupom
+     5,5s  apaga e recomeça
+
+     ⚠️ Era 10s e PARECIA travada: o card entrava aos 4s e ficava parado até os
+     9s — metade do ciclo sem nada acontecer. Quem olhasse nessa janela via uma
+     tela estática e concluía que a animação tinha rodado uma vez só. O relato
+     do dono foi exatamente esse. Ciclo curto = sempre tem algo acontecendo. */
   .bolha--eu  { animation-name: entraEu;  }
   .digitando  { animation-name: procura;  }
   .cartaomsg  { animation-name: entraBot; }
   .bolha--eu, .digitando, .cartaomsg {
-    animation-duration: 10s; animation-iteration-count: infinite;
+    animation-duration: 6s; animation-iteration-count: infinite;
   }
   @keyframes entraEu {
-    0%, 2%    { opacity: 0; transform: translateY(7px); }
-    7%, 90%   { opacity: 1; transform: none; }
-    96%, 100% { opacity: 0; }
+    0%, 3%    { opacity: 0; transform: translateY(7px); }
+    9%, 88%   { opacity: 1; transform: none; }
+    95%, 100% { opacity: 0; }
   }
   @keyframes procura {
-    0%, 11%   { opacity: 0; }
-    15%, 37%  { opacity: 1; }
-    41%, 100% { opacity: 0; }
+    0%, 13%   { opacity: 0; }
+    18%, 40%  { opacity: 1; }
+    45%, 100% { opacity: 0; }
   }
   @keyframes entraBot {
-    0%, 40%   { opacity: 0; transform: translateY(7px); }
-    46%, 90%  { opacity: 1; transform: none; }
-    96%, 100% { opacity: 0; }
+    0%, 43%   { opacity: 0; transform: translateY(7px); }
+    50%, 88%  { opacity: 1; transform: none; }
+    95%, 100% { opacity: 0; }
   }
 
   /* ── prova: o MESMO comparativo do anúncio, pra a página confirmar o que
@@ -327,7 +332,16 @@
   footer a { color: #8A9BB0; }
   hr { width: 46px; border: 0; border-top: 1px solid var(--line); }
 
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  /* ⚠️ Quem pede menos animação precisa de um estado FINAL coerente, não da
+     ausência de animação. `animation: none` sozinho deixava a bolha de
+     "procurando" e o card EMPILHADOS na mesma célula do grid — os dois visíveis
+     por cima um do outro. Aqui a conversa fica no desfecho: link enviado e
+     produto respondido, parados. */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; }
+    .digitando { opacity: 0 !important; }
+    .bolha--eu, .cartaomsg { opacity: 1 !important; transform: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -602,6 +616,29 @@
   for (var i = 0; i < botoes.length; i++) {
     botoes[i].addEventListener('click', aoTocar);
   }
+})();
+</script>
+
+<script>
+(function () {
+  // ⚠️ Bloco SEPARADO de propósito: é enfeite, e não pode dividir escopo nem
+  // risco com o script do deep link acima.
+  //
+  // Voltar pro navegador depois de abrir o WhatsApp restaura a página do
+  // bfcache com as animações CONGELADAS no ponto em que pararam — a conversa
+  // fica travada justo pra quem voltou. Aqui o ciclo recomeça do zero.
+  try {
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;
+      var alvos = document.querySelectorAll('.bolha--eu, .digitando, .cartaomsg');
+      for (var i = 0; i < alvos.length; i++) {
+        var el = alvos[i];
+        el.style.animationName = 'none';
+        void el.offsetWidth;   // reflow: sem isto o navegador funde as duas escritas e nada reinicia
+        el.style.animationName = '';
+      }
+    });
+  } catch (e) { /* nunca pode derrubar a página */ }
 })();
 </script>
 </body>
