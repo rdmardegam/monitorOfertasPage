@@ -225,14 +225,34 @@
     border: 1px dashed rgba(255,204,0,0.6);
     border-radius: 7px; padding: 4px 8px;
   }
-  /* a economia dita por extenso: o cartão mostra dois números, esta linha diz
-     o que a diferença ENTRE eles significa. É o número que a pessoa leva. */
-  .economia {
-    font-size: 15px; color: var(--white); font-weight: 700;
-    margin-top: -4px;
+  /* ── o "antes e depois" do criativo, comprimido numa faixa ──────────────
+     Mesma leitura dos dois cartões grandes (55px contra 118px). O badge da
+     economia fica junto porque a DIFERENÇA é o número que a pessoa leva —
+     sozinhos, os dois preços obrigam a subtrair de cabeça. */
+  .ad {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    gap: 9px; flex-wrap: wrap;
+    background: var(--navy-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 9px 11px;
   }
-  .economia b {
-    color: var(--yellow); font-weight: 800; font-size: 18px;
+  .ad__lado { display: flex; flex-direction: column; line-height: 1.2; }
+  .ad__rot {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px;
+    color: var(--gray); text-transform: uppercase;
+  }
+  .ad__rot--bom { color: var(--yellow); }
+  .ad__v { font-size: 17px; font-weight: 800; margin-top: 2px; }
+  .ad__v--velho { color: var(--gray); text-decoration: line-through; font-size: 15px; }
+  .ad__v--novo  { color: var(--yellow); }
+  .ad__seta { color: var(--gray); font-size: 15px; }
+  .ad__eco {
+    font-size: 12px; font-weight: 800; color: #04280F;
+    background: var(--green);
+    border-radius: 99px; padding: 4px 9px;
+    white-space: nowrap;
   }
   .ilustra { font-size: 10.5px; color: #64748B; margin-top: -6px; }
 
@@ -408,7 +428,22 @@
     </div>
   </div>
 
-  <p class="economia">Você economiza <b>R$ 100</b> no mesmo anúncio</p>
+  <!-- ⚠️ O "antes e depois" do criativo, em UMA faixa. Os dois cartões grandes
+       custavam 118px e jogavam o botão pra fora da tela; esta faixa entrega a
+       mesma leitura em ~55px. Fica DEPOIS da conversa de propósito: a conversa
+       conta a história, a faixa resume o resultado. -->
+  <div class="ad">
+    <div class="ad__lado">
+      <span class="ad__rot">Sem o Cola Link</span>
+      <span class="ad__v ad__v--velho">R$ 349,90</span>
+    </div>
+    <span class="ad__seta" aria-hidden="true">➜</span>
+    <div class="ad__lado">
+      <span class="ad__rot ad__rot--bom">Com o Cola Link</span>
+      <span class="ad__v ad__v--novo">R$ 249,90</span>
+    </div>
+    <span class="ad__eco">−R$&nbsp;100</span>
+  </div>
 
   <button class="cta" id="entrar" type="button">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
