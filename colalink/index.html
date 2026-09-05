@@ -332,15 +332,31 @@
   footer a { color: #8A9BB0; }
   hr { width: 46px; border: 0; border-top: 1px solid var(--line); }
 
-  /* ⚠️ Quem pede menos animação precisa de um estado FINAL coerente, não da
-     ausência de animação. `animation: none` sozinho deixava a bolha de
-     "procurando" e o card EMPILHADOS na mesma célula do grid — os dois visíveis
-     por cima um do outro. Aqui a conversa fica no desfecho: link enviado e
-     produto respondido, parados. */
+  /* ⚠️⚠️ "Reduzir" não é "remover", e tratar como remover custou a demo.
+     `* { animation: none }` matava a conversa inteira, e o dono via a página
+     SEMPRE no estado final. No Android o modo de ECONOMIA DE BATERIA liga
+     `prefers-reduced-motion` sozinho — ou seja não é escolha de acessibilidade
+     de quase ninguém, é o celular no fim do dia. Uma fatia enorme do público
+     nunca veria a animação.
+
+     O que a preferência pede é evitar MOVIMENTO (o que causa desconforto
+     vestibular): deslocamento, parallax, zoom, quica. Fade de opacidade não é
+     disso. Então aqui: o movimento sai, a história fica. */
   @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; }
-    .digitando { opacity: 0 !important; }
-    .bolha--eu, .cartaomsg { opacity: 1 !important; transform: none !important; }
+    .logo, .pt, .mais span { animation: none !important; }
+    .bolha--eu { animation-name: entraEuSuave; }
+    .cartaomsg { animation-name: entraBotSuave; }
+    /* `procura` já é só opacidade — segue como está. */
+  }
+  @keyframes entraEuSuave {
+    0%, 3%    { opacity: 0; }
+    9%, 88%   { opacity: 1; }
+    95%, 100% { opacity: 0; }
+  }
+  @keyframes entraBotSuave {
+    0%, 43%   { opacity: 0; }
+    50%, 88%  { opacity: 1; }
+    95%, 100% { opacity: 0; }
   }
 </style>
 </head>
