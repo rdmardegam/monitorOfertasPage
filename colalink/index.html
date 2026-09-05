@@ -100,7 +100,16 @@
     border: 1px dashed rgba(255,204,0,0.6);
     border-radius: 7px; padding: 4px 8px;
   }
-  .ilustra { font-size: 10.5px; color: #64748B; }
+  /* a economia dita por extenso: o cartão mostra dois números, esta linha diz
+     o que a diferença ENTRE eles significa. É o número que a pessoa leva. */
+  .economia {
+    font-size: 15px; color: var(--white); font-weight: 700;
+    margin-top: -4px;
+  }
+  .economia b {
+    color: var(--yellow); font-weight: 800; font-size: 18px;
+  }
+  .ilustra { font-size: 10.5px; color: #64748B; margin-top: -10px; }
 
   /* ── a promessa: o que nos separa de uma lista de cupons ───────────────── */
   .promessa {
@@ -208,15 +217,17 @@
     </div>
     <div class="cartao cartao--bom">
       <div class="rot">Com o Cola Link</div>
-      <div class="val">R$ 297,41</div>
+      <div class="val">R$ 249,90</div>
       <div class="risco">R$ 349,90</div>
-      <span class="cupomchip">CUPOM APLICADO</span>
+      <span class="cupomchip">CUPOM DE R$ 100</span>
     </div>
   </div>
+  <p class="economia">Você economiza <b>R$ 100</b> no mesmo anúncio, na mesma loja.</p>
   <p class="ilustra">Exemplo ilustrativo — preços e cupom fictícios.</p>
 
   <div class="promessa">
-    <p class="promessa__t">Se existir cupom pra esse produto, <b>a gente acha.</b></p>
+    <p class="promessa__t">Acredite: se existir cupom pra esse produto,
+      <b>a gente acha.</b></p>
     <p class="promessa__p">Cupom que funciona <b>de verdade</b> — naquele produto,
       naquele exato momento em que você precisa. Não é lista genérica.</p>
   </div>
