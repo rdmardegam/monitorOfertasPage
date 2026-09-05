@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cola Link ML — Cole o link, a gente acha o cupom</title>
+<meta name="theme-color" content="#0A1424">
+<meta name="description" content="Grupo grátis no WhatsApp. Você manda o link de um produto do Mercado Livre e a gente devolve o melhor preço, com cupom se existir.">
+<link rel="icon" type="image/png" href="/colalink/logo.png">
+
+<meta property="og:title" content="Cola Link ML — Cole o link, a gente acha o cupom">
+<meta property="og:description" content="Grupo grátis no WhatsApp. Manda o link do produto, a gente devolve o melhor preço com cupom.">
+<meta property="og:image" content="https://www.monitorofertas.com.br/links/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://www.monitorofertas.com.br/colalink/">
+
+<style>
+  :root {
+    --yellow: #FFCC00;
+    --navy: #0A1424;
+    --navy-2: #111E33;
+    --line: rgba(255,255,255,0.09);
+    --white: #F4F7FB;
+    --gray: #8A9BB0;
+    --green: #25D366;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.45;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse 90% 44% at 50% 0%, rgba(255,204,0,0.20) 0%, transparent 62%),
+      radial-gradient(circle at 50% 100%, rgba(37,211,102,0.12) 0%, transparent 52%);
+    pointer-events: none;
+  }
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 28px 20px 40px;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    gap: 18px;
+  }
+  .logo {
+    width: 84px; height: 84px; border-radius: 50%;
+    filter: drop-shadow(0 12px 30px rgba(255,204,0,0.40));
+  }
+  h1 {
+    font-size: 26px; font-weight: 800;
+    line-height: 1.14; letter-spacing: 0.2px;
+    text-wrap: balance;
+  }
+  h1 .accent { color: var(--yellow); }
+  .sub {
+    font-size: 15px; color: var(--gray);
+    max-width: 340px; text-wrap: balance;
+  }
+  .sub strong { color: var(--white); font-weight: 700; }
+
+  /* ── prova: o MESMO comparativo do anúncio, pra a página confirmar o que
+     a pessoa acabou de ver no criativo (continuidade = confiança) ───────── */
+  .prova {
+    width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-top: 2px;
+  }
+  .cartao {
+    background: var(--navy-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 10px;
+  }
+  .cartao--bom { border-color: rgba(255,204,0,0.55); background: rgba(255,204,0,0.06); }
+  .cartao .rot {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.6px;
+    color: var(--gray); text-transform: uppercase;
+  }
+  .cartao--bom .rot { color: var(--yellow); }
+  .cartao .val { font-size: 22px; font-weight: 800; margin-top: 6px; }
+  .cartao--bom .val { color: var(--yellow); }
+  .cartao .risco {
+    font-size: 12.5px; color: var(--gray);
+    text-decoration: line-through; margin-top: 6px;
+  }
+  .cartao .pe { font-size: 11px; color: var(--gray); margin-top: 5px; }
+  .cupomchip {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.4px;
+    color: var(--yellow);
+    border: 1px dashed rgba(255,204,0,0.6);
+    border-radius: 7px; padding: 4px 8px;
+  }
+  .ilustra { font-size: 10.5px; color: #64748B; }
+
+  /* ── botão ─────────────────────────────────────────────────────────────── */
+  .cta {
+    width: 100%;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    background: linear-gradient(180deg, #2BE875 0%, var(--green) 100%);
+    color: #04280F; text-decoration: none;
+    font-weight: 800; font-size: 16.5px;
+    padding: 17px 22px; border: 0; border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(37,211,102,0.38);
+    cursor: pointer; font-family: inherit;
+  }
+  .cta svg { width: 21px; height: 21px; flex-shrink: 0; }
+  .cta:active { transform: scale(0.985); }
+
+  /* ⚠️ O aviso que o Instagram mostra ANTES de abrir o WhatsApp. Avisar que
+     ele vem é o que o transforma de alarme em etapa esperada. */
+  .aviso {
+    display: flex; gap: 9px; text-align: left;
+    background: rgba(255,204,0,0.07);
+    border: 1px solid rgba(255,204,0,0.28);
+    border-radius: 12px; padding: 11px 13px;
+    font-size: 12.5px; color: #D8E2EE;
+  }
+  .aviso b { color: var(--yellow); }
+  .aviso .ico { flex-shrink: 0; font-size: 15px; line-height: 1.3; }
+
+  .passos { width: 100%; display: flex; flex-direction: column; gap: 9px; }
+  .passo {
+    display: flex; align-items: flex-start; gap: 11px; text-align: left;
+    background: var(--navy-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 13px;
+  }
+  .passo .n {
+    flex-shrink: 0;
+    width: 23px; height: 23px; border-radius: 50%;
+    background: var(--yellow); color: var(--navy);
+    font-size: 12.5px; font-weight: 800;
+    display: grid; place-items: center;
+  }
+  .passo p { font-size: 13.5px; color: var(--gray); }
+  .passo p b { color: var(--white); font-weight: 700; display: block; margin-bottom: 1px; }
+
+  .selos {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 7px;
+  }
+  .selo {
+    font-size: 11.5px; font-weight: 700; color: #B7C6D6;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--line);
+    border-radius: 99px; padding: 6px 11px;
+  }
+  footer {
+    font-size: 11.5px; color: #64748B;
+    max-width: 340px; line-height: 1.55;
+  }
+  footer a { color: #8A9BB0; }
+  hr { width: 46px; border: 0; border-top: 1px solid var(--line); }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <img class="logo" src="/colalink/logo.png" alt="Cola Link ML">
+
+  <h1>Cole o link.<br><span class="accent">A gente acha o cupom.</span></h1>
+
+  <p class="sub">Grupo <strong>grátis</strong> no WhatsApp. Você manda o link de um
+    produto do Mercado Livre e a gente devolve o <strong>melhor preço</strong> —
+    com cupom, se existir.</p>
+
+  <div class="prova">
+    <div class="cartao">
+      <div class="rot">Sem o Cola Link</div>
+      <div class="val">R$ 349,90</div>
+      <div class="pe">Preço cheio do anúncio</div>
+    </div>
+    <div class="cartao cartao--bom">
+      <div class="rot">Com o Cola Link</div>
+      <div class="val">R$ 297,41</div>
+      <div class="risco">R$ 349,90</div>
+      <span class="cupomchip">CUPOM APLICADO</span>
+    </div>
+  </div>
+  <p class="ilustra">Exemplo ilustrativo — preços e cupom fictícios.</p>
+
+  <button class="cta" id="entrar" type="button">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    ENTRAR NO GRUPO GRÁTIS
+  </button>
+
+  <div class="aviso">
+    <span class="ico" aria-hidden="true">💬</span>
+    <span>Vai aparecer <b>“Você está saindo de nosso app”</b>. É só o WhatsApp
+      abrindo — toque em <b>Continuar</b>.</span>
+  </div>
+
+  <hr>
+
+  <div class="passos">
+    <div class="passo">
+      <span class="n">1</span>
+      <p><b>Você manda</b>O link do anúncio do Mercado Livre, no grupo.</p>
+    </div>
+    <div class="passo">
+      <span class="n">2</span>
+      <p><b>A gente caça</b>Procuramos entre milhares de cupons ativos e outros vendedores do mesmo produto.</p>
+    </div>
+    <div class="passo">
+      <span class="n">3</span>
+      <p><b>Você economiza</b>Devolvemos o melhor preço que achamos. Se não tiver cupom, a gente avisa quando aparecer.</p>
+    </div>
+  </div>
+
+  <div class="selos">
+    <span class="selo">✓ Grátis</span>
+    <span class="selo">✓ Sem cadastro</span>
+    <span class="selo">✓ Sai quando quiser</span>
+  </div>
+
+  <footer>
+    Somos um grupo de divulgação de ofertas e podemos receber comissão pelas
+    compras feitas a partir dos nossos links — sem custo nenhum a mais pra você.
+    <br><a href="/sobre/">Sobre</a> · <a href="/privacidade/">Privacidade</a>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Trilha /colalink — destino do tráfego PAGO do Instagram.
+  //
+  // ⚠️ Por que existe, separada da /links: a /links redireciona sozinha em
+  // 0,9s, e isso é certo pra quem vem do RODAPÉ das mensagens (já está dentro
+  // do WhatsApp, o repasse é imediato). Vindo de anúncio o cenário é outro:
+  //
+  //   • a pessoa cai na WebView do Instagram, não no navegador do sistema;
+  //   • ela nunca leu nada nosso — o redirect a jogava direto numa tela verde
+  //     do WhatsApp pedindo pra entrar num grupo, sem contexto;
+  //   • e o Instagram intercepta a saída pro app com um alerta que PARECE
+  //     aviso de segurança ("Você está saindo de nosso app").
+  //
+  // Medido em 04/09: o clique subiu 3x com o turbo (8,2 → 25,5 views/dia) e a
+  // entrada de gente no grupo não acompanhou.
+  //
+  // ⚠️⚠️ E tem um motivo TÉCNICO pra ser botão, não redirect: deep link a
+  // partir de WebView só dispara com "user activation" — toque de verdade. É a
+  // MESMA lição que a página /r/ já aprendeu com o intent:// da Amazon
+  // ("Sem toque (nosso caso: chegamos por redirect), ele BLOQUEIA"). Chegando
+  // por redirect não há ativação, então só sobraria o caminho web.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  var CODE = 'Eeb9DTGUWbL5kD6sirkvKQ';
+  var WEB  = 'https://chat.whatsapp.com/' + CODE;
+  // Android: abre o app DIRETO e pula a página verde do WhatsApp (um toque a
+  // menos). `S.browser_fallback_url` é do próprio intent — quem não tem o app
+  // cai no site sem a gente precisar de timer.
+  var INTENT = 'intent://chat.whatsapp.com/' + CODE +
+               '#Intent;scheme=https;package=com.whatsapp;' +
+               'S.browser_fallback_url=' + encodeURIComponent(WEB) + ';end';
+  // iOS: não existe intent://; o custom scheme é o equivalente.
+  var SCHEME = 'whatsapp://chat?code=' + CODE;
+
+  var ua = navigator.userAgent || '';
+  var eAndroid = /Android/i.test(ua);
+  var eIOS = /iPad|iPhone|iPod/i.test(ua);
+
+  // ── contadores (mesmo serviço da /links, chaves próprias) ─────────────────
+  var NS = 'mof-ml-links-p4h7';
+  var BASE = 'https://abacus.jasoncameron.dev';
+  function hit(k) {
+    try {
+      if (navigator.sendBeacon) navigator.sendBeacon(BASE + '/hit/' + NS + '/' + k);
+      else fetch(BASE + '/hit/' + NS + '/' + k, { mode: 'cors', keepalive: true }).catch(function () {});
+    } catch (e) {}
+  }
+
+  // ── GA4 por Measurement Protocol (mesmo padrão de /links, /whats e /r/) ────
+  // `dl` leva a URL INTEIRA, então a UTM do anúncio
+  // (?utm_source=instagram&utm_medium=paid) chega ao GA e separa o tráfego
+  // pago — hoje tudo cai em "(not set)" e Instagram some no meio do resto.
+  var GA_ID = 'G-6959NQX27C';
+  var _cid = '', _sid = '';
+  try {
+    var ck = document.cookie || '';
+    var mc = /(?:^|;\s*)_ga=GA\d\.\d\.([\d.]+)/.exec(ck);
+    if (mc) _cid = mc[1];
+    var ms = /(?:^|;\s*)_ga_6959NQX27C=GS\d\.\d\.(\d+)/.exec(ck);
+    if (ms) _sid = ms[1];
+  } catch (e) { /* anônimo */ }
+  if (!_cid) _cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  if (!_sid) _sid = String(Math.floor(Date.now() / 1000));
+
+  function ga(evento, extras) {
+    if (!/monitorofertas\.com\.br$/.test(location.hostname)) return;  // preview não conta
+    try {
+      var p = new URLSearchParams(Object.assign({
+        v: '2', tid: GA_ID, cid: _cid, sid: _sid, en: evento,
+        dl: location.href, dt: 'colalink'
+      }, extras || {}));
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* contagem é best-effort; nunca segura a navegação */ }
+  }
+
+  hit('colalink-visit');
+  ga('page_view');
+
+  // ── o toque ───────────────────────────────────────────────────────────────
+  // ⚠️ O evento sai NO TOQUE, nunca num timer.
+  //
+  // É a diferença que torna esta página medível: na /links o
+  // `entrar_grupo_links` dispara aos 900ms independente de o WhatsApp abrir ou
+  // não — ou seja mede "ficou 0,9s na página", não "quis entrar". Foi por isso
+  // que em 04/09 não deu pra responder se o tráfego do Instagram estava se
+  // perdendo. Aqui o evento só existe se houve intenção de verdade.
+  //
+  // O nome do evento é o MESMO da /links de propósito: o painel já quebra
+  // `entrar_grupo_links` pela dimensão `via`, então esta trilha aparece na tela
+  // sem precisar mexer no painel — e `via` é o que separa Instagram do resto.
+  function irPara(url) {
+    // <a> sintético em vez de location.href: WebView que ignora navegação por
+    // script pra scheme não-http costuma honrar o clique num link (mesmo truque
+    // do /r/). Aqui já temos ativação de verdade, então é só robustez.
+    try {
+      var a = document.createElement('a');
+      a.href = url;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+    } catch (e) { location.href = url; }
+  }
+
+  document.getElementById('entrar').addEventListener('click', function () {
+    hit('colalink-tap');
+
+    if (eAndroid) {
+      ga('entrar_grupo_links', { 'ep.via': 'ig_app_android' });
+      irPara(INTENT);          // o próprio intent já cai no site se não houver app
+      return;
+    }
+
+    if (eIOS) {
+      ga('entrar_grupo_links', { 'ep.via': 'ig_app_ios' });
+      // Sem fallback embutido no scheme: se o app não abrir, a página continua
+      // aqui e mandamos pro site. Os listeners abaixo cancelam quando ele abre
+      // — sem isso a pessoa volta do WhatsApp e cai na página verde por cima.
+      var t = setTimeout(function () { location.href = WEB; }, 1400);
+      var cancelar = function () { clearTimeout(t); };
+      document.addEventListener('visibilitychange', cancelar, { once: true });
+      window.addEventListener('pagehide', cancelar, { once: true });
+      location.href = SCHEME;
+      return;
+    }
+
+    // Desktop e o resto: o site do WhatsApp resolve (QR / WhatsApp Web).
+    ga('entrar_grupo_links', { 'ep.via': 'ig_web' });
+    location.href = WEB;
+  });
+})();
+</script>
+</body>
+</html>
