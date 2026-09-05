@@ -71,6 +71,122 @@
   }
   .sub strong { color: var(--white); font-weight: 700; }
 
+  /* ══ a conversa animada ═══════════════════════════════════════════════════
+     Mostra o funcionamento em vez de descrever: manda o link → o bot procura →
+     volta o produto com cupom. Feita em CSS puro de propósito — um GIF pesaria
+     centenas de KB, seria mais uma requisição, e ficaria borrado nas telas de
+     alta densidade que são justamente as do público (celular).
+
+     ⚠️ Sem JS nenhum: a animação NÃO pode dividir risco com o script do deep
+     link, que é o caminho crítico da página.
+
+     Cores do WhatsApp no tema escuro, porque o reconhecimento é instantâneo —
+     a pessoa entende o que é antes de ler qualquer palavra. */
+  .chat {
+    width: 100%;
+    background: #0B141A;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    overflow: hidden;
+    text-align: left;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+  }
+  .chat__top {
+    display: flex; align-items: center; gap: 8px;
+    background: #202C33; padding: 7px 11px;
+  }
+  .chat__ava {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: url('/colalink/logo.png') center/cover, var(--yellow);
+    flex-shrink: 0;
+  }
+  .chat__nome {
+    font-size: 12.5px; font-weight: 700; color: #E9EDF0;
+    display: flex; flex-direction: column; line-height: 1.25;
+  }
+  .chat__nome i { font-size: 10px; font-style: normal; color: #8696A0; font-weight: 500; }
+  .chat__corpo {
+    padding: 10px 10px 12px;
+    display: flex; flex-direction: column; gap: 7px;
+    /* altura fixa: sem isto a troca do "digitando" pelo card faz a página
+       inteira pular, e o botão sai do lugar bem na hora de tocar nele */
+    min-height: 152px;
+  }
+  .bolha {
+    max-width: 88%;
+    font-size: 12px; line-height: 1.4;
+    padding: 7px 9px; border-radius: 9px;
+    color: #E9EDF0;
+  }
+  .bolha--eu {
+    align-self: flex-end;
+    background: #005C4B;
+    border-bottom-right-radius: 3px;
+  }
+  .bolha--bot {
+    align-self: flex-start;
+    background: #202C33;
+    border-bottom-left-radius: 3px;
+  }
+  .bolha .lnk { color: #7DD3FC; word-break: break-all; }
+  .bolha .hora {
+    display: block; text-align: right;
+    font-size: 9.5px; color: #8696A0; margin-top: 2px;
+  }
+  /* as duas bolhas do bot ocupam a MESMA célula — uma troca pela outra sem
+     empurrar nada */
+  .pilha { display: grid; }
+  .pilha > * { grid-area: 1 / 1; align-self: start; }
+
+  .digitando { display: flex; align-items: center; gap: 5px; color: #8696A0; font-size: 11.5px; }
+  .pt {
+    width: 5px; height: 5px; border-radius: 50%; background: #8696A0;
+    animation: pontinho 1.2s ease-in-out infinite;
+  }
+  .pt:nth-child(2) { animation-delay: 0.18s; }
+  .pt:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes pontinho {
+    0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+    30%           { opacity: 1;    transform: translateY(-3px); }
+  }
+
+  .cartaomsg b.nome { display: block; margin-bottom: 3px; }
+  .cartaomsg .pr { display: block; font-size: 13px; margin-bottom: 4px; }
+  .cartaomsg .pr s { color: #8696A0; font-size: 11.5px; }
+  .cartaomsg .pr b { color: #7BE495; font-size: 15px; }
+  .cartaomsg .cup {
+    display: inline-block; font-size: 10.5px; font-weight: 700;
+    color: var(--yellow); border: 1px dashed rgba(255,204,0,0.55);
+    border-radius: 6px; padding: 2px 6px;
+  }
+
+  /* ── a linha do tempo: um ciclo de 10s, tudo amarrado no mesmo relógio ──
+     0,0s  a pessoa manda o link
+     1,2s  o bot começa a procurar
+     4,0s  volta o produto com o cupom
+     9,0s  recomeça  */
+  .bolha--eu  { animation-name: entraEu;  }
+  .digitando  { animation-name: procura;  }
+  .cartaomsg  { animation-name: entraBot; }
+  .bolha--eu, .digitando, .cartaomsg {
+    animation-duration: 10s; animation-iteration-count: infinite;
+  }
+  @keyframes entraEu {
+    0%, 2%    { opacity: 0; transform: translateY(7px); }
+    7%, 90%   { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; }
+  }
+  @keyframes procura {
+    0%, 11%   { opacity: 0; }
+    15%, 37%  { opacity: 1; }
+    41%, 100% { opacity: 0; }
+  }
+  @keyframes entraBot {
+    0%, 40%   { opacity: 0; transform: translateY(7px); }
+    46%, 90%  { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; }
+  }
+
   /* ── prova: o MESMO comparativo do anúncio, pra a página confirmar o que
      a pessoa acabou de ver no criativo (continuidade = confiança) ───────── */
   .prova {
@@ -235,17 +351,30 @@
   <p class="sub">A gente devolve o <strong>melhor preço</strong> — com o cupom
     que funciona nele.</p>
 
-  <div class="prova">
-    <div class="cartao">
-      <div class="rot">Sem o Cola Link</div>
-      <div class="val">R$ 349,90</div>
-      <div class="pe">Preço cheio do anúncio</div>
+  <!-- ⚠️ MOSTRA em vez de descrever. Substitui os dois cartões de preço: eles
+       diziam o resultado, isto mostra o caminho inteiro (manda → procura →
+       volta com cupom) e ainda entrega o mesmo par de preços dentro. -->
+  <div class="chat" aria-hidden="true">
+    <div class="chat__top">
+      <span class="chat__ava"></span>
+      <span class="chat__nome">COLA LINK ML<i>online</i></span>
     </div>
-    <div class="cartao cartao--bom">
-      <div class="rot">Com o Cola Link</div>
-      <div class="val">R$ 249,90</div>
-      <div class="risco">R$ 349,90</div>
-      <span class="cupomchip">CUPOM DE R$ 100</span>
+    <div class="chat__corpo">
+      <div class="bolha bolha--eu">
+        <span class="lnk">mercadolivre.com.br/fone-bluetooth…</span>
+        <span class="hora">10:39 ✓✓</span>
+      </div>
+      <div class="pilha">
+        <div class="bolha bolha--bot digitando">
+          <span class="pt"></span><span class="pt"></span><span class="pt"></span>
+          procurando cupom…
+        </div>
+        <div class="bolha bolha--bot cartaomsg">
+          <b class="nome">🔥 Fone Bluetooth JBL Tune 520BT</b>
+          <span class="pr"><s>R$ 349,90</s> ➜ <b>R$ 249,90</b></span>
+          <span class="cup">🏷️ Cupom: MEUCUPOM100</span>
+        </div>
+      </div>
     </div>
   </div>
 
