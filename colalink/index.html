@@ -340,22 +340,40 @@
   document.getElementById('entrar').addEventListener('click', function () {
     hit('colalink-tap');
 
+    // ⚠️⚠️ CADEIA DE TENTATIVAS, espelhando o que a /r/ já mediu com a Amazon.
+    // Não é `intent://` sozinho: o comentário da /r/ é explícito de que
+    //
+    //   "WebView in-app → intent:// é ENGOLIDO em silêncio,
+    //    mas custom scheme costuma passar (o host delega pro Android)"
+    //
+    // e a WebView do Instagram é exatamente esse caso. Só com intent a pessoa
+    // tocaria no botão e NADA aconteceria — pior que o comportamento de hoje.
+    // Então: intent (abre o app pulando a página verde) → scheme (o que
+    // sobrevive à WebView) → página do WhatsApp (o que sempre funciona).
+    //
+    // Os listeners cancelam o resto da cadeia assim que o app abre; sem eles a
+    // pessoa volta do WhatsApp e encontra a página verde carregada por cima.
+    function encadear(primeiro, segundo) {
+      var t1 = segundo ? setTimeout(function () { irPara(segundo); }, 700) : null;
+      // 2,5s antes de desistir: o alerta "Você está saindo de nosso app" leva
+      // alguns segundos pra ser lido, e puxar o tapete no meio da leitura
+      // mandaria pro site alguém que ia tocar em CONTINUAR.
+      var t2 = setTimeout(function () { location.href = WEB; }, 2500);
+      var cancelar = function () { clearTimeout(t1); clearTimeout(t2); };
+      document.addEventListener('visibilitychange', cancelar, { once: true });
+      window.addEventListener('pagehide', cancelar, { once: true });
+      irPara(primeiro);
+    }
+
     if (eAndroid) {
       ga('entrar_grupo_links', { 'ep.via': 'ig_app_android' });
-      irPara(INTENT);          // o próprio intent já cai no site se não houver app
+      encadear(INTENT, SCHEME);
       return;
     }
 
     if (eIOS) {
       ga('entrar_grupo_links', { 'ep.via': 'ig_app_ios' });
-      // Sem fallback embutido no scheme: se o app não abrir, a página continua
-      // aqui e mandamos pro site. Os listeners abaixo cancelam quando ele abre
-      // — sem isso a pessoa volta do WhatsApp e cai na página verde por cima.
-      var t = setTimeout(function () { location.href = WEB; }, 1400);
-      var cancelar = function () { clearTimeout(t); };
-      document.addEventListener('visibilitychange', cancelar, { once: true });
-      window.addEventListener('pagehide', cancelar, { once: true });
-      location.href = SCHEME;
+      encadear(SCHEME, null);   // iOS não tem intent://
       return;
     }
 
