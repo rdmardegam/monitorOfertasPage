@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Teste — copiar cupom no clique</title>
+<meta name="theme-color" content="#0A1424">
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+  :root {
+    --yellow: #FFCC00; --navy: #0A1424; --navy-2: #111E33;
+    --line: rgba(255,255,255,0.10); --white: #F4F7FB; --gray: #8A9BB0;
+    --green: #25D366; --red: #FF6B6B;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy); color: var(--white); line-height: 1.45;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 460px; margin: 0 auto; padding: 20px 16px 40px;
+          display: flex; flex-direction: column; gap: 14px; }
+  h1 { font-size: 20px; font-weight: 800; line-height: 1.2; }
+  h1 small { display: block; font-size: 12px; font-weight: 600;
+             color: var(--gray); margin-top: 4px; }
+  .cod {
+    background: var(--navy-2); border: 1px dashed rgba(255,204,0,0.55);
+    border-radius: 10px; padding: 10px 12px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px; color: var(--yellow); word-break: break-all;
+  }
+  .cod b { display: block; font-family: inherit; font-size: 10px;
+           letter-spacing: .6px; color: var(--gray); margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; background: var(--navy-2);
+          border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  caption { text-align: left; font-size: 11px; letter-spacing: .6px;
+            color: var(--gray); text-transform: uppercase;
+            font-weight: 800; padding: 0 0 6px; }
+  th, td { padding: 8px 10px; font-size: 12.5px; text-align: left;
+           border-bottom: 1px solid var(--line); }
+  th { color: var(--gray); font-weight: 700; font-size: 11px; }
+  tr:last-child td { border-bottom: 0; }
+  td.r { text-align: right; font-weight: 800; white-space: nowrap; }
+  .ok  { color: var(--green); }
+  .nao { color: var(--red); }
+  .aguarda { color: var(--gray); }
+  .erro { font-size: 10.5px; color: var(--gray); font-weight: 500; }
+  button, .btn {
+    width: 100%; display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; border: 0; border-radius: 12px; padding: 14px 18px;
+    font-family: inherit; font-weight: 800; font-size: 15px; cursor: pointer;
+  }
+  .b-1 { background: linear-gradient(180deg,#2BE875,var(--green)); color: #04280F; }
+  .b-2 { background: var(--navy-2); color: var(--white); border: 1px solid var(--line); }
+  .b-3 { background: var(--yellow); color: var(--navy); }
+  button:active { transform: scale(.985); }
+  input {
+    width: 100%; padding: 12px; border-radius: 10px;
+    border: 1px solid var(--line); background: #0B141A; color: var(--white);
+    font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px;
+  }
+  .nota { font-size: 11.5px; color: var(--gray); }
+  .nota b { color: #D8E2EE; }
+  .amarelo { background: rgba(255,204,0,.07); border: 1px solid rgba(255,204,0,.28);
+             border-radius: 10px; padding: 10px 12px; font-size: 12px; }
+  .amarelo b { color: var(--yellow); }
+  hr { border: 0; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <h1>Teste: copiar o cupom no clique
+    <small>página isolada — nada aqui afeta mensagens, grupos ou links de produção</small></h1>
+
+  <div class="cod"><b>CÓDIGO SENDO TESTADO</b><span id="cod">—</span></div>
+
+  <table>
+    <caption>1 · sem toque (ao abrir a página)</caption>
+    <tr><th>método</th><th class="r">resultado</th></tr>
+    <tr><td>API moderna<div class="erro" id="e-a1"></div></td>
+        <td class="r aguarda" id="r-a1">testando…</td></tr>
+    <tr><td>método antigo<div class="erro" id="e-b1"></div></td>
+        <td class="r aguarda" id="r-b1">testando…</td></tr>
+  </table>
+
+  <table>
+    <caption>2 · com toque (controle)</caption>
+    <tr><th>método</th><th class="r">resultado</th></tr>
+    <tr><td>API moderna<div class="erro" id="e-a2"></div></td>
+        <td class="r aguarda" id="r-a2">toque abaixo</td></tr>
+    <tr><td>método antigo<div class="erro" id="e-b2"></div></td>
+        <td class="r aguarda" id="r-b2">toque abaixo</td></tr>
+  </table>
+
+  <button class="b-1" id="btn-toque" type="button">TOCAR PARA COPIAR</button>
+
+  <div class="amarelo">
+    <b>Prova final:</b> cole no campo abaixo (segure e escolha Colar). Se sair o
+    código igualzinho, funcionou de verdade — a API pode dizer “ok” e o conteúdo
+    não chegar inteiro.
+  </div>
+  <input id="colar" placeholder="cole aqui para conferir…" autocomplete="off"
+         autocapitalize="off" autocorrect="off" spellcheck="false">
+  <div class="nota" id="veredito">—</div>
+
+  <hr>
+
+  <button class="b-3" id="btn-real" type="button">SIMULAR O CLIQUE DE VERDADE →</button>
+  <div class="nota">Copia e vai pro Mercado Livre, como o nosso link faria.
+    Serve pra sentir se o atraso aparece. <b>Sem link de afiliado</b> — é teste.</div>
+
+  <hr>
+
+  <table>
+    <caption>3 · onde este teste rodou</caption>
+    <tbody id="amb"></tbody>
+  </table>
+
+  <div class="nota">Para valer, esta página tem que ser aberta <b>de dentro do
+    WhatsApp</b> — é lá que o clique real acontece, e o navegador é outro.
+    Abrir colando no navegador não mede a mesma coisa.</div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  // ══════════════════════════════════════════════════════════════════════════
+  // BANCO DE TESTES — "o clique no nosso link já deixa o cupom copiado?"
+  //
+  // Isolado de propósito (decisão do dono, 06/09): nenhum arquivo de produção é
+  // tocado e nada gera link pra cá. Desfazer é apagar a pasta.
+  //
+  // A pergunta é uma só: o navegador aceita `clipboard.writeText` no
+  // CARREGAMENTO, sem gesto? No fluxo real a pessoa toca dentro do WhatsApp e a
+  // nossa página abre DEPOIS, por redirect — sem "user activation".
+  //
+  // ⚠️ Clique sintético (`a.click()`) não resolve: vem com `isTrusted:false` e
+  // não concede ativação. É a regra que existe pra impedir exatamente isso.
+  // Este projeto já bateu no mesmo portão com o `intent://` da Amazon (ver
+  // comentário em /r/index.html).
+  //
+  // ⚠️ O teste 2 (com toque) é CONTROLE POSITIVO e não é enfeite: um "não" no
+  // teste 1 sozinho não separa "o navegador exige gesto" de "a API está
+  // quebrada aqui" — e são conclusões opostas.
+  //
+  // ⚠️ O campo de colar também não é enfeite: `writeText` pode resolver sem o
+  // conteúdo chegar íntegro. Por isso o código padrão tem `=` e `_` (o formato
+  // do token opaco que o ML manda), que é o caso mais frágil.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  var PADRAO = 'PEGASEUDESCONTO';
+  var codigo = decodeURIComponent((location.hash || '').replace(/^#k=/, '')) || PADRAO;
+  document.getElementById('cod').textContent = codigo;
+
+  function pinta(id, ok, erro) {
+    var el = document.getElementById(id);
+    el.textContent = ok ? '✅ copiou' : '❌ recusado';
+    el.className = 'r ' + (ok ? 'ok' : 'nao');
+    if (erro) document.getElementById(id.replace('r-', 'e-')).textContent = erro;
+  }
+
+  // ── método antigo: textarea + execCommand ────────────────────────────────
+  // Sobrevive em WebView onde a API assíncrona não existe (contexto não
+  // seguro, motor velho). Vale medir os dois: se o antigo passar sem gesto e o
+  // moderno não, existe caminho.
+  function copiaAntiga(txt) {
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:-999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, txt.length);
+    var ok = false, err = '';
+    try { ok = document.execCommand('copy'); }
+    catch (e) { err = e.name || String(e); }
+    document.body.removeChild(ta);
+    return { ok: ok, err: err };
+  }
+
+  function copiaModerna(txt) {
+    if (!navigator.clipboard || !navigator.clipboard.writeText) {
+      return Promise.reject(new Error('API ausente (contexto não seguro?)'));
+    }
+    return navigator.clipboard.writeText(txt);
+  }
+
+  var res = { a1: null, b1: null, a2: null, b2: null };
+
+  // ── 1) SEM toque, no load ────────────────────────────────────────────────
+  copiaModerna(codigo).then(function () {
+    res.a1 = true; pinta('r-a1', true);
+  }).catch(function (e) {
+    res.a1 = false; pinta('r-a1', false, e.name || e.message || String(e));
+  }).then(function () {
+    var r = copiaAntiga(codigo);
+    res.b1 = r.ok; pinta('r-b1', r.ok, r.err || (r.ok ? '' : 'execCommand devolveu false'));
+    reporta();
+  });
+
+  // ── 2) COM toque ─────────────────────────────────────────────────────────
+  document.getElementById('btn-toque').addEventListener('click', function () {
+    var r = copiaAntiga(codigo);
+    res.b2 = r.ok; pinta('r-b2', r.ok, r.err || (r.ok ? '' : 'execCommand devolveu false'));
+    copiaModerna(codigo).then(function () {
+      res.a2 = true; pinta('r-a2', true);
+    }).catch(function (e) {
+      res.a2 = false; pinta('r-a2', false, e.name || e.message || String(e));
+    }).then(reporta);
+  });
+
+  // ── 3) a prova que importa: o conteúdo chegou? ────────────────────────────
+  var campo = document.getElementById('colar');
+  campo.addEventListener('input', function () {
+    var v = campo.value.trim();
+    var el = document.getElementById('veredito');
+    if (!v) { el.textContent = '—'; el.className = 'nota'; return; }
+    var igual = v === codigo;
+    el.innerHTML = igual
+      ? '<b class="ok">✅ idêntico ao código</b> — a cópia funcionou de verdade'
+      : '<b class="nao">❌ diferente</b> — colado: <code>' + v.slice(0, 60) + '</code>';
+    el.className = 'nota';
+  });
+
+  // ── 4) contexto ──────────────────────────────────────────────────────────
+  var ua = navigator.userAgent || '';
+  var linhas = [
+    ['aparelho', /Android/i.test(ua) ? 'Android'
+      : /iPad|iPhone|iPod/i.test(ua) ? 'iPhone/iPad' : 'outro'],
+    ['navegador', /FBAN|FBAV|Instagram/i.test(ua) ? 'in-app Meta (IG/FB)'
+      : /WhatsApp/i.test(ua) ? 'in-app WhatsApp'
+      : /CriOS|Chrome/i.test(ua) ? 'Chrome'
+      : /Safari/i.test(ua) ? 'Safari' : 'outro'],
+    ['contexto seguro', window.isSecureContext ? 'sim' : 'NÃO ⚠️'],
+    ['API de área de transf.', (navigator.clipboard && navigator.clipboard.writeText)
+      ? 'existe' : 'AUSENTE ⚠️'],
+  ];
+  var tb = document.getElementById('amb');
+  linhas.forEach(function (l) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td'); td1.textContent = l[0];
+    var td2 = document.createElement('td'); td2.className = 'r'; td2.textContent = l[1];
+    tr.appendChild(td1); tr.appendChild(td2); tb.appendChild(tr);
+  });
+  // UA cru numa linha própria: é o que permite reconhecer o motor depois, se a
+  // classificação acima errar.
+  var tr = document.createElement('tr');
+  var td = document.createElement('td');
+  td.colSpan = 2; td.className = 'erro'; td.style.wordBreak = 'break-all';
+  td.textContent = ua;
+  tr.appendChild(td); tb.appendChild(tr);
+
+  // ── rastro ────────────────────────────────────────────────────────────────
+  // ⚠️ Evento e `dt` PRÓPRIOS: não pode entrar nas contas de /links nem de
+  // /colalink. Best-effort — o teste vale pela tela, isto é só pra não depender
+  // de screenshot se mais alguém abrir.
+  var GA_ID = 'G-6959NQX27C';
+  var cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  function reporta() {
+    if (!/monitorofertas\.com\.br$/.test(location.hostname)) return;
+    try {
+      var p = new URLSearchParams({
+        v: '2', tid: GA_ID, cid: cid, en: 'teste_clipboard',
+        dl: location.href, dt: 'rtest',
+        'ep.sem_toque_api': String(res.a1), 'ep.sem_toque_antigo': String(res.b1),
+        'ep.com_toque_api': String(res.a2), 'ep.com_toque_antigo': String(res.b2),
+        'ep.aparelho': linhas[0][1], 'ep.navegador': linhas[1][1]
+      });
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* medição é best-effort */ }
+  }
+
+  // ── fluxo realista ────────────────────────────────────────────────────────
+  // Copia e redireciona, como o /r/ faria. Teto de 400ms: quando permitido a
+  // cópia resolve em poucos ms, e redirect que não acontece é pior que cupom
+  // não copiado.
+  document.getElementById('btn-real').addEventListener('click', function () {
+    var DEST = 'https://www.mercadolivre.com.br/';   // sem afiliado — é teste
+    var t = setTimeout(function () { location.href = DEST; }, 400);
+    copiaModerna(codigo).catch(function () {
+      copiaAntiga(codigo);
+    }).then(function () {
+      clearTimeout(t); location.href = DEST;
+    });
+  });
+})();
+</script>
+</body>
+</html>
