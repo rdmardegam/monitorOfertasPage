@@ -445,18 +445,18 @@
     <span class="ad__eco">−R$&nbsp;100</span>
   </div>
 
-  <button class="cta" id="entrar" type="button">
+  <a class="cta" id="entrar" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     ENTRAR NO GRUPO GRÁTIS
-  </button>
+  </a>
 
   <!-- ⚠️ Fica COLADO no botao de proposito: e a objecao que aparece 1 segundo
        depois do toque. Adiantar o alerta do Instagram e o que o transforma de
        alarme de seguranca em etapa esperada. -->
   <div class="aviso">
     <span class="ico" aria-hidden="true">💬</span>
-    <span>Vai aparecer <b>“Você está saindo de nosso app”</b>. É só o WhatsApp
-      abrindo — toque em <b>Continuar</b>.</span>
+    <span>Abre a página do WhatsApp — toque em <b>Entrar na conversa</b>
+      e pronto.</span>
   </div>
 
   <div class="selos">
@@ -498,10 +498,10 @@
   <p class="fecho">Mandar o link <b>não custa nada</b>.<br>
     Não mandar pode custar <b>pagar mais caro</b>.</p>
 
-  <button class="cta" id="entrar2" type="button">
+  <a class="cta" id="entrar2" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     ENTRAR NO GRUPO GRÁTIS
-  </button>
+  </a>
 
   <footer>
     <a href="/sobre/">Sobre</a> · <a href="/privacidade/">Privacidade</a>
@@ -528,27 +528,29 @@
   // Medido em 04/09: o clique subiu 3x com o turbo (8,2 → 25,5 views/dia) e a
   // entrada de gente no grupo não acompanhou.
   //
-  // ⚠️⚠️ E tem um motivo TÉCNICO pra ser botão, não redirect: deep link a
-  // partir de WebView só dispara com "user activation" — toque de verdade. É a
-  // MESMA lição que a página /r/ já aprendeu com o intent:// da Amazon
-  // ("Sem toque (nosso caso: chegamos por redirect), ele BLOQUEIA"). Chegando
-  // por redirect não há ativação, então só sobraria o caminho web.
+  // ⚠️ E o link tem que ser TOCADO, não seguido por redirect automático: sem
+  // a página, a pessoa cairia direto numa tela verde do WhatsApp sem nunca ter
+  // lido nada nosso.
   // ══════════════════════════════════════════════════════════════════════════
 
+  // ⚠️⚠️ LINK COMUM, sem deep link (07/09). A cadeia `intent:// → whatsapp://`
+  // que existia aqui foi REMOVIDA: era ela que fazia o Instagram exibir o
+  // alerta "Você está saindo de nosso app" EM CIMA da nossa página. Pedir
+  // app externo dispara o guarda do Instagram; navegar pra um https comum,
+  // não.
+  //
+  // O dono comparou com uma landing concorrente que usa `<a href>` puro e
+  // notou a diferença: lá o alerta só aparece DEPOIS, já com o fundo do
+  // WhatsApp atrás — e assim gera menos desconfiança.
+  //
+  // ⚠️ O `intent://` tinha entrado pra economizar um toque (pular a página
+  // verde do WhatsApp). Mas o próprio CLAUDE.md já registrava que WebView
+  // in-app ENGOLE `intent://` em silêncio — ou seja pagávamos o alerta
+  // prematuro e provavelmente nem levávamos o benefício.
   var CODE = 'Eeb9DTGUWbL5kD6sirkvKQ';
   var WEB  = 'https://chat.whatsapp.com/' + CODE;
-  // Android: abre o app DIRETO e pula a página verde do WhatsApp (um toque a
-  // menos). `S.browser_fallback_url` é do próprio intent — quem não tem o app
-  // cai no site sem a gente precisar de timer.
-  var INTENT = 'intent://chat.whatsapp.com/' + CODE +
-               '#Intent;scheme=https;package=com.whatsapp;' +
-               'S.browser_fallback_url=' + encodeURIComponent(WEB) + ';end';
-  // iOS: não existe intent://; o custom scheme é o equivalente.
-  var SCHEME = 'whatsapp://chat?code=' + CODE;
 
   var ua = navigator.userAgent || '';
-  var eAndroid = /Android/i.test(ua);
-  var eIOS = /iPad|iPhone|iPod/i.test(ua);
 
   // ── contadores (mesmo serviço da /links, chaves próprias) ─────────────────
   var NS = 'mof-ml-links-p4h7';
@@ -602,65 +604,24 @@
   // O nome do evento é o MESMO da /links de propósito: o painel já quebra
   // `entrar_grupo_links` pela dimensão `via`, então esta trilha aparece na tela
   // sem precisar mexer no painel — e `via` é o que separa Instagram do resto.
-  function irPara(url) {
-    // <a> sintético em vez de location.href: WebView que ignora navegação por
-    // script pra scheme não-http costuma honrar o clique num link (mesmo truque
-    // do /r/). Aqui já temos ativação de verdade, então é só robustez.
-    try {
-      var a = document.createElement('a');
-      a.href = url;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-    } catch (e) { location.href = url; }
-  }
-
-  // ⚠️ DOIS botões: o da dobra e o do fim da página. Quem rolou pra ler os
-  // passos não pode ter que voltar pro topo — e `getElementById` pegaria só um,
-  // deixando o segundo morto em silêncio.
+  // ⚠️ A MEDIÇÃO CONTINUA. O link agora navega sozinho (é um `<a href>`), e o
+  // evento sai no `click` por `sendBeacon` — que é feito pra sobreviver ao
+  // unload da página. Foi por isso que o beacon já era usado aqui.
+  //
+  // O nome do evento é o MESMO da /links de propósito: o painel já quebra
+  // `entrar_grupo_links` pela dimensão `via`, então esta trilha aparece na
+  // tela sem mexer no painel — e `via` é o que separa Instagram do resto.
+  //
+  // ⚠️ E ele sai NO TOQUE, nunca num timer: na /links o evento dispara aos
+  // 900ms independente de o WhatsApp abrir, ou seja mede "ficou 0,9s na
+  // página". Aqui só existe se houve intenção de verdade.
   function aoTocar() {
     hit('colalink-tap');
-
-    // ⚠️⚠️ CADEIA DE TENTATIVAS, espelhando o que a /r/ já mediu com a Amazon.
-    // Não é `intent://` sozinho: o comentário da /r/ é explícito de que
-    //
-    //   "WebView in-app → intent:// é ENGOLIDO em silêncio,
-    //    mas custom scheme costuma passar (o host delega pro Android)"
-    //
-    // e a WebView do Instagram é exatamente esse caso. Só com intent a pessoa
-    // tocaria no botão e NADA aconteceria — pior que o comportamento de hoje.
-    // Então: intent (abre o app pulando a página verde) → scheme (o que
-    // sobrevive à WebView) → página do WhatsApp (o que sempre funciona).
-    //
-    // Os listeners cancelam o resto da cadeia assim que o app abre; sem eles a
-    // pessoa volta do WhatsApp e encontra a página verde carregada por cima.
-    function encadear(primeiro, segundo) {
-      var t1 = segundo ? setTimeout(function () { irPara(segundo); }, 700) : null;
-      // 2,5s antes de desistir: o alerta "Você está saindo de nosso app" leva
-      // alguns segundos pra ser lido, e puxar o tapete no meio da leitura
-      // mandaria pro site alguém que ia tocar em CONTINUAR.
-      var t2 = setTimeout(function () { location.href = WEB; }, 2500);
-      var cancelar = function () { clearTimeout(t1); clearTimeout(t2); };
-      document.addEventListener('visibilitychange', cancelar, { once: true });
-      window.addEventListener('pagehide', cancelar, { once: true });
-      irPara(primeiro);
-    }
-
-    if (eAndroid) {
-      ga('entrar_grupo_links', { 'ep.via': 'ig_app_android' });
-      encadear(INTENT, SCHEME);
-      return;
-    }
-
-    if (eIOS) {
-      ga('entrar_grupo_links', { 'ep.via': 'ig_app_ios' });
-      encadear(SCHEME, null);   // iOS não tem intent://
-      return;
-    }
-
-    // Desktop e o resto: o site do WhatsApp resolve (QR / WhatsApp Web).
-    ga('entrar_grupo_links', { 'ep.via': 'ig_web' });
-    location.href = WEB;
+    var via = /Android/i.test(ua) ? 'ig_app_android'
+            : /iPad|iPhone|iPod/i.test(ua) ? 'ig_app_ios' : 'ig_web';
+    ga('entrar_grupo_links', { 'ep.via': via });
+    // ⚠️ Sem preventDefault e sem location.href: o próprio <a> leva pro
+    // WhatsApp. Navegar por script aqui reintroduziria o alerta prematuro.
   }
 
   var botoes = document.querySelectorAll('.cta');
