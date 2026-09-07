@@ -336,14 +336,31 @@
   .passo p { font-size: 13.5px; color: var(--gray); }
   .passo p b { color: var(--white); font-weight: 700; display: block; margin-bottom: 1px; }
 
+  /* ── os 3 selos: removem RISCO, e risco se remove ANTES do toque ────────
+     Eram pílulas cinzas de 11,5px, quase invisíveis. Destacados a pedido do
+     dono (07/09) — são a resposta às três dúvidas que travam quem nunca entrou
+     num grupo assim: vai me cobrar? vou ter que me cadastrar? vou ficar preso?
+
+     ⚠️ Ficam LOGO ABAIXO do botão de propósito. Mudar de tamanho aqui não
+     empurra o botão pra fora da tela (ele está acima), então dá pra crescer
+     sem pagar o preço da dobra. */
   .selos {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 7px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    width: 100%;
   }
   .selo {
-    font-size: 11.5px; font-weight: 700; color: #B7C6D6;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--line);
-    border-radius: 99px; padding: 6px 11px;
+    flex: 1 1 auto;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    font-size: 13px; font-weight: 800; color: var(--white);
+    background: rgba(37,211,102,0.10);
+    border: 1px solid rgba(37,211,102,0.42);
+    border-radius: 10px; padding: 9px 8px;
+    line-height: 1.15;
+  }
+  /* o ✓ em verde separa a garantia da palavra — o olho lê os três de uma vez */
+  .selo i {
+    font-style: normal; color: var(--green);
+    font-size: 14px; font-weight: 900;
   }
   footer {
     font-size: 11.5px; color: #64748B;
@@ -460,9 +477,9 @@
   </div>
 
   <div class="selos">
-    <span class="selo">✓ Grátis</span>
-    <span class="selo">✓ Sem cadastro</span>
-    <span class="selo">✓ Sai quando quiser</span>
+    <span class="selo"><i>✓</i> Grátis</span>
+    <span class="selo"><i>✓</i> Sem cadastro</span>
+    <span class="selo"><i>✓</i> Sai quando quiser</span>
   </div>
 
   <p class="ilustra">Exemplo ilustrativo — preços e cupom fictícios.</p>
