@@ -609,6 +609,44 @@
   hit('colalink-visit');
   ga('page_view');
 
+  // ── modo REDIRECT AUTOMÁTICO (?go=1) ──────────────────────────────────────
+  // Teste do dono (07/09): vale mais a pena mandar direto pro WhatsApp do que
+  // pedir um toque? A página fica no caminho como CONTADOR — sem ela, "o
+  // anúncio entregou 21 cliques e ninguém quis" fica idêntico a "o anúncio não
+  // entregou nada", que é a cegueira de 04/09.
+  //
+  // ⚠️ O `via` começa com `ig_auto`, NUNCA `ig_app`: o funil soma qualquer
+  // `ig_*` em `tocou`, e disparo automático entrando ali destruiria o único
+  // número que mede INTENÇÃO — que é a razão de esta página existir. O painel
+  // conta os `ig_auto*` num balde separado.
+  //
+  // ⚠️ E há saída manual: WebView in-app pode barrar navegação por script sem
+  // gesto. Se barrar, a pessoa não pode ficar presa numa tela de "abrindo...".
+  if (/[?&]go=1(?:&|$)/.test(location.search)) {
+    var viaAuto = /Android/i.test(ua) ? 'ig_auto_android'
+                : /iPad|iPhone|iPod/i.test(ua) ? 'ig_auto_ios' : 'ig_auto_web';
+    hit('colalink-auto');
+    ga('entrar_grupo_links', { 'ep.via': viaAuto });
+
+    var capa = document.createElement('div');
+    capa.setAttribute('style',
+      'position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;' +
+      'align-items:center;justify-content:center;gap:18px;text-align:center;' +
+      'padding:24px;background:#0b141a;color:#e9edef;' +
+      'font:500 17px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif');
+    capa.innerHTML =
+      '<div style="font-size:44px">💬</div>' +
+      '<div>Abrindo o WhatsApp…</div>' +
+      '<a href="' + WEB + '" rel="noopener" style="color:#25d366;font-weight:700;' +
+      'text-decoration:underline;padding:12px">Não abriu? Toque aqui</a>';
+    document.body.appendChild(capa);
+
+    // 900ms: o `sendBeacon` já é feito pra sobreviver ao unload, então a espera
+    // não é pra ele — é pra a pessoa ver de onde veio antes de trocar de app.
+    setTimeout(function () { location.replace(WEB); }, 900);
+    return;
+  }
+
   // ── o toque ───────────────────────────────────────────────────────────────
   // ⚠️ O evento sai NO TOQUE, nunca num timer.
   //
