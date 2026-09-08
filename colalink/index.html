@@ -628,22 +628,57 @@
     hit('colalink-auto');
     ga('entrar_grupo_links', { 'ep.via': viaAuto });
 
+    // ⚠️ A tela diz as DUAS coisas: o que esta acontecendo AGORA ("abrindo o
+    // WhatsApp") e onde a pessoa vai PARAR ("no grupo Cola Link ML"). So a
+    // primeira deixava a chegada na tela verde do WhatsApp sem contexto -- e e
+    // ali que ela decide.
+    //
+    // ⚠️ O NOME do grupo aparece aqui de proposito: e o mesmo que o WhatsApp
+    // mostra na tela de convite. Ver duas vezes o mesmo nome e o que faz a
+    // transicao parecer uma coisa so, em vez de um pulo pra lugar nenhum.
+    //
+    // ⚠️ Hierarquia, nao paragrafo: a linha grande e lida num relance, a
+    // pequena e contexto que nao precisa ser lido inteiro. Frase unica e longa
+    // nao cabe no tempo que a tela fica viva.
     var capa = document.createElement('div');
     capa.setAttribute('style',
       'position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;' +
-      'align-items:center;justify-content:center;gap:18px;text-align:center;' +
+      'align-items:center;justify-content:center;gap:14px;text-align:center;' +
       'padding:24px;background:#0b141a;color:#e9edef;' +
-      'font:500 17px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif');
+      'font:400 16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif');
     capa.innerHTML =
-      '<div style="font-size:44px">💬</div>' +
-      '<div>Abrindo o WhatsApp…</div>' +
+      '<style>@keyframes mo-bar{from{transform:translateX(-100%)}to{transform:translateX(0)}}' +
+      '@media (prefers-reduced-motion:reduce){.mo-bar span{animation:none!important;transform:none!important}}' +
+      '</style>' +
+      // ⚠️ SVG inline, NAO o /colalink/logo.png: ele tem 911 KB e esta tela vive
+      // 1,2s. Em rede movel a imagem chegaria depois do redirect e a pessoa veria
+      // um buraco -- justamente no momento em que ela decide se confia. O simbolo
+      // do WhatsApp tambem casa melhor com a tela verde que vem a seguir.
+      '<svg viewBox="0 0 24 24" width="64" height="64" fill="#25d366" ' +
+      'aria-hidden="true"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 ' +
+      '2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 ' +
+      '005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 ' +
+      '00-3.48-8.413A11.815 11.815 0 0012.05 0zm-.001 21.785h-.004a9.87 9.87 ' +
+      '0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 ' +
+      '01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 ' +
+      '2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 ' +
+      '9.884z"/></svg>' +
+      '<div style="font-size:20px;font-weight:700">Abrindo o WhatsApp…</div>' +
+      '<div style="font-size:15px;color:#8696a0;max-width:19em">' +
+      'Levando você para entrar no grupo <b style="color:#e9edef">Cola Link ML</b></div>' +
+      '<div class="mo-bar" style="width:180px;height:3px;border-radius:3px;' +
+      'background:rgba(255,255,255,.13);overflow:hidden">' +
+      '<span style="display:block;width:100%;height:100%;background:#25d366;' +
+      'animation:mo-bar 1.2s linear forwards"></span></div>' +
       '<a href="' + WEB + '" rel="noopener" style="color:#25d366;font-weight:700;' +
-      'text-decoration:underline;padding:12px">Não abriu? Toque aqui</a>';
+      'text-decoration:underline;padding:12px;font-size:15px">Não abriu? Toque aqui</a>';
     document.body.appendChild(capa);
 
     // 900ms: o `sendBeacon` já é feito pra sobreviver ao unload, então a espera
     // não é pra ele — é pra a pessoa ver de onde veio antes de trocar de app.
-    setTimeout(function () { location.replace(WEB); }, 900);
+    // ⚠️ Casado com a barra de 1,2s: barra que nao termina parece travada,
+    // e redirect antes dela parece que a pessoa perdeu alguma coisa.
+    setTimeout(function () { location.replace(WEB); }, 1200);
     return;
   }
 
