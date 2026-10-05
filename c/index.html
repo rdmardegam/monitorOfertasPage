@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Monitor de Ofertas ML — seu cupom</title>
+<meta property="og:title" content="Monitor de Ofertas ML">
+<meta property="og:description" content="Copie o cupom e vá pro produto">
+<meta property="og:image" content="https://www.monitorofertas.com.br/og.jpg">
+<style>
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#0e1116;
+       color:#dfe3ea;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .card{width:100%;max-width:380px;margin:16px;padding:28px 22px 22px;background:#161b24;
+        border:1px solid #232b39;border-radius:20px;text-align:center}
+  .marca{font-size:.82rem;letter-spacing:.04em;color:#8a94a6;text-transform:uppercase}
+  h1{font-size:1.25rem;margin:10px 0 18px;color:#fff}
+  .codigo{display:block;width:100%;padding:18px 10px;border:2px dashed #ffd700;border-radius:14px;
+          background:#0e1116;color:#ffd700;font:800 1.7rem/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+          letter-spacing:.08em;word-break:break-all;user-select:all;-webkit-user-select:all}
+  .btn{display:block;width:100%;margin-top:18px;padding:17px 18px;border:0;border-radius:14px;
+       background:#f5b800;color:#0d1b2e;font-weight:800;font-size:1.05rem;cursor:pointer}
+  .btn:active{transform:scale(.99)}
+  .btn.ok{background:#2fbf71;color:#08130d}
+  .como{margin:18px 0 0;font-size:.92rem;line-height:1.45;color:#aeb6c4}
+  .aviso{display:none;margin-top:12px;font-size:.9rem;color:#ffb4a9}
+  .rodape{margin-top:20px;font-size:.75rem;color:#6b7486}
+  .erro{display:none}
+  a{color:#5aa9ff}
+</style>
+</head>
+<body>
+<main class="card" id="ok">
+  <div class="marca">Monitor de Ofertas ML</div>
+  <h1>🎫 Seu cupom</h1>
+  <span class="codigo" id="codigo">…</span>
+  <button class="btn" id="btn" type="button">📋 Copiar cupom e ir pro produto</button>
+  <div class="aviso" id="aviso">Não deu pra copiar sozinho — segure o código acima pra copiar.</div>
+  <p class="como">No pagamento, toque em <b>“Inserir código”</b> e cole o cupom.</p>
+  <div class="rodape">Comprando pelo nosso link você ajuda o grupo a continuar 💛</div>
+</main>
+<main class="card erro" id="erro">
+  <div class="marca">Monitor de Ofertas ML</div>
+  <h1>Link incompleto</h1>
+  <p class="como">Esse link de cupom não abriu. Volte ao grupo e toque no link do produto.</p>
+  <p class="como"><a href="https://www.monitorofertas.com.br">monitorofertas.com.br</a></p>
+</main>
+<script>
+// Página "copiar cupom e ir pro produto" (05/10, TESTE pedido pelo dono).
+// Formato B: /c/?<link curto do ML>-<CUPOM>, ex.: /c/?2EH37GA-BRINCADEIRAS.
+// Um toque copia o código E abre o produto pelo NOSSO link de afiliado
+// (https://meli.la/<código>) — é por ele que a compra conta pra gente.
+//
+// ⚠️ Copiar exige o TOQUE da pessoa (medido 06/09 num Android: sem toque o
+// navegador recusa, com toque copia). Por isso a cópia mora no clique do botão,
+// nunca no carregamento. iPhone e o navegador interno do WhatsApp ainda não
+// foram testados — o teste pelo ADM existe pra isso.
+
+function lerLink(qs) {
+  var s = String(qs || '').replace(/^[?#]/, '');
+  var i = s.indexOf('-');
+  if (i < 1) return null;
+  var meli = s.slice(0, i);
+  var cupom = s.slice(i + 1).toUpperCase();
+  if (!/^[A-Za-z0-9]{4,12}$/.test(meli)) return null;
+  if (!/^[A-Z0-9]{3,24}$/.test(cupom)) return null;
+  return { meli: meli, cupom: cupom };
+}
+
+(function () {
+  var dados = lerLink(location.search) || lerLink(location.hash);
+  if (!dados) {
+    document.getElementById('ok').style.display = 'none';
+    document.getElementById('erro').style.display = 'block';
+    return;
+  }
+  var destino = 'https://meli.la/' + dados.meli;
+  document.getElementById('codigo').textContent = dados.cupom;
+
+  // Medição (GA4, mesmo jeito do /r/: sendBeacon, nunca segura a navegação).
+  var cid = '', sid = String(Math.floor(Date.now() / 1000));
+  try {
+    var m = /(?:^|;\s*)_ga=GA\d\.\d\.([\d.]+)/.exec(document.cookie || '');
+    if (m) cid = m[1];
+  } catch (e) { /* sem cookie → anônimo */ }
+  if (!cid) cid = Math.floor(Math.random() * 1e10) + '.' + sid;
+  function ga(evento) {
+    try {
+      var p = new URLSearchParams({
+        v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento, sid: sid,
+        dl: location.href, dt: 'cupom',
+        'ep.canal': 'c', 'ep.link': dados.meli, 'ep.cupom': dados.cupom
+      });
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* contagem é best-effort */ }
+  }
+  ga('cupom_pagina_aberta');
+
+  function copiarAntigo(txt) {
+    try {
+      var t = document.createElement('textarea');
+      t.value = txt; t.setAttribute('readonly', '');
+      t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(t);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function ir() { location.href = destino; }
+
+  var btn = document.getElementById('btn');
+  var falhou = false;
+  btn.addEventListener('click', function () {
+    if (falhou) { ga('cupom_foi_sem_copiar'); ir(); return; }
+    function deuCerto() {
+      ga('cupom_copiou_e_foi');
+      btn.classList.add('ok');
+      btn.textContent = '✅ Cupom copiado! Abrindo o produto…';
+      setTimeout(ir, 700);
+    }
+    function naoDeu() {
+      if (copiarAntigo(dados.cupom)) { deuCerto(); return; }
+      falhou = true;
+      ga('cupom_copia_falhou');
+      try {
+        var r = document.createRange();
+        r.selectNodeContents(document.getElementById('codigo'));
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      } catch (e) { /* seleção é cortesia */ }
+      document.getElementById('aviso').style.display = 'block';
+      btn.textContent = 'Ir pro produto ›';
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(dados.cupom).then(deuCerto, naoDeu);
+      } else {
+        naoDeu();
+      }
+    } catch (e) { naoDeu(); }
+  });
+})();
+</script>
+</body>
+</html>
