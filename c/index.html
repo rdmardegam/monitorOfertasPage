@@ -25,6 +25,10 @@
   .btn.ok{background:#2fbf71;color:#08130d}
   .como{margin:18px 0 0;font-size:.92rem;line-height:1.45;color:#aeb6c4}
   .aviso{display:none;margin-top:12px;font-size:.9rem;color:#ffb4a9}
+  .extra{display:none;margin-top:16px;font-size:.92rem;line-height:1.45;color:#dfe3ea}
+  .codigo2{display:inline-block;margin-top:8px;padding:7px 12px;border:1px dashed #ffd700;
+           border-radius:10px;color:#ffd700;font:700 1.1rem/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+           letter-spacing:.06em;user-select:all;-webkit-user-select:all}
   .rodape{margin-top:20px;font-size:.75rem;color:#6b7486}
   .erro{display:none}
   a{color:#5aa9ff}
@@ -36,6 +40,8 @@
   <h1>🎫 Seu cupom</h1>
   <span class="codigo" id="codigo">…</span>
   <button class="btn" id="btn" type="button">📋 Copiar cupom e ir pro produto</button>
+  <div class="extra" id="extra">➕ No pagamento, use <b>também</b> este cupom — os dois somam.
+    Ele está na mensagem do grupo:<br><span class="codigo2" id="codigo2">…</span></div>
   <div class="aviso" id="aviso">Não deu pra copiar sozinho — segure o código acima pra copiar.</div>
   <p class="como">No pagamento, toque em <b>“Inserir código”</b> e cole o cupom.</p>
   <div class="rodape">Comprando pelo nosso link você ajuda o grupo a continuar 💛</div>
@@ -49,6 +55,9 @@
 <script>
 // Página "copiar cupom e ir pro produto" (05/10, TESTE pedido pelo dono).
 // Formato B: /c/?<link curto do ML>-<CUPOM>, ex.: /c/?2EH37GA-BRINCADEIRAS.
+// Combo (1 cupom da loja + 1 do ML, que SOMAM): /c/?<link>-<CUPOM>-<CUPOM2>. A
+// área de transferência guarda um só: copia o 1º e mostra o 2º por escrito
+// (decisão do dono, 05/10). O 2º também está na mensagem do grupo.
 // Um toque copia o código E abre o produto pelo NOSSO link de afiliado
 // (https://meli.la/<código>) — é por ele que a compra conta pra gente.
 //
@@ -59,13 +68,19 @@
 
 function lerLink(qs) {
   var s = String(qs || '').replace(/^[?#]/, '');
-  var i = s.indexOf('-');
-  if (i < 1) return null;
-  var meli = s.slice(0, i);
-  var cupom = s.slice(i + 1).toUpperCase();
+  var p = s.split('-');
+  if (p.length < 2 || p.length > 3) return null;
+  var meli = p[0];
+  var cupom = p[1].toUpperCase();
   if (!/^[A-Za-z0-9]{4,12}$/.test(meli)) return null;
   if (!/^[A-Z0-9]{3,24}$/.test(cupom)) return null;
-  return { meli: meli, cupom: cupom };
+  var r = { meli: meli, cupom: cupom };
+  if (p.length === 3) {
+    var c2 = p[2].toUpperCase();
+    if (!/^[A-Z0-9]{3,24}$/.test(c2) || c2 === cupom) return null;
+    r.cupom2 = c2;
+  }
+  return r;
 }
 
 (function () {
@@ -77,6 +92,10 @@ function lerLink(qs) {
   }
   var destino = 'https://meli.la/' + dados.meli;
   document.getElementById('codigo').textContent = dados.cupom;
+  if (dados.cupom2) {
+    document.getElementById('codigo2').textContent = dados.cupom2;
+    document.getElementById('extra').style.display = 'block';
+  }
 
   // Medição (GA4, mesmo jeito do /r/: sendBeacon, nunca segura a navegação).
   var cid = '', sid = String(Math.floor(Date.now() / 1000));
@@ -90,7 +109,8 @@ function lerLink(qs) {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento, sid: sid,
         dl: location.href, dt: 'cupom',
-        'ep.canal': 'c', 'ep.link': dados.meli, 'ep.cupom': dados.cupom
+        'ep.canal': 'c', 'ep.link': dados.meli, 'ep.cupom': dados.cupom,
+        'ep.cupom2': dados.cupom2 || ''
       });
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
     } catch (e) { /* contagem é best-effort */ }
@@ -118,8 +138,11 @@ function lerLink(qs) {
     function deuCerto() {
       ga('cupom_copiou_e_foi');
       btn.classList.add('ok');
-      btn.textContent = '✅ Cupom copiado! Abrindo o produto…';
-      setTimeout(ir, 700);
+      // Com 2 cupons: tempo pra ler o 2º antes de a página sumir.
+      btn.textContent = dados.cupom2
+        ? '✅ Copiado! Lembre do 2º: ' + dados.cupom2
+        : '✅ Cupom copiado! Abrindo o produto…';
+      setTimeout(ir, dados.cupom2 ? 2500 : 700);
     }
     function naoDeu() {
       if (copiarAntigo(dados.cupom)) { deuCerto(); return; }
