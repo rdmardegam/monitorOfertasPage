@@ -130,7 +130,7 @@
   .ticket__rot svg { width: 15px; height: 15px; }
   .ticket__corte { margin: 10px 4px 8px; border-top: 2px dashed rgba(255, 204, 0, 0.35); }
   .codigo, .codigo2 {
-    
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
     cursor: default;
   }
   .codigo {
