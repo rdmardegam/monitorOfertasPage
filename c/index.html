@@ -106,7 +106,8 @@
     font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
     color: var(--gray);
   }
-  .codigo, .codigo2 {
+  /* SÓ o principal fica travado (pedido do dono): quem o copia é o botão. */
+  .codigo {
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
     cursor: default;
   }
@@ -126,12 +127,22 @@
     font-size: 13px; color: #D8E2EE;
   }
   .extra b { color: var(--white); }
+  /* o 2º PODE ser copiado (pedido do dono, 05/10): um toque nele copia, e
+     segurar também funciona — ele não abre nada, só vai pro pagamento. */
   .codigo2 {
-    display: inline-block; margin-top: 5px; padding: 3px 12px 1px;
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 6px; padding: 4px 12px 2px;
     border-radius: 9px; border: 1.5px dashed rgba(255, 204, 0, 0.6);
     font: 800 19px/1.1 'Baloo 2', system-ui, sans-serif; letter-spacing: .06em;
     color: var(--yellow);
+    -webkit-user-select: all; user-select: all; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
+  .codigo2__acao {
+    font: 700 11.5px/1 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: 0;
+    color: var(--gray); -webkit-user-select: none; user-select: none;
+  }
+  .codigo2.ok .codigo2__acao { color: var(--green); }
 
   /* ── como usar (abaixo da dobra; o botão não depende dele) ────────────── */
   .como {
@@ -237,8 +248,8 @@
     <div class="ticket__pe">pra colar no pagamento</div>
   </div>
 
-  <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam.<br>
-    Ele está na mensagem do grupo:<br><span class="codigo2" id="codigo2">…</span></div>
+  <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam:<br>
+    <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span></div>
 
   <section class="como">
     <span class="como__chip">Como usar?</span>
@@ -256,7 +267,6 @@
   </section>
 
   <footer>
-    Comprando pelo nosso link você ajuda o Cola Link a continuar 💛<br>
     <a href="https://www.monitorofertas.com.br/">monitorofertas.com.br</a>
   </footer>
 </main>
@@ -330,22 +340,19 @@ function lerLink(qs) {
   var destino = 'https://meli.la/' + dados.meli;
   document.getElementById('codigo').textContent = dados.cupom;
   if (dados.cupom2) {
-    document.getElementById('codigo2').textContent = dados.cupom2;
+    document.getElementById('codigo2Txt').textContent = dados.cupom2;
     document.getElementById('extra').style.display = 'block';
   }
 
-  // O código não sai da página: sem seleção, sem menu de copiar, sem Ctrl+C.
-  ['codigo', 'codigo2'].forEach(function (id) {
-    var el = document.getElementById(id);
-    ['selectstart', 'contextmenu', 'copy', 'dragstart'].forEach(function (ev) {
-      el.addEventListener(ev, function (e) { e.preventDefault(); });
-    });
+  // O cupom PRINCIPAL não sai da página: sem seleção, sem menu de copiar, sem
+  // Ctrl+C — quem copia é o botão. O 2º (combo) pode ser copiado.
+  var elCod = document.getElementById('codigo');
+  ['selectstart', 'contextmenu', 'copy', 'dragstart'].forEach(function (ev) {
+    elCod.addEventListener(ev, function (e) { e.preventDefault(); });
   });
   document.addEventListener('copy', function (e) {
-    var sel = window.getSelection && String(window.getSelection());
-    if (sel && (sel.indexOf(dados.cupom) >= 0 || (dados.cupom2 && sel.indexOf(dados.cupom2) >= 0))) {
-      e.preventDefault();
-    }
+    var sel = window.getSelection && String(window.getSelection()).trim();
+    if (sel && sel !== dados.cupom2 && sel.indexOf(dados.cupom) >= 0) e.preventDefault();
   });
 
   // Medição (GA4, mesmo jeito do /r/: sendBeacon, nunca segura a navegação).
@@ -381,6 +388,28 @@ function lerLink(qs) {
   }
 
   function ir() { location.href = destino; }
+
+  // Um toque no 2º cupom copia ele (não abre nada).
+  if (dados.cupom2) {
+    var el2 = document.getElementById('codigo2');
+    var acao2 = document.getElementById('codigo2Acao');
+    var copiar2 = function () {
+      var feito = function () {
+        el2.classList.add('ok'); acao2.textContent = '✓ copiado';
+        try { window.getSelection().removeAllRanges(); } catch (e) { /* cortesia */ }
+        ga('cupom2_copiado');
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(dados.cupom2).then(feito, function () {
+            if (copiarAntigo(dados.cupom2)) feito();
+          });
+        } else if (copiarAntigo(dados.cupom2)) { feito(); }
+      } catch (e) { /* segurar e copiar continua valendo */ }
+    };
+    el2.addEventListener('click', copiar2);
+    el2.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copiar2(); } });
+  }
 
   var btn = document.getElementById('btn');
   var btnTxt = document.getElementById('btnTxt');
