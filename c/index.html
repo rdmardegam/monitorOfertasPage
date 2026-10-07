@@ -261,6 +261,23 @@
     /* com "COPIAR CUPOM PRINCIPAL" a setinha da direita sai pra o texto caber */
     .cta--multi .seta-cta { display: none; }
   }
+  /* ── CABER NA TELA (08/10, pedido do dono, S25 Ultra) ──────────────────
+     O script mede a altura útil do aparelho e liga o MENOR nível que deixa
+     tudo acima do botão fixo. Ordem = o que menos faz falta sai primeiro; o
+     cupom e o botão nunca saem. */
+  body.ap1 footer { display: none; }
+  body.ap1 .ticket { margin-top: 10px; }
+  body.ap1 .extra, body.ap1 .reserva { margin-top: 8px; }
+  body.ap1 .como { margin-top: 20px; }
+  body.ap2 .sub { display: none; }
+  body.ap2 .robo { width: clamp(78px, 13vh, 104px); }
+  body.ap2 h1 { font-size: clamp(23px, 6.6vw, 28px); }
+  body.ap3 .como { padding: 16px 10px 10px; }
+  body.ap3 .passo { gap: 3px; }
+  body.ap3 .passo .n { width: 22px; height: 22px; font-size: 12px; line-height: 22px; }
+  body.ap3 .passo p { font-size: 13px; }
+  body.ap4 .como { display: none; }
+
   /* economia de bateria no Android liga isto sozinho: tira só o MOVIMENTO */
   @media (prefers-reduced-motion: reduce) {
     .robo, .cta, .dica svg { animation: none; }
@@ -487,6 +504,33 @@ function lerLink(qs) {
   }
   ga('cupom_pagina_aberta');
 
+  // Caber na tela: a página liga o menor nível de aperto que deixa o conteúdo
+  // inteiro acima do botão fixo. Mede de novo ao girar o celular, ao carregar
+  // a fonte e quando aparece um aviso. Qualquer erro → fica como está.
+  var NIVEIS = ['ap1', 'ap2', 'ap3', 'ap4'];
+  function caber() {
+    try {
+      var corpo = document.body, barra = document.getElementById('barra');
+      var alturaBarra = barra.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--barra', Math.ceil(alturaBarra) + 'px');
+      NIVEIS.forEach(function (c) { corpo.classList.remove(c); });
+      var fim = function () {
+        var ok = document.getElementById('ok'), ult = null;
+        for (var k = ok.children.length - 1; k >= 0; k--) {
+          if (ok.children[k].getBoundingClientRect().height > 0) { ult = ok.children[k]; break; }
+        }
+        return ult ? ult.getBoundingClientRect().bottom + (window.pageYOffset || 0) : 0;
+      };
+      var limite = window.innerHeight - alturaBarra;
+      for (var i = 0; i < NIVEIS.length && fim() > limite; i++) corpo.classList.add(NIVEIS[i]);
+    } catch (e) { /* sem medir, a página rola como antes */ }
+  }
+  caber();
+  try {
+    window.addEventListener('resize', caber);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(caber);
+  } catch (e) { /* cortesia */ }
+
   function copiarAntigo(txt) {
     try {
       var t = document.createElement('textarea');
@@ -545,6 +589,7 @@ function lerLink(qs) {
         aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o reserva <b>' + dados.reserva +
           '</b> e toque nele de novo pra ir ao produto.';
         aviso.style.display = 'block';
+        caber();
       }
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -581,6 +626,7 @@ function lerLink(qs) {
       ga('cupom_copia_falhou');
       aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o código acima e toque de novo pra ir ao produto.';
       aviso.style.display = 'block';
+      caber();
       btnTxt.textContent = 'Ir pro produto';
       btnSub.textContent = 'o cupom você digita no pagamento';
     }
