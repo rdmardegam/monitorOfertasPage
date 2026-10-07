@@ -180,6 +180,10 @@
   // /whats (grupo principal) mas com namespace/eventos próprios — não mistura
   // as métricas dos 2 grupos.
   const WHATSAPP_LINK = "https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ";
+  // Origem da entrada: o rodapé das mensagens é o padrão; o SITE manda
+  // ?via=site_topo | site_lista | site_rodape (08/10) pra o painel separar.
+  const _viaQ = new URLSearchParams(location.search).get('via') || '';
+  const VIA = /^site_[a-z]{2,12}$/.test(_viaQ) ? _viaQ : 'assinatura';
   const NS = 'mof-ml-links-p4h7';
   const BASE = 'https://abacus.jasoncameron.dev';
 
@@ -230,7 +234,7 @@
 
   // Redirect rápido (~0.9s = tempo da barra) — direto pro grupo.
   setTimeout(() => {
-    ga('entrar_grupo_links', { 'ep.via': 'assinatura' });   // veio pelo rodapé da msg
+    ga('entrar_grupo_links', { 'ep.via': VIA });   // rodapé da msg, ou o site (site_*)
     try {
       window.top.location.href = WHATSAPP_LINK;
     } catch (e) {
@@ -247,7 +251,7 @@
 
   document.getElementById('ctaManual').addEventListener('click', () => {
     hit('links-manual');
-    ga('entrar_grupo_links', { 'ep.via': 'assinatura_manual' });  // o auto falhou; tocou no botão
+    ga('entrar_grupo_links', { 'ep.via': VIA + '_manual' });  // o auto falhou; tocou no botão
   });
 
   // ============================================================
