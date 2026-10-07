@@ -268,7 +268,7 @@
   <div class="ticket" aria-label="Cupom">
     <div class="ticket__rot">Seu cupom</div>
     <span class="codigo" id="codigo">…</span>
-    <div class="ticket__pe">pra colar no pagamento</div>
+    <div class="ticket__pe" id="ticketPe">pra colar no pagamento</div>
   </div>
 
   <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam:<br>
@@ -338,6 +338,9 @@
 //
 // ⚠️ O código fica À MOSTRA, mas não dá pra copiar da página (decisão do dono,
 // 05/10): quem copia é o botão, que já leva pelo nosso link.
+// Cupom ESCONDIDO (link com `-h-`, 07/10, pedido do dono): os códigos aparecem
+// mascarados (3 primeiras letras + 5 pontos, a MESMA máscara da mensagem) até a
+// pessoa tocar num botão de ir (o verde ou o da reserva); aí revela todos.
 // ⚠️ Copiar exige o TOQUE da pessoa (medido 06/09 num Android: sem toque o
 // navegador recusa, com toque copia). Por isso a cópia mora no clique do botão,
 // nunca no carregamento. iPhone e o navegador interno do WhatsApp ainda não
@@ -399,13 +402,31 @@ function lerLink(qs) {
     return;
   }
   var destino = 'https://meli.la/' + dados.meli;
-  document.getElementById('codigo').textContent = dados.cupom;
+  var MASCARA = '•••••';   // "•••••", igual `_MASCARA_CUPOM`
+  var revelado = !dados.oculto;
+  function mostrar(c) { return revelado ? c : c.slice(0, 3) + MASCARA; }
+  function pintar() {
+    document.getElementById('codigo').textContent = mostrar(dados.cupom);
+    if (dados.cupom2) document.getElementById('codigo2Txt').textContent = mostrar(dados.cupom2);
+    if (dados.reserva) document.getElementById('codReserva').textContent = mostrar(dados.reserva);
+  }
+  // Os códigos só aparecem inteiros depois do toque num botão de ir.
+  function revelar() {
+    if (revelado) return;
+    revelado = true;
+    pintar();
+    document.getElementById('ticketPe').textContent = 'pra colar no pagamento';
+    if (dados.cupom2) document.getElementById('codigo2Acao').textContent = 'toque pra copiar';
+  }
+  pintar();
+  if (!revelado) {
+    document.getElementById('ticketPe').textContent = 'aparece ao tocar no botão verde';
+  }
   if (dados.cupom2) {
-    document.getElementById('codigo2Txt').textContent = dados.cupom2;
+    if (!revelado) document.getElementById('codigo2Acao').textContent = 'aparece no botão verde';
     document.getElementById('extra').style.display = 'block';
   }
   if (dados.reserva) {
-    document.getElementById('codReserva').textContent = dados.reserva;
     document.getElementById('reserva').style.display = 'block';
   }
 
@@ -459,6 +480,7 @@ function lerLink(qs) {
     var el2 = document.getElementById('codigo2');
     var acao2 = document.getElementById('codigo2Acao');
     var copiar2 = function () {
+      if (!revelado) return;           // escondido: só aparece no botão verde
       var feito = function () {
         el2.classList.add('ok'); acao2.textContent = '✓ copiado';
         try { window.getSelection().removeAllRanges(); } catch (e) { /* cortesia */ }
@@ -480,6 +502,7 @@ function lerLink(qs) {
     var btnR = document.getElementById('btnReserva');
     var falhouR = false;
     btnR.addEventListener('click', function () {
+      revelar();
       if (falhouR) { ga('cupom_reserva_foi_sem_copiar'); ir(); return; }
       function deuCertoR() {
         ga('cupom_reserva_copiou');
@@ -512,6 +535,7 @@ function lerLink(qs) {
   var aviso = document.getElementById('aviso');
   var falhou = false;
   btn.addEventListener('click', function () {
+    revelar();
     if (falhou) { ga('cupom_foi_sem_copiar'); ir(); return; }
     function deuCerto() {
       ga('cupom_copiou_e_foi');
