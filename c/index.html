@@ -144,6 +144,29 @@
   }
   .codigo2.ok .codigo2__acao { color: var(--green); }
 
+  /* reserva (07/10, pedido do dono): plano B pra quem tentou o principal e o
+     ML recusou (esgotou ou já foi usado). Discreto de propósito: o verde é só
+     do botão principal; aqui só o código é amarelo. */
+  .reserva {
+    display: none; width: 100%; margin-top: 10px; padding: 10px 14px 12px;
+    background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px;
+    font-size: 13px; color: #D8E2EE;
+  }
+  .reserva b { color: var(--white); }
+  .reserva__btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 8px; width: 100%; min-height: 44px; padding: 8px 12px;
+    background: transparent; color: var(--white);
+    border: 1.5px solid rgba(255, 255, 255, 0.28); border-radius: 12px;
+    font: 700 14px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .reserva__btn:active { transform: scale(0.985); }
+  .reserva__cod {
+    font: 800 17px/1 'Baloo 2', system-ui, sans-serif; letter-spacing: .06em; color: var(--yellow);
+  }
+  .reserva__btn.ok { border-color: var(--green); color: var(--green); }
+
   /* ── como usar (abaixo da dobra; o botão não depende dele) ────────────── */
   .como {
     position: relative; width: 100%; margin-top: 26px; padding: 20px 12px 14px;
@@ -251,6 +274,9 @@
   <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam:<br>
     <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span></div>
 
+  <div class="reserva" id="reserva">O cupom de cima <b>esgotou</b> ou você <b>já usou</b>? Use o reserva:
+    <button class="reserva__btn" id="btnReserva" type="button"><span id="btnReservaTxt">Copiar</span> <span class="reserva__cod" id="codReserva">…</span> <span id="btnReservaFim">e ir</span></button></div>
+
   <section class="como">
     <span class="como__chip">Como usar?</span>
     <div class="passos">
@@ -299,6 +325,11 @@
 <script>
 // Página "copiar cupom e ir pro produto" — Cola-Links V2 (05/10, pedido do dono).
 // Formato B: /c/?<link curto do ML>-<CUPOM>, ex.: /c/?2EH37GA-BRINCADEIRAS.
+// Reserva (07/10): ...-r-<RESERVA> no fim — plano B, NÃO soma com o principal.
+// Oculto (07/10): /c/?<link>-h-<códigos cifrados> — o código não aparece no link
+// (inverte + gira 17 casas no alfabeto A–Z0–9; espelho de `_cifra_cupom` no bot).
+// NÃO é segurança, só tira o código da vista de quem lê a mensagem.
+// Códigos têm 3+ letras, então os marcadores `h` e `r` nunca colidem com eles.
 // Combo (1 cupom da loja + 1 do ML, que SOMAM): /c/?<link>-<CUPOM>-<CUPOM2>. A
 // área de transferência guarda um só: copia o 1º e mostra o 2º por escrito
 // (decisão do dono, 05/10). O 2º também está na mensagem do grupo.
@@ -312,19 +343,49 @@
 // nunca no carregamento. iPhone e o navegador interno do WhatsApp ainda não
 // foram testados — o teste pelo ADM existe pra isso.
 
+var ALFA_CIFRA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', DESLOCA_CIFRA = 17;
+function decifrar(s) {
+  var out = '';
+  for (var i = s.length - 1; i >= 0; i--) {
+    var k = ALFA_CIFRA.indexOf(s.charAt(i));
+    if (k < 0) return null;
+    out += ALFA_CIFRA.charAt((k - DESLOCA_CIFRA + 36) % 36);
+  }
+  return out;
+}
+
 function lerLink(qs) {
   var s = String(qs || '').replace(/^[?#]/, '');
   var p = s.split('-');
-  if (p.length < 2 || p.length > 3) return null;
-  var meli = p[0];
-  var cupom = p[1].toUpperCase();
-  if (!/^[A-Za-z0-9]{4,12}$/.test(meli)) return null;
-  if (!/^[A-Z0-9]{3,24}$/.test(cupom)) return null;
-  var r = { meli: meli, cupom: cupom };
-  if (p.length === 3) {
-    var c2 = p[2].toUpperCase();
-    if (!/^[A-Z0-9]{3,24}$/.test(c2) || c2 === cupom) return null;
+  var meli = p.shift();
+  if (!/^[A-Za-z0-9]{4,12}$/.test(meli || '')) return null;
+  var oculto = false;
+  if (p[0] === 'h') { oculto = true; p.shift(); }
+  var reserva = null, ir = p.indexOf('r');
+  if (ir >= 0) {
+    if (ir !== p.length - 2) return null;
+    reserva = p[ir + 1];
+    p = p.slice(0, ir);
+  }
+  if (p.length < 1 || p.length > 2) return null;
+  function cod(x) {
+    x = String(x || '').toUpperCase();
+    if (oculto) { x = decifrar(x); if (!x) return null; }
+    return /^[A-Z0-9]{3,24}$/.test(x) ? x : null;
+  }
+  var c1 = cod(p[0]);
+  if (!c1) return null;
+  var r = { meli: meli, cupom: c1 };
+  if (oculto) r.oculto = true;
+  if (p.length === 2) {
+    var c2 = cod(p[1]);
+    if (!c2 || c2 === c1) return null;
     r.cupom2 = c2;
+  }
+  // reserva ilegível ou repetida: some, nunca derruba a página
+  if (reserva !== null) {
+    var rc = cod(reserva);
+    if (rc && rc !== c1 && rc !== r.cupom2) r.reserva = rc;
   }
   return r;
 }
@@ -342,6 +403,10 @@ function lerLink(qs) {
   if (dados.cupom2) {
     document.getElementById('codigo2Txt').textContent = dados.cupom2;
     document.getElementById('extra').style.display = 'block';
+  }
+  if (dados.reserva) {
+    document.getElementById('codReserva').textContent = dados.reserva;
+    document.getElementById('reserva').style.display = 'block';
   }
 
   // O cupom PRINCIPAL não sai da página: sem seleção, sem menu de copiar, sem
@@ -368,7 +433,7 @@ function lerLink(qs) {
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento, sid: sid,
         dl: location.href, dt: 'cupom',
         'ep.canal': 'c', 'ep.link': dados.meli, 'ep.cupom': dados.cupom,
-        'ep.cupom2': dados.cupom2 || ''
+        'ep.cupom2': dados.cupom2 || '', 'ep.reserva': dados.reserva || ''
       });
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
     } catch (e) { /* contagem é best-effort */ }
@@ -409,6 +474,36 @@ function lerLink(qs) {
     };
     el2.addEventListener('click', copiar2);
     el2.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copiar2(); } });
+  }
+
+  if (dados.reserva) {
+    var btnR = document.getElementById('btnReserva');
+    var falhouR = false;
+    btnR.addEventListener('click', function () {
+      if (falhouR) { ga('cupom_reserva_foi_sem_copiar'); ir(); return; }
+      function deuCertoR() {
+        ga('cupom_reserva_copiou');
+        btnR.classList.add('ok');
+        document.getElementById('btnReservaTxt').textContent = '✓ Copiado:';
+        document.getElementById('btnReservaFim').textContent = 'abrindo…';
+        setTimeout(ir, 700);
+      }
+      function naoDeuR() {
+        if (copiarAntigo(dados.reserva)) { deuCertoR(); return; }
+        falhouR = true;
+        ga('cupom_reserva_copia_falhou');
+        aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o reserva <b>' + dados.reserva +
+          '</b> e toque nele de novo pra ir ao produto.';
+        aviso.style.display = 'block';
+      }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(dados.reserva).then(deuCertoR, naoDeuR);
+        } else {
+          naoDeuR();
+        }
+      } catch (e) { naoDeuR(); }
+    });
   }
 
   var btn = document.getElementById('btn');
