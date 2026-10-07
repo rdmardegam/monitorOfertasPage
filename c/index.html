@@ -29,12 +29,12 @@
     --navy-2: #111E33;
     --navy-3: #17263F;
     --white: #F4F7FB;
-    --gray: #8A9BB0;
-    --gray-2: #64748B;
+    --gray: #A9B8CA;   /* 08/10: mais claro, o dono achou o texto difícil de ler */
+    --gray-2: #8A9BB0;
     --green: #25D366;
     --green-2: #2BE875;
     --line: rgba(255, 255, 255, 0.10);
-    --barra: 104px;
+    --barra: 134px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -64,7 +64,7 @@
   .topo img { width: 36px; height: 36px; border-radius: 50%; }
   .topo b { display: block; text-align: left; font: 800 14px/1 'Baloo 2', system-ui, sans-serif; letter-spacing: .5px; }
   .topo b span { color: var(--yellow); }
-  .topo i { display: block; font-style: normal; font-size: 11px; color: var(--gray); margin-top: 2px; text-align: left; }
+  .topo i { display: block; font-style: normal; font-size: 12px; color: var(--gray); margin-top: 2px; text-align: left; }
 
   /* ── robô + título, lado a lado: o robô não empurra o cupom pra baixo ──── */
   .heroi {
@@ -82,7 +82,7 @@
     letter-spacing: .3px; text-transform: uppercase;
   }
   h1 .amarelo { color: var(--yellow); }
-  .sub { margin-top: 6px; font-size: 13.5px; color: var(--gray); max-width: 340px; }
+  .sub { margin-top: 6px; font-size: 15px; color: #C3CFDD; max-width: 350px; }
   .sub b { color: var(--white); font-weight: 700; }
 
   /* ── o cupom: a única coisa amarela, e só pra VER ────────────────────────
@@ -103,8 +103,8 @@
   .ticket::before { left: -12px; }
   .ticket::after  { right: -12px; }
   .ticket__rot {
-    font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--gray);
+    font-size: 12.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #C3CFDD;
   }
   /* SÓ o principal fica travado (pedido do dono): quem o copia é o botão. */
   .codigo {
@@ -117,14 +117,14 @@
     letter-spacing: .07em; color: var(--yellow);
     word-break: break-all;
   }
-  .ticket__pe { margin-top: 2px; font-size: 12px; color: var(--gray); }
+  .ticket__pe { margin-top: 2px; font-size: 14px; color: #C3CFDD; }
 
   /* combo: o 2º cupom SOMA com o de cima — a área de transferência guarda um
      só, então este a pessoa digita (também está na mensagem do grupo) */
   .extra {
     display: none; width: 100%; margin-top: 10px; padding: 10px 14px;
     background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px;
-    font-size: 13px; color: #D8E2EE;
+    font-size: 14.5px; color: #E2EAF3;
   }
   .extra b { color: var(--white); }
   /* o 2º PODE ser copiado (pedido do dono, 05/10): um toque nele copia, e
@@ -139,7 +139,7 @@
     -webkit-tap-highlight-color: transparent;
   }
   .codigo2__acao {
-    font: 700 11.5px/1 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: 0;
+    font: 700 12.5px/1 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: 0;
     color: var(--gray); -webkit-user-select: none; user-select: none;
   }
   .codigo2.ok .codigo2__acao { color: var(--green); }
@@ -150,7 +150,7 @@
   .reserva {
     display: none; width: 100%; margin-top: 10px; padding: 10px 14px 12px;
     background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px;
-    font-size: 13px; color: #D8E2EE;
+    font-size: 14.5px; color: #E2EAF3;
   }
   .reserva b { color: var(--white); }
   .reserva__btn {
@@ -158,7 +158,7 @@
     margin-top: 8px; width: 100%; min-height: 44px; padding: 8px 12px;
     background: transparent; color: var(--white);
     border: 1.5px solid rgba(255, 255, 255, 0.28); border-radius: 12px;
-    font: 700 14px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+    font: 700 15px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .reserva__btn:active { transform: scale(0.985); }
@@ -185,18 +185,20 @@
     background: rgba(255, 255, 255, 0.08); color: var(--white);
     font: 800 13px/26px 'Plus Jakarta Sans', system-ui, sans-serif;
   }
-  .passo p { font-size: 12.5px; color: var(--gray); line-height: 1.35; }
+  .passo p { font-size: 14px; color: #C3CFDD; line-height: 1.35; }
   .passo p b { color: var(--white); }
   .seta { color: var(--gray-2); font-weight: 800; font-size: 18px; margin-top: 2px; }
 
-  footer { margin-top: 18px; font-size: 12px; color: var(--gray-2); line-height: 1.55; max-width: 330px; }
+  footer { margin-top: 18px; font-size: 13px; color: var(--gray-2); line-height: 1.55; max-width: 330px; }
   footer a { color: var(--gray); text-decoration: none; font-weight: 700; }
 
   /* ── o BOTÃO, fixo no rodapé: a ação nunca fica fora da tela ──────────── */
   .barra {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-    padding: 22px 16px calc(14px + env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, rgba(10, 20, 36, 0) 0%, rgba(10, 20, 36, 0.94) 32%, var(--navy) 62%);
+    padding: 18px 16px calc(12px + env(safe-area-inset-bottom));
+    /* fundo sólido logo no topo: a seta "toque aqui" não pode ficar por cima do
+       texto que rola atrás (visto em 320 px com o chip "Como usar?") */
+    background: linear-gradient(180deg, rgba(10, 20, 36, 0) 0, rgba(10, 20, 36, 0.96) 14px, var(--navy) 28px);
   }
   .barra__dentro { max-width: 440px; margin: 0 auto; }
   .cta {
@@ -217,6 +219,17 @@
   .cta__txt b { font-size: 19px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase; }
   .cta__txt small { margin-top: 3px; font-size: 13px; font-weight: 700; opacity: .78; }
   .cta .seta-cta { width: 20px; height: 20px; opacity: .8; }
+  .cta--multi .cta__txt b { font-size: clamp(14.5px, 4.3vw, 17px); letter-spacing: .2px; }
+  /* seta "toque aqui" (08/10, pedido do dono): diz ONDE tocar, sem ambiguidade.
+     Verde = a cor da ação; some depois do toque. */
+  .dica {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    margin-bottom: 6px; color: var(--white);
+    font: 800 14px/1 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: .6px;
+    text-transform: uppercase;
+  }
+  .dica svg { width: 20px; height: 20px; color: var(--green-2); animation: pula 1.1s ease-in-out infinite; }
+  @keyframes pula { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(4px); } }
   .cta:active { transform: scale(0.985); }
   /* anel que pulsa pra fora: chama o olho sem piscar o texto */
   @keyframes chama {
@@ -225,7 +238,7 @@
     100% { box-shadow: 0 10px 28px rgba(37, 211, 102, 0.40), 0 0 0 0 rgba(37, 211, 102, 0), inset 0 -3px 0 rgba(0, 0, 0, 0.14); }
   }
   .cta.ok { animation: none; background: linear-gradient(180deg, #E9FFF1 0%, #C9F8DA 100%); }
-  .barra__nota { margin-top: 7px; font-size: 11.5px; color: var(--gray); text-align: center; }
+  .barra__nota { margin-top: 7px; font-size: 13px; color: #C3CFDD; text-align: center; }
   .aviso {
     display: none; margin-bottom: 10px; padding: 10px 12px;
     background: #2A1A16; border: 1px solid rgba(255, 140, 110, 0.5);
@@ -245,10 +258,12 @@
   @media (max-width: 340px) {
     h1 { font-size: 23px; }
     .cta { font-size: 16px; gap: 8px; }
+    /* com "COPIAR CUPOM PRINCIPAL" a setinha da direita sai pra o texto caber */
+    .cta--multi .seta-cta { display: none; }
   }
   /* economia de bateria no Android liga isto sozinho: tira só o MOVIMENTO */
   @media (prefers-reduced-motion: reduce) {
-    .robo, .cta { animation: none; }
+    .robo, .cta, .dica svg { animation: none; }
   }
 </style>
 </head>
@@ -266,7 +281,7 @@
   <p class="sub">Toque no botão verde: ele <b>copia o cupom</b> e já <b>abre o produto</b>.</p>
 
   <div class="ticket" aria-label="Cupom">
-    <div class="ticket__rot">Seu cupom</div>
+    <div class="ticket__rot" id="ticketRot">Seu cupom</div>
     <span class="codigo" id="codigo">…</span>
     <div class="ticket__pe" id="ticketPe">pra colar no pagamento</div>
   </div>
@@ -300,6 +315,11 @@
 <div class="barra" id="barra">
   <div class="barra__dentro">
     <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+    <div class="dica" id="dica" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M5 12l7 7 7-7"/></svg>
+      Toque aqui
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M5 12l7 7 7-7"/></svg>
+    </div>
     <button class="cta" id="btn" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       <span class="cta__txt"><b id="btnTxt">Copiar cupom</b><small id="btnSub">e ir pro produto</small></span>
@@ -429,6 +449,12 @@ function lerLink(qs) {
   if (dados.reserva) {
     document.getElementById('reserva').style.display = 'block';
   }
+  // Mais de 1 cupom (combo ou reserva): o botão diz QUAL copia (08/10).
+  if (dados.cupom2 || dados.reserva) {
+    document.getElementById('ticketRot').textContent = 'Cupom principal';
+    document.getElementById('btnTxt').textContent = 'Copiar cupom principal';
+    document.getElementById('btn').classList.add('cta--multi');
+  }
 
   // O cupom PRINCIPAL não sai da página: sem seleção, sem menu de copiar, sem
   // Ctrl+C — quem copia é o botão. O 2º (combo) pode ser copiado.
@@ -503,6 +529,7 @@ function lerLink(qs) {
     var falhouR = false;
     btnR.addEventListener('click', function () {
       revelar();
+      document.getElementById('dica').style.display = 'none';
       if (falhouR) { ga('cupom_reserva_foi_sem_copiar'); ir(); return; }
       function deuCertoR() {
         ga('cupom_reserva_copiou');
@@ -536,6 +563,7 @@ function lerLink(qs) {
   var falhou = false;
   btn.addEventListener('click', function () {
     revelar();
+    document.getElementById('dica').style.display = 'none';
     if (falhou) { ga('cupom_foi_sem_copiar'); ir(); return; }
     function deuCerto() {
       ga('cupom_copiou_e_foi');
