@@ -119,6 +119,18 @@
   }
   .ticket__pe { margin-top: 2px; font-size: 14px; color: #C3CFDD; }
 
+  /* "não pelo carrinho" (08/10, pedido do dono): o preço e o cupom foram
+     conferidos NESTE anúncio; no carrinho a pessoa pode ter outro vendedor.
+     Logo abaixo do cupom, neutro (amarelo é do cupom, verde é do botão). */
+  .carrinho {
+    width: 100%; margin-top: 10px; padding: 10px 13px;
+    display: flex; align-items: flex-start; gap: 10px; text-align: left;
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px; font-size: 14px; line-height: 1.38; color: #C3CFDD;
+  }
+  .carrinho__ico { font-size: 20px; line-height: 1.1; flex-shrink: 0; }
+  .carrinho b { color: var(--white); }
+
   /* combo: o 2º cupom SOMA com o de cima — a área de transferência guarda um
      só, então este a pessoa digita (também está na mensagem do grupo) */
   .extra {
@@ -277,6 +289,9 @@
   body.ap3 .passo .n { width: 22px; height: 22px; font-size: 12px; line-height: 22px; }
   body.ap3 .passo p { font-size: 13px; }
   body.ap4 .como { display: none; }
+  /* último recurso: o aviso do carrinho fica só com a frase em negrito */
+  body.ap5 .carrinho__mais { display: none; }
+  body.ap5 .carrinho { padding: 8px 12px; }
 
   /* economia de bateria no Android liga isto sozinho: tira só o MOVIMENTO */
   @media (prefers-reduced-motion: reduce) {
@@ -301,6 +316,11 @@
     <div class="ticket__rot" id="ticketRot">Seu cupom</div>
     <span class="codigo" id="codigo">…</span>
     <div class="ticket__pe" id="ticketPe">pra colar no pagamento</div>
+  </div>
+
+  <div class="carrinho" id="carrinho">
+    <span class="carrinho__ico" aria-hidden="true">🛒</span>
+    <span><b>Compre direto pelo anúncio que abrir, não pelo carrinho.</b><span class="carrinho__mais"> Conferimos o preço e o cupom no link que enviamos — pelo carrinho, o preço pode ser outro e o cupom pode não valer.</span></span>
   </div>
 
   <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam:<br>
@@ -507,7 +527,7 @@ function lerLink(qs) {
   // Caber na tela: a página liga o menor nível de aperto que deixa o conteúdo
   // inteiro acima do botão fixo. Mede de novo ao girar o celular, ao carregar
   // a fonte e quando aparece um aviso. Qualquer erro → fica como está.
-  var NIVEIS = ['ap1', 'ap2', 'ap3', 'ap4'];
+  var NIVEIS = ['ap1', 'ap2', 'ap3', 'ap4', 'ap5'];
   function caber() {
     try {
       var corpo = document.body, barra = document.getElementById('barra');
