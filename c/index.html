@@ -157,27 +157,61 @@
   .codigo2.ok .codigo2__acao { color: var(--green); }
 
   /* reserva (07/10, pedido do dono): plano B pra quem tentou o principal e o
-     ML recusou (esgotou ou já foi usado). Discreto de propósito: o verde é só
-     do botão principal; aqui só o código é amarelo. */
+     ML recusou (esgotou, já foi usado, ou é só pra assinante Meli+).
+     09/10 (pedido do dono, "mais destaque"): vira um 2º CUPOM, no formato do
+     principal e um pouco menor, com o botão de contorno amarelo — o verde
+     continua só no botão principal, que é a ação de bater o olho. */
   .reserva {
-    display: none; width: 100%; margin-top: 10px; padding: 10px 14px 12px;
-    background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px;
-    font-size: 14.5px; color: #E2EAF3;
+    display: none; position: relative; width: 100%; margin-top: 12px; padding: 10px 16px 12px;
+    background: linear-gradient(180deg, var(--navy-3), var(--navy-2));
+    border: 2px dashed rgba(255, 204, 0, 0.45); border-radius: 16px;
+    font-size: 14px; color: #C3CFDD;
   }
+  .reserva::before, .reserva::after {
+    content: ''; position: absolute; top: 50%; width: 18px; height: 18px; margin-top: -9px;
+    border-radius: 50%; background: var(--navy);
+  }
+  .reserva::before { left: -10px; }
+  .reserva::after  { right: -10px; }
   .reserva b { color: var(--white); }
+  .reserva__rot {
+    font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #C3CFDD;
+  }
+  .reserva__rot--meli { color: var(--white); }
+  .reserva__codigo {
+    display: block; margin-top: 2px;
+    font: 800 clamp(22px, 6.6vw, 28px)/1.08 'Baloo 2', system-ui, sans-serif;
+    letter-spacing: .07em; color: var(--yellow); word-break: break-all;
+  }
+  .reserva__pe { margin-top: 1px; font-size: 13.5px; }
   .reserva__btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    margin-top: 8px; width: 100%; min-height: 44px; padding: 8px 12px;
-    background: transparent; color: var(--white);
-    border: 1.5px solid rgba(255, 255, 255, 0.28); border-radius: 12px;
+    margin-top: 8px; width: 100%; min-height: 46px; padding: 8px 12px;
+    background: rgba(255, 204, 0, 0.08); color: var(--yellow);
+    border: 2px solid var(--yellow); border-radius: 12px;
     font: 700 15px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+    text-transform: uppercase; letter-spacing: .3px;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .reserva__btn:active { transform: scale(0.985); }
-  .reserva__cod {
-    font: 800 17px/1 'Baloo 2', system-ui, sans-serif; letter-spacing: .06em; color: var(--yellow);
+  .reserva__btn.ok { border-color: var(--green); color: var(--green); background: transparent; }
+
+  /* cupom principal SÓ PRA ASSINANTE Meli+ (09/10, pedido do dono; o link traz
+     a marca `m`): selo roxo no cupom e, com reserva, a faixa que manda quem não
+     assina usar o reserva. */
+  .meli {
+    display: none; margin: 6px auto 0; width: fit-content;
+    padding: 4px 11px 3px; border-radius: 999px;
+    background: linear-gradient(90deg, #5B2BE0, #8E4DFF); color: #fff;
+    font: 800 12.5px/1.2 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: .3px;
   }
-  .reserva__btn.ok { border-color: var(--green); color: var(--green); }
+  .nota-meli {
+    display: none; width: 100%; margin-top: 10px; padding: 9px 12px;
+    text-align: left; font-size: 14px; line-height: 1.38; color: #DCD3FF;
+    background: rgba(142, 77, 255, 0.12); border: 1px solid rgba(142, 77, 255, 0.45);
+    border-radius: 12px;
+  }
+  .nota-meli b { color: #fff; }
 
   /* ── como usar (abaixo da dobra; o botão não depende dele) ────────────── */
   .como {
@@ -316,7 +350,9 @@
     <div class="ticket__rot" id="ticketRot">Seu cupom</div>
     <span class="codigo" id="codigo">…</span>
     <div class="ticket__pe" id="ticketPe">pra colar no pagamento</div>
+    <div class="meli" id="meliSelo">⭐ Só assinante Meli+</div>
   </div>
+  <div class="nota-meli" id="notaMeli">Não é assinante <b>Meli+</b>? O cupom de cima não vale pra você — <b>use o reserva abaixo 👇</b></div>
 
   <div class="carrinho" id="carrinho">
     <span class="carrinho__ico" aria-hidden="true">🛒</span>
@@ -326,8 +362,11 @@
   <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam:<br>
     <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span></div>
 
-  <div class="reserva" id="reserva">O cupom de cima <b>esgotou</b> ou você <b>já usou</b>? Use o reserva:
-    <button class="reserva__btn" id="btnReserva" type="button"><span id="btnReservaTxt">Copiar</span> <span class="reserva__cod" id="codReserva">…</span> <span id="btnReservaFim">e ir</span></button></div>
+  <div class="reserva" id="reserva">
+    <div class="reserva__rot" id="reservaRot">Cupom reserva</div>
+    <span class="reserva__codigo" id="codReserva">…</span>
+    <div class="reserva__pe" id="reservaPe">se o principal <b>esgotar</b> ou <b>não aplicar</b></div>
+    <button class="reserva__btn" id="btnReserva" type="button"><span id="btnReservaTxt">Copiar reserva e ir</span> <span id="btnReservaFim">›</span></button></div>
 
   <section class="como">
     <span class="como__chip">Como usar?</span>
@@ -386,7 +425,10 @@
 // Oculto (07/10): /c/?<link>-h-<códigos cifrados> — o código não aparece no link
 // (inverte + gira 17 casas no alfabeto A–Z0–9; espelho de `_cifra_cupom` no bot).
 // NÃO é segurança, só tira o código da vista de quem lê a mensagem.
-// Códigos têm 3+ letras, então os marcadores `h` e `r` nunca colidem com eles.
+// Meli+ (09/10): /c/?<link>[-h]-m-<códigos>… — o cupom principal é só pra
+// assinante Meli+: selo no cupom e, com reserva, "use o reserva". Link SEM o `m`
+// (todos os de antes de 09/10) é lido exatamente como antes.
+// Códigos têm 3+ letras, então os marcadores `h`, `m` e `r` nunca colidem com eles.
 // Combo (1 cupom da loja + 1 do ML, que SOMAM): /c/?<link>-<CUPOM>-<CUPOM2>. A
 // área de transferência guarda um só: copia o 1º e mostra o 2º por escrito
 // (decisão do dono, 05/10). O 2º também está na mensagem do grupo.
@@ -421,6 +463,8 @@ function lerLink(qs) {
   if (!/^[A-Za-z0-9]{4,12}$/.test(meli || '')) return null;
   var oculto = false;
   if (p[0] === 'h') { oculto = true; p.shift(); }
+  var meliMais = false;
+  if (p[0] === 'm') { meliMais = true; p.shift(); }
   var reserva = null, ir = p.indexOf('r');
   if (ir >= 0) {
     if (ir !== p.length - 2) return null;
@@ -437,6 +481,7 @@ function lerLink(qs) {
   if (!c1) return null;
   var r = { meli: meli, cupom: c1 };
   if (oculto) r.oculto = true;
+  if (meliMais) r.meli_mais = true;
   if (p.length === 2) {
     var c2 = cod(p[1]);
     if (!c2 || c2 === c1) return null;
@@ -485,6 +530,18 @@ function lerLink(qs) {
   }
   if (dados.reserva) {
     document.getElementById('reserva').style.display = 'block';
+  }
+  // Principal só pra assinante Meli+ (09/10): o selo e, com reserva, a faixa
+  // que manda quem não assina usar o reserva.
+  if (dados.meli_mais) {
+    document.getElementById('meliSelo').style.display = 'block';
+    if (dados.reserva) {
+      document.getElementById('notaMeli').style.display = 'block';
+      var rotR = document.getElementById('reservaRot');
+      rotR.textContent = 'Sem Meli+? Use este cupom';
+      rotR.classList.add('reserva__rot--meli');
+      document.getElementById('reservaPe').innerHTML = 'vale pra <b>todo mundo</b>';
+    }
   }
   // Mais de 1 cupom (combo ou reserva): o botão diz QUAL copia (08/10).
   if (dados.cupom2 || dados.reserva) {
@@ -598,7 +655,7 @@ function lerLink(qs) {
       function deuCertoR() {
         ga('cupom_reserva_copiou');
         btnR.classList.add('ok');
-        document.getElementById('btnReservaTxt').textContent = '✓ Copiado:';
+        document.getElementById('btnReservaTxt').textContent = '✓ Reserva copiada';
         document.getElementById('btnReservaFim').textContent = 'abrindo…';
         setTimeout(ir, 700);
       }
