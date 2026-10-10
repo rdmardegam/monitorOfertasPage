@@ -339,6 +339,39 @@
   /* último recurso: o aviso do carrinho fica só com a frase em negrito */
   body.ap5 .carrinho__mais { display: none; }
   body.ap5 .carrinho { padding: 8px 12px; }
+  /* 09/10 (pedido do dono: "se adeque a todos os dispositivos"): com reserva a
+     página ficou maior e os 5 níveis não bastavam em celular baixo (320×568,
+     360×740, 375×667) nem no desktop 1280×720. Três níveis a mais, na mesma
+     lógica — o que menos faz falta sai primeiro; cupom e botão nunca saem. */
+  /* o selo da reserva já diz "sem Meli+". `!important`: o script mostra a faixa
+     com `display:block` inline, que ganharia do nível. */
+  body.ap6 .nota-meli { display: none !important; }
+  body.ap6 .reserva__pe, body.ap6 .topo { display: none; }
+  body.ap6 .heroi { margin-top: 0; }
+  body.ap6 .robo { width: clamp(58px, 9vh, 74px); }
+  body.ap6 h1 { font-size: clamp(20px, 5.6vw, 24px); }
+  body.ap6 .ticket { padding: 8px 14px 10px; margin-top: 8px; }
+  body.ap6 .codigo { font-size: clamp(22px, 7vw, 30px); }
+  body.ap6 .reserva { padding: 8px 14px 10px; margin-top: 8px; }
+  body.ap7 .dica, body.ap7 .barra__nota { display: none; }   /* a própria barra encolhe */
+  body.ap7 .barra { padding-top: 12px; }
+  body.ap7 .cta { min-height: 52px; padding: 8px 16px; }
+  body.ap7 .cta__txt small { margin-top: 1px; }
+  body.ap8 .heroi { display: none; }
+  body.ap8 .reserva__btn { min-height: 40px; margin-top: 6px; }
+  body.ap8 .reserva__codigo { font-size: clamp(20px, 6vw, 24px); }
+  /* celular DEITADO (altura ≤ 460 px e mais largo que alto): duas colunas, sem
+     o topo, o robô e o "Como usar" — o cupom e o botão ficam à vista. */
+  @media (max-height: 460px) and (min-aspect-ratio: 13/10) {
+    #ok { max-width: 780px; flex-direction: row; flex-wrap: wrap; justify-content: center;
+          align-items: flex-start; gap: 10px; padding-top: 8px; }
+    #ok .topo, #ok .heroi, #ok .sub, #ok .como, #ok footer { display: none; }
+    #ok .ticket, #ok .carrinho, #ok .nota-meli, #ok .extra, #ok .reserva {
+      width: calc(50% - 5px); margin-top: 0; }
+    #ok .nota-meli { display: none !important; }   /* o selo da reserva já diz */
+    .dica, .barra__nota { display: none; }
+    .cta { min-height: 52px; padding: 8px 16px; }
+  }
 
   /* economia de bateria no Android liga isto sozinho: tira só o MOVIMENTO */
   @media (prefers-reduced-motion: reduce) {
@@ -599,12 +632,10 @@ function lerLink(qs) {
   // Caber na tela: a página liga o menor nível de aperto que deixa o conteúdo
   // inteiro acima do botão fixo. Mede de novo ao girar o celular, ao carregar
   // a fonte e quando aparece um aviso. Qualquer erro → fica como está.
-  var NIVEIS = ['ap1', 'ap2', 'ap3', 'ap4', 'ap5'];
+  var NIVEIS = ['ap1', 'ap2', 'ap3', 'ap4', 'ap5', 'ap6', 'ap7', 'ap8'];
   function caber() {
     try {
       var corpo = document.body, barra = document.getElementById('barra');
-      var alturaBarra = barra.getBoundingClientRect().height;
-      document.documentElement.style.setProperty('--barra', Math.ceil(alturaBarra) + 'px');
       NIVEIS.forEach(function (c) { corpo.classList.remove(c); });
       var fim = function () {
         var ok = document.getElementById('ok'), ult = null;
@@ -613,8 +644,11 @@ function lerLink(qs) {
         }
         return ult ? ult.getBoundingClientRect().bottom + (window.pageYOffset || 0) : 0;
       };
-      var limite = window.innerHeight - alturaBarra;
-      for (var i = 0; i < NIVEIS.length && fim() > limite; i++) corpo.classList.add(NIVEIS[i]);
+      // A barra também encolhe nos níveis altos (ap7): o limite é remedido a
+      // cada passo, não uma vez só.
+      var limite = function () { return window.innerHeight - barra.getBoundingClientRect().height; };
+      for (var i = 0; i < NIVEIS.length && fim() > limite(); i++) corpo.classList.add(NIVEIS[i]);
+      document.documentElement.style.setProperty('--barra', Math.ceil(barra.getBoundingClientRect().height) + 'px');
     } catch (e) { /* sem medir, a página rola como antes */ }
   }
   caber();
