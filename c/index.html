@@ -555,23 +555,25 @@ function lerLink(qs) {
   function mostrar(c) { return revelado ? c : c.slice(0, 3) + MASCARA; }
   function pintar() {
     document.getElementById('codigo').textContent = mostrar(dados.cupom);
-    if (dados.cupom2) document.getElementById('codigo2Txt').textContent = mostrar(dados.cupom2);
+    // O 2º do combo (o da loja) sempre ABERTO (10/10, pedido do dono): a
+    // mensagem já o mostra inteiro, e a área de transferência guarda um código
+    // só — ele é copiado à parte, aqui ou no WhatsApp.
+    if (dados.cupom2) document.getElementById('codigo2Txt').textContent = dados.cupom2;
     if (dados.reserva) document.getElementById('codReserva').textContent = mostrar(dados.reserva);
   }
-  // Os códigos só aparecem inteiros depois do toque num botão de ir.
+  // Principal e reserva só aparecem inteiros depois do toque num botão de ir.
   function revelar() {
     if (revelado) return;
     revelado = true;
     pintar();
     document.getElementById('ticketPe').textContent = 'pra colar no pagamento';
-    if (dados.cupom2) document.getElementById('codigo2Acao').textContent = 'toque pra copiar';
   }
   pintar();
   if (!revelado) {
     document.getElementById('ticketPe').textContent = 'aparece ao tocar no botão verde';
   }
   if (dados.cupom2) {
-    if (!revelado) document.getElementById('codigo2Acao').textContent = 'aparece no botão verde';
+    document.getElementById('codigo2Acao').textContent = 'toque pra copiar';
     document.getElementById('extra').style.display = 'block';
   }
   if (dados.reserva) {
@@ -676,7 +678,6 @@ function lerLink(qs) {
     var el2 = document.getElementById('codigo2');
     var acao2 = document.getElementById('codigo2Acao');
     var copiar2 = function () {
-      if (!revelado) return;           // escondido: só aparece no botão verde
       var feito = function () {
         el2.classList.add('ok'); acao2.textContent = '✓ copiado';
         try { window.getSelection().removeAllRanges(); } catch (e) { /* cortesia */ }
