@@ -178,6 +178,19 @@
     font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #C3CFDD;
   }
   .reserva__rot--meli { color: var(--white); }
+  /* selos (09/10, pedido do dono): "Cupom principal" em amarelo cheio e "Cupom
+     reserva" só com contorno — o olho acha qual é qual antes de ler o código.
+     O verde segue só no botão principal. */
+  .chip {
+    display: inline-block; padding: 5px 12px 4px; border-radius: 999px;
+    font: 800 12.5px/1.15 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .chip--princ { background: var(--yellow); color: var(--navy); }
+  .chip--res, .chip--res.reserva__rot--meli {
+    background: transparent; color: var(--yellow); border: 1.5px solid var(--yellow);
+    padding: 3px 11px 2px;
+  }
   .reserva__codigo {
     display: block; margin-top: 2px;
     font: 800 clamp(22px, 6.6vw, 28px)/1.08 'Baloo 2', system-ui, sans-serif;
@@ -363,7 +376,7 @@
     <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span></div>
 
   <div class="reserva" id="reserva">
-    <div class="reserva__rot" id="reservaRot">Cupom reserva</div>
+    <div class="reserva__rot chip chip--res" id="reservaRot">Cupom reserva</div>
     <span class="reserva__codigo" id="codReserva">…</span>
     <div class="reserva__pe" id="reservaPe">se o principal <b>esgotar</b> ou <b>não aplicar</b></div>
     <button class="reserva__btn" id="btnReserva" type="button"><span id="btnReservaTxt">Copiar reserva e ir</span> <span id="btnReservaFim">›</span></button></div>
@@ -538,14 +551,16 @@ function lerLink(qs) {
     if (dados.reserva) {
       document.getElementById('notaMeli').style.display = 'block';
       var rotR = document.getElementById('reservaRot');
-      rotR.textContent = 'Sem Meli+? Use este cupom';
+      rotR.textContent = 'Sem Meli+? Use este';
       rotR.classList.add('reserva__rot--meli');
       document.getElementById('reservaPe').innerHTML = 'vale pra <b>todo mundo</b>';
     }
   }
   // Mais de 1 cupom (combo ou reserva): o botão diz QUAL copia (08/10).
   if (dados.cupom2 || dados.reserva) {
-    document.getElementById('ticketRot').textContent = 'Cupom principal';
+    var tRot = document.getElementById('ticketRot');
+    tRot.textContent = 'Cupom principal';
+    tRot.classList.add('chip', 'chip--princ');
     document.getElementById('btnTxt').textContent = 'Copiar cupom principal';
     document.getElementById('btn').classList.add('cta--multi');
   }
