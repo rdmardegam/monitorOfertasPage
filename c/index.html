@@ -506,7 +506,12 @@ function lerLink(qs) {
   var s = String(qs || '').replace(/^[?#]/, '');
   var p = s.split('-');
   var meli = p.shift();
-  if (!/^[A-Za-z0-9]{4,12}$/.test(meli || '')) return null;
+  // Sem comissão (21/10): no lugar do meli.la vem o NÚMERO do anúncio
+  // (`MLB` + dígitos) e a página abre o produto direto no ML. Testado ANTES do
+  // meli.la: o link curto do ML tem 7 caracteres, nunca `MLB` + 7 dígitos.
+  var item = null;
+  if (/^MLB\d{7,12}$/.test(meli || '')) { item = meli; meli = null; }
+  else if (!/^[A-Za-z0-9]{4,12}$/.test(meli || '')) return null;
   var oculto = false;
   if (p[0] === 'h') { oculto = true; p.shift(); }
   var meliMais = false;
@@ -525,7 +530,7 @@ function lerLink(qs) {
   }
   var c1 = cod(p[0]);
   if (!c1) return null;
-  var r = { meli: meli, cupom: c1 };
+  var r = item ? { item: item, cupom: c1 } : { meli: meli, cupom: c1 };
   if (oculto) r.oculto = true;
   if (meliMais) r.meli_mais = true;
   if (p.length === 2) {
@@ -549,7 +554,12 @@ function lerLink(qs) {
     document.getElementById('erro').style.display = 'flex';
     return;
   }
-  var destino = 'https://meli.la/' + dados.meli;
+  var destino = dados.item
+    ? 'https://produto.mercadolivre.com.br/MLB-' + dados.item.slice(3)
+    : 'https://meli.la/' + dados.meli;
+  // Link direto (sem comissão): não passa pela vitrine do nosso perfil, então
+  // não existe o botão "Ir para produto" que o aviso do carrinho manda tocar.
+  if (dados.item) document.getElementById('carrinho').style.display = 'none';
   var MASCARA = '•••••';   // "•••••", igual `_MASCARA_CUPOM`
   var revelado = !dados.oculto;
   function mostrar(c) { return revelado ? c : c.slice(0, 3) + MASCARA; }
@@ -623,7 +633,7 @@ function lerLink(qs) {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento, sid: sid,
         dl: location.href, dt: 'cupom',
-        'ep.canal': 'c', 'ep.link': dados.meli, 'ep.cupom': dados.cupom,
+        'ep.canal': 'c', 'ep.link': dados.meli || dados.item, 'ep.cupom': dados.cupom,
         'ep.cupom2': dados.cupom2 || '', 'ep.reserva': dados.reserva || ''
       });
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
