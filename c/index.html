@@ -136,17 +136,23 @@
      21/10 (pedido do dono, "passava despercebido"): era uma caixa cinza igual
      ao aviso do carrinho, e depois dele. Virou um 2º CUPOM colado no
      principal: "+" e caixa vermelhos (o destaque de "tem mais um"), código
-     amarelo (amarelo = código, na página toda). */
+     amarelo (amarelo = código, na página toda).
+     Mesmo dia (dono): o "+" fica EM CIMA da emenda — os dois cupons quase
+     encostam e ele corta as duas linhas tracejadas — e o texto diz o que
+     fazer: "Use também este" + "os descontos dos 2 somam". */
   .plus {
-    display: none; margin: 6px auto -2px; width: 30px; height: 30px; border-radius: 50%;
+    display: none; position: relative; z-index: 2;
+    margin: -9px auto -15px; width: 32px; height: 32px; border-radius: 50%;
     background: #FF3B3B; color: #fff; text-align: center;
-    font: 900 22px/30px 'Plus Jakarta Sans', system-ui, sans-serif;
+    border: 3px solid var(--navy); box-shadow: 0 0 0 2px #FF4D4D;
+    font: 900 22px/26px 'Plus Jakarta Sans', system-ui, sans-serif;
   }
   .extra {
-    display: none; position: relative; width: 100%; margin-top: 8px; padding: 10px 16px 12px;
+    display: none; position: relative; width: 100%; margin-top: 0; padding: 16px 16px 12px;
     background: rgba(255, 59, 59, 0.10); border: 2px dashed #FF4D4D; border-radius: 16px;
     font-size: 14.5px; color: #E2EAF3; text-align: center;
   }
+  .extra__pe b { color: var(--white); }
   .extra__chip {
     display: inline-block; padding: 4px 12px 3px; border-radius: 999px;
     background: #FF3B3B; color: #fff;
@@ -341,10 +347,11 @@
      cupom e o botão nunca saem. */
   body.ap1 footer { display: none; }
   body.ap1 .ticket { margin-top: 10px; }
-  body.ap1 .extra, body.ap1 .reserva { margin-top: 8px; }
-  body.ap6 .extra { padding: 8px 14px 10px; }
-  body.ap6 .extra__pe, body.ap6 .plus { display: none !important; }
+  body.ap1 .reserva { margin-top: 8px; }   /* o 2º cupom fica colado: o "+" está na emenda */
+  body.ap6 .extra { padding: 8px 14px 10px; margin-top: 8px; }
+  body.ap6 .extra__pe1, body.ap6 .plus { display: none !important; }
   body.ap8 .codigo2 { font-size: clamp(20px, 6vw, 24px); }
+  body.ap8 .extra__pe { display: none; }   /* o selo "Use também este" segue dizendo */
   body.ap1 .como { margin-top: 20px; }
   body.ap2 .sub { display: none; }
   body.ap2 .robo { width: clamp(78px, 13vh, 104px); }
@@ -417,9 +424,9 @@
     <div class="meli" id="meliSelo">⭐ Só assinante Meli+</div>
   </div>
   <span class="plus" id="plus" aria-hidden="true">+</span>
-  <div class="extra" id="extra"><span class="extra__chip">2º cupom · soma com o de cima</span><br>
+  <div class="extra" id="extra"><span class="extra__chip">Use também este</span><br>
     <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span>
-    <span class="extra__pe">cole também no pagamento</span></div>
+    <span class="extra__pe"><span class="extra__pe1">cole no pagamento junto com o de cima:<br></span><b>os descontos dos 2 somam</b></span></div>
   <div class="nota-meli" id="notaMeli">Não é assinante <b>Meli+</b>? O cupom de cima não vale pra você — <b>use o reserva abaixo 👇</b></div>
 
   <div class="carrinho" id="carrinho">
