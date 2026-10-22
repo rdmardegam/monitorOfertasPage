@@ -595,8 +595,23 @@
   if (!_cid) _cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
   if (!_sid) _sid = String(Math.floor(Date.now() / 1000));
 
+  // Contador próprio (Cloudflare, 22/10): espelha cada evento do GA NA HORA (o GA
+  // atrasa 3 a 8 h). Mesmo cid aleatório do GA; sem IP nem dado pessoal. O contador
+  // só aceita evento vindo do monitorofertas.com.br. Best-effort: nunca segura a página.
+  function contar(ev, campos) {
+    try {
+      var d = { ev: ev, cid: _cid };
+      for (var k in (campos || {})) {
+        if (campos[k] !== undefined && campos[k] !== null && campos[k] !== '') d[k] = String(campos[k]);
+      }
+      navigator.sendBeacon('https://contador.monitorofertas.workers.dev/e', JSON.stringify(d));
+    } catch (e) { /* contagem é best-effort */ }
+  }
+
   function ga(evento, extras) {
     if (!/monitorofertas\.com\.br$/.test(location.hostname)) return;  // preview não conta
+    contar(evento, { canal: 'colalink', via: extras && extras['ep.via'],
+                     extra: extras && extras['ep.revisita'] ? 'revisita' : '' });
     try {
       var p = new URLSearchParams(Object.assign({
         v: '2', tid: GA_ID, cid: _cid, sid: _sid, en: evento,
