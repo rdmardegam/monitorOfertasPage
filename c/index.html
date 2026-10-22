@@ -132,27 +132,42 @@
   .carrinho b { color: var(--white); }
 
   /* combo: o 2º cupom SOMA com o de cima — a área de transferência guarda um
-     só, então este a pessoa digita (também está na mensagem do grupo) */
-  .extra {
-    display: none; width: 100%; margin-top: 10px; padding: 10px 14px;
-    background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px;
-    font-size: 14.5px; color: #E2EAF3;
+     só, então este a pessoa digita (também está na mensagem do grupo).
+     21/10 (pedido do dono, "passava despercebido"): era uma caixa cinza igual
+     ao aviso do carrinho, e depois dele. Virou um 2º CUPOM colado no
+     principal: "+" e caixa vermelhos (o destaque de "tem mais um"), código
+     amarelo (amarelo = código, na página toda). */
+  .plus {
+    display: none; margin: 6px auto -2px; width: 30px; height: 30px; border-radius: 50%;
+    background: #FF3B3B; color: #fff; text-align: center;
+    font: 900 22px/30px 'Plus Jakarta Sans', system-ui, sans-serif;
   }
-  .extra b { color: var(--white); }
+  .extra {
+    display: none; position: relative; width: 100%; margin-top: 8px; padding: 10px 16px 12px;
+    background: rgba(255, 59, 59, 0.10); border: 2px dashed #FF4D4D; border-radius: 16px;
+    font-size: 14.5px; color: #E2EAF3; text-align: center;
+  }
+  .extra__chip {
+    display: inline-block; padding: 4px 12px 3px; border-radius: 999px;
+    background: #FF3B3B; color: #fff;
+    font: 800 12.5px/1.15 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .extra__pe { display: block; margin-top: 4px; font-size: 13.5px; color: #FFC9C9; }
   /* o 2º PODE ser copiado (pedido do dono, 05/10): um toque nele copia, e
      segurar também funciona — ele não abre nada, só vai pro pagamento. */
   .codigo2 {
-    display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 6px; padding: 4px 12px 2px;
-    border-radius: 9px; border: 1.5px dashed rgba(255, 204, 0, 0.6);
-    font: 800 19px/1.1 'Baloo 2', system-ui, sans-serif; letter-spacing: .06em;
+    display: inline-flex; flex-direction: column; align-items: center; gap: 0;
+    margin-top: 2px; padding: 2px 0 0;
+    font: 800 clamp(22px, 6.6vw, 28px)/1.1 'Baloo 2', system-ui, sans-serif; letter-spacing: .06em;
     color: var(--yellow);
     -webkit-user-select: all; user-select: all; cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
   .codigo2__acao {
-    font: 700 12.5px/1 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: 0;
-    color: var(--gray); -webkit-user-select: none; user-select: none;
+    font: 700 13px/1 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: 0;
+    color: var(--yellow); text-decoration: underline;
+    -webkit-user-select: none; user-select: none;
   }
   .codigo2.ok .codigo2__acao { color: var(--green); }
 
@@ -327,6 +342,9 @@
   body.ap1 footer { display: none; }
   body.ap1 .ticket { margin-top: 10px; }
   body.ap1 .extra, body.ap1 .reserva { margin-top: 8px; }
+  body.ap6 .extra { padding: 8px 14px 10px; }
+  body.ap6 .extra__pe, body.ap6 .plus { display: none !important; }
+  body.ap8 .codigo2 { font-size: clamp(20px, 6vw, 24px); }
   body.ap1 .como { margin-top: 20px; }
   body.ap2 .sub { display: none; }
   body.ap2 .robo { width: clamp(78px, 13vh, 104px); }
@@ -365,7 +383,7 @@
   @media (max-height: 460px) and (min-aspect-ratio: 13/10) {
     #ok { max-width: 780px; flex-direction: row; flex-wrap: wrap; justify-content: center;
           align-items: flex-start; gap: 10px; padding-top: 8px; }
-    #ok .topo, #ok .heroi, #ok .sub, #ok .como, #ok footer { display: none; }
+    #ok .topo, #ok .heroi, #ok .sub, #ok .como, #ok footer, #ok .plus { display: none !important; }
     #ok .ticket, #ok .carrinho, #ok .nota-meli, #ok .extra, #ok .reserva {
       width: calc(50% - 5px); margin-top: 0; }
     #ok .nota-meli { display: none !important; }   /* o selo da reserva já diz */
@@ -398,15 +416,16 @@
     <div class="ticket__pe" id="ticketPe">pra colar no pagamento</div>
     <div class="meli" id="meliSelo">⭐ Só assinante Meli+</div>
   </div>
+  <span class="plus" id="plus" aria-hidden="true">+</span>
+  <div class="extra" id="extra"><span class="extra__chip">2º cupom · soma com o de cima</span><br>
+    <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span>
+    <span class="extra__pe">cole também no pagamento</span></div>
   <div class="nota-meli" id="notaMeli">Não é assinante <b>Meli+</b>? O cupom de cima não vale pra você — <b>use o reserva abaixo 👇</b></div>
 
   <div class="carrinho" id="carrinho">
     <span class="carrinho__ico" aria-hidden="true">🛒</span>
     <span><b>No ML, toque em “Ir para produto” para comprar.</b><span class="carrinho__mais"> Pelo carrinho, o preço e o cupom podem não ser os que conferimos.</span></span>
   </div>
-
-  <div class="extra" id="extra"><b>+ Use também este</b> no pagamento — os dois somam:<br>
-    <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span></div>
 
   <div class="reserva" id="reserva">
     <div class="reserva__rot chip chip--res" id="reservaRot">Cupom reserva</div>
@@ -424,7 +443,7 @@
       <span class="seta" aria-hidden="true">›</span>
       <div class="passo">
         <span class="n">2</span>
-        <p><b>No pagamento</b><br>toque em “Inserir código” e cole</p>
+        <p id="passo2"><b>No pagamento</b><br>toque em “Inserir código” e cole</p>
       </div>
     </div>
   </section>
@@ -585,6 +604,10 @@ function lerLink(qs) {
   if (dados.cupom2) {
     document.getElementById('codigo2Acao').textContent = 'toque pra copiar';
     document.getElementById('extra').style.display = 'block';
+    document.getElementById('plus').style.display = 'block';
+    // com 2 cupons o passo 2 fala dos 2 (21/10) — um 3º passo deixaria o
+    // "Como usar" mais alto, e ele sai antes quando não cabe
+    document.getElementById('passo2').innerHTML = '<b>No pagamento</b><br>cole os 2 em “Inserir código”';
   }
   if (dados.reserva) {
     document.getElementById('reserva').style.display = 'block';
