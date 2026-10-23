@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Monitor Ofertas · Equipe</title>
+<style>
+  :root { --fundo: #0B1B2B; --cartao: #13283D; --texto: #F3F6FA; --cinza: #A9B8CA; --verde: #2ECC71; --amarelo: #FFD23F; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: var(--fundo); color: var(--texto); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 16px; }
+  .cartao { width: 100%; max-width: 420px; background: var(--cartao); border-radius: 18px; padding: 24px; text-align: center; }
+  h1 { font-size: 1.25rem; margin: 6px 0 10px; }
+  p { color: var(--cinza); margin: 8px 0; }
+  .ok { color: var(--verde); font-weight: 700; }
+  .rotulo { color: var(--amarelo); font-weight: 700; }
+  button { margin-top: 16px; width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--cinza);
+           background: transparent; color: var(--texto); font-size: 1rem; cursor: pointer; }
+  .icone { font-size: 2.4rem; }
+</style>
+</head>
+<body>
+<!-- Página da EQUIPE (22/10, pedido do dono: "não contabilizar meus cliques e dos
+     ADM"). Quem abre o link com a chave certa marca ESTE navegador: daí em diante
+     todo evento que as nossas páginas mandam ao contador leva `adm`, e o painel tira
+     da conta. A chave fica só no .env do painel; aqui vai o hash dela (SHA-256), pra
+     ela não aparecer no código público do site. Não manda nada pro GA. -->
+<div class="cartao">
+  <div class="icone" id="ic">👥</div>
+  <h1 id="tit">Página da equipe</h1>
+  <p id="txt">Este endereço é só pra equipe do Monitor Ofertas.</p>
+  <button id="sair" hidden>Este aparelho volta a contar</button>
+</div>
+<script>
+(function () {
+  var HASH = '9aec0546399edb3e6d1934bd729d6650ce04d7177cee8857f557f5d458169510';
+  var q = new URLSearchParams(location.search);
+  var chave = q.get('k') || '';
+  var nome = String(q.get('n') || 'adm').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16) || 'adm';
+  var tit = document.getElementById('tit'), txt = document.getElementById('txt'),
+      ic = document.getElementById('ic'), sair = document.getElementById('sair');
+
+  function guarda() { try { return window.localStorage; } catch (e) { return null; } }
+  // O MESMO número de aparelho que as páginas do site mandam ao contador.
+  function aparelho() {
+    var s = guarda();
+    if (!s) return '';
+    var u = s.getItem('mo_cid');
+    if (!u) { u = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); s.setItem('mo_cid', u); }
+    return u;
+  }
+  function contar(ev, adm) {
+    try {
+      var d = { ev: ev, cid: aparelho(), canal: 'eu' };
+      if (adm) d.adm = adm;
+      navigator.sendBeacon('https://contador.monitorofertas.workers.dev/e', JSON.stringify(d));
+    } catch (e) { /* best-effort */ }
+  }
+  function mostrar(aviso) {
+    var s = guarda();
+    var marca = s && s.getItem('mo_adm');
+    if (marca) {
+      ic.textContent = '✅';
+      tit.innerHTML = 'Aparelho da equipe: <span class="rotulo"></span>';
+      tit.querySelector('.rotulo').textContent = marca;
+      txt.innerHTML = '<span class="ok">Os cliques deste navegador não contam no painel.</span><br>'
+        + 'Vale pros links do grupo, do Cola-Links, do site e das páginas de cupom.';
+      sair.hidden = false;
+    } else {
+      ic.textContent = aviso ? '⚠️' : '👥';
+      tit.textContent = aviso || 'Página da equipe';
+      txt.textContent = aviso ? 'Peça o link certo no grupo ADM.' : 'Este endereço é só pra equipe do Monitor Ofertas.';
+      sair.hidden = true;
+    }
+  }
+  sair.onclick = function () {
+    var s = guarda();
+    if (s) s.removeItem('mo_adm');
+    contar('adm_desmarcou');
+    mostrar();
+  };
+  if (!guarda()) { tit.textContent = 'Este navegador não guarda dados'; txt.textContent = 'Abra o link em outro navegador.'; return; }
+  if (!chave) { mostrar(); return; }
+  if (!(window.crypto && crypto.subtle && window.TextEncoder)) { mostrar('Navegador sem suporte'); return; }
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode(chave)).then(function (b) {
+    var hex = Array.prototype.map.call(new Uint8Array(b), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    // Tira a chave da barra de endereço (ninguém copia o link já aberto).
+    try { history.replaceState(null, '', location.pathname); } catch (e) { /* ok */ }
+    if (hex !== HASH) { mostrar('Link inválido'); return; }
+    guarda().setItem('mo_adm', nome);
+    contar('adm_marcou', nome);
+    mostrar();
+  });
+})();
+</script>
+</body>
+</html>

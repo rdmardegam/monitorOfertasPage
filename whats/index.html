@@ -215,6 +215,16 @@
   function contar(ev, campos) {
     try {
       var d = { ev: ev, cid: _cid };
+      // Aparelho (22/10): número fixo guardado neste navegador (conta PESSOAS, não
+      // aberturas) e a marca de EQUIPE da página /eu/, pra o painel tirar os nossos
+      // cliques da conta. Sem localStorage, fica o número da página.
+      try {
+        var _s = window.localStorage, _u = _s.getItem('mo_cid');
+        if (!_u) { _u = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); _s.setItem('mo_cid', _u); }
+        d.cid = _u;
+        var _a = _s.getItem('mo_adm');
+        if (_a) d.adm = _a;
+      } catch (e) { /* sem localStorage */ }
       for (var k in (campos || {})) {
         if (campos[k] !== undefined && campos[k] !== null && campos[k] !== '') d[k] = String(campos[k]);
       }
