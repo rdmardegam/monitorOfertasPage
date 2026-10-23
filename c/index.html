@@ -118,6 +118,15 @@
     word-break: break-all;
   }
   .ticket__pe { margin-top: 2px; font-size: 14px; color: #C3CFDD; }
+  /* Cupom de COMPRA MÍNIMA (23/10, pedido do dono): o desconto e a mínima
+     DENTRO do cupom, e logo abaixo o aviso do que fazer pra ele valer. */
+  .ticket__cond { display: none; margin-top: 3px; font-size: 15px; font-weight: 700; color: var(--white); }
+  .min-nota {
+    display: none; width: 100%; margin-top: 10px; padding: 9px 13px; text-align: left;
+    background: rgba(255, 204, 0, 0.08); border: 1px solid rgba(255, 204, 0, 0.38);
+    border-radius: 14px; font-size: 14px; line-height: 1.38; color: #C3CFDD;
+  }
+  .min-nota b { color: var(--white); }
 
   /* "não pelo carrinho" (08/10, pedido do dono): o preço e o cupom foram
      conferidos NESTE anúncio; no carrinho a pessoa pode ter outro vendedor.
@@ -363,6 +372,10 @@
   body.ap4 .como { display: none; }
   /* último recurso: o aviso do carrinho fica só com a frase em negrito */
   body.ap5 .carrinho__mais { display: none; }
+  body.ap5 .min-nota__mais { display: none; }
+  body.ap6 .min-nota { padding: 7px 12px; margin-top: 8px; }
+  /* no aperto extremo a condição continua NO cupom ("compra mín. R$ X") */
+  body.ap8 .min-nota { display: none !important; }
   body.ap5 .carrinho { padding: 8px 12px; }
   /* 09/10 (pedido do dono: "se adeque a todos os dispositivos"): com reserva a
      página ficou maior e os 5 níveis não bastavam em celular baixo (320×568,
@@ -372,6 +385,7 @@
      com `display:block` inline, que ganharia do nível. */
   body.ap6 .nota-meli { display: none !important; }
   body.ap6 .reserva__pe, body.ap6 .topo { display: none; }
+  body.ap6 .reserva--min .reserva__pe { display: block; }
   body.ap6 .heroi { margin-top: 0; }
   body.ap6 .robo { width: clamp(58px, 9vh, 74px); }
   body.ap6 h1 { font-size: clamp(20px, 5.6vw, 24px); }
@@ -391,7 +405,7 @@
     #ok { max-width: 780px; flex-direction: row; flex-wrap: wrap; justify-content: center;
           align-items: flex-start; gap: 10px; padding-top: 8px; }
     #ok .topo, #ok .heroi, #ok .sub, #ok .como, #ok footer, #ok .plus { display: none !important; }
-    #ok .ticket, #ok .carrinho, #ok .nota-meli, #ok .extra, #ok .reserva {
+    #ok .ticket, #ok .carrinho, #ok .nota-meli, #ok .extra, #ok .reserva, #ok .min-nota {
       width: calc(50% - 5px); margin-top: 0; }
     #ok .nota-meli { display: none !important; }   /* o selo da reserva já diz */
     .dica, .barra__nota { display: none; }
@@ -420,6 +434,7 @@
   <div class="ticket" aria-label="Cupom">
     <div class="ticket__rot" id="ticketRot">Seu cupom</div>
     <span class="codigo" id="codigo">…</span>
+    <div class="ticket__cond" id="ticketCond"></div>
     <div class="ticket__pe" id="ticketPe">pra colar no pagamento</div>
     <div class="meli" id="meliSelo">⭐ Só assinante Meli+</div>
   </div>
@@ -427,6 +442,7 @@
   <div class="extra" id="extra"><span class="extra__chip">Use também este</span><br>
     <span class="codigo2" id="codigo2" role="button" tabindex="0" aria-label="Copiar o 2º cupom"><span id="codigo2Txt">…</span><span class="codigo2__acao" id="codigo2Acao">toque pra copiar</span></span>
     <span class="extra__pe"><span class="extra__pe1">cole no pagamento junto com o de cima:<br></span><b>os descontos dos 2 somam</b></span></div>
+  <div class="min-nota" id="minNota"></div>
   <div class="nota-meli" id="notaMeli">Não é assinante <b>Meli+</b>? O cupom de cima não vale pra você — <b>use o reserva abaixo 👇</b></div>
 
   <div class="carrinho" id="carrinho">
@@ -545,17 +561,45 @@ function lerLink(qs) {
   if (p[0] === 'h') { oculto = true; p.shift(); }
   var meliMais = false;
   if (p[0] === 'm') { meliMais = true; p.shift(); }
+  // Cupons de COMPRA MÍNIMA (23/10): `-q-<código>-n<R$>|c<cent>[-p<%>|-v<R$>]` no
+  // fim. Atributo em minúscula (nunca aparece num código); cupom ilegível some
+  // com os atributos dele, nunca derruba a página.
+  var toksQ = [], iq = p.indexOf('q');
+  if (iq >= 0) { toksQ = p.slice(iq + 1); p = p.slice(0, iq); }
   var reserva = null, ir = p.indexOf('r');
   if (ir >= 0) {
     if (ir !== p.length - 2) return null;
     reserva = p[ir + 1];
     p = p.slice(0, ir);
   }
-  if (p.length < 1 || p.length > 2) return null;
+  if (p.length > 2 || (p.length < 1 && !toksQ.length)) return null;
   function cod(x) {
     x = String(x || '').toUpperCase();
     if (oculto) { x = decifrar(x); if (!x) return null; }
     return /^[A-Z0-9]{3,24}$/.test(x) ? x : null;
+  }
+  var mins = [];
+  toksQ.forEach(function (t) {
+    if (/^[ncpv]\d{1,9}$/.test(t)) {
+      if (mins.length) {
+        var k = t.charAt(0), v = parseInt(t.slice(1), 10);
+        // mínima e valor em CENTAVOS; n e v vêm em reais
+        mins[mins.length - 1][{ n: 'minimo', c: 'minimo', p: 'pct', v: 'valor' }[k]] = (k === 'n' || k === 'v') ? v * 100 : v;
+      }
+      return;
+    }
+    var c = cod(t);
+    mins.push(c ? { cupom: c } : { _ruim: true });
+  });
+  mins = mins.filter(function (m) { return !m._ruim; }).slice(0, 4);
+  if (!p.length) {
+    // Só cupom de compra mínima: o 1º vira o cupom do botão verde.
+    if (!mins.length) return null;
+    var r0 = item ? { item: item } : { meli: meli };
+    if (oculto) r0.oculto = true;
+    if (marca) r0.marca = marca;
+    r0.minimos = mins;
+    return r0;
   }
   var c1 = cod(p[0]);
   if (!c1) return null;
@@ -573,6 +617,8 @@ function lerLink(qs) {
     var rc = cod(reserva);
     if (rc && rc !== c1 && rc !== r.cupom2) r.reserva = rc;
   }
+  mins = mins.filter(function (m) { return m.cupom !== c1 && m.cupom !== r.cupom2 && m.cupom !== r.reserva; });
+  if (mins.length) r.minimos = mins;
   return r;
 }
 
@@ -583,6 +629,22 @@ function lerLink(qs) {
     document.getElementById('barra').style.display = 'none';
     document.getElementById('erro').style.display = 'flex';
     return;
+  }
+  // Cupons de COMPRA MÍNIMA (23/10, pedido do dono). Sem cupom principal, o 1º
+  // vira o cupom do botão verde; o seguinte (ou, com principal, o 1º) ocupa o
+  // bloco de baixo, onde fica a reserva. A condição sai sempre escrita: o cupom
+  // só vale com a compra mínima no carrinho.
+  var minimos = (dados.minimos || []).slice();
+  var minPrinc = null, minRes = null;
+  if (!dados.cupom && minimos.length) { minPrinc = minimos.shift(); dados.cupom = minPrinc.cupom; }
+  if (!dados.reserva && minimos.length) { minRes = minimos.shift(); dados.reserva = minRes.cupom; }
+  function reais(cent) {
+    var v = Math.round(cent), i = Math.floor(v / 100), d = v % 100;
+    return 'R$ ' + String(i).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (d ? ',' + (d < 10 ? '0' : '') + d : '');
+  }
+  function condMin(m) {
+    var desc = m.pct ? m.pct + '% OFF' : (m.valor ? reais(m.valor) + ' OFF' : 'Cupom');
+    return desc + (m.minimo ? ' · compra mín. ' + reais(m.minimo) : '');
   }
   var destino = dados.item
     ? 'https://produto.mercadolivre.com.br/MLB-' + dados.item.slice(3)
@@ -623,11 +685,31 @@ function lerLink(qs) {
   if (dados.reserva) {
     document.getElementById('reserva').style.display = 'block';
   }
+  if (minPrinc) {
+    var tRotM = document.getElementById('ticketRot');
+    tRotM.textContent = 'Cupom com compra mínima';
+    tRotM.classList.add('chip', 'chip--princ');
+    var tc = document.getElementById('ticketCond');
+    tc.textContent = condMin(minPrinc);
+    tc.style.display = 'block';
+    if (minPrinc.minimo) {
+      var mn = document.getElementById('minNota');
+      mn.innerHTML = '<b>Só vale com ' + reais(minPrinc.minimo) + ' ou mais no carrinho.</b>' +
+        '<span class="min-nota__mais"> Leve mais unidades ou junte outros produtos.</span>';
+      mn.style.display = 'block';
+    }
+  }
+  if (minRes) {
+    document.getElementById('reserva').classList.add('reserva--min');
+    document.getElementById('reservaRot').textContent = minPrinc ? 'Outro cupom com mínima' : 'Cupom com compra mínima';
+    document.getElementById('reservaPe').textContent = condMin(minRes);
+    document.getElementById('btnReservaTxt').textContent = 'Copiar este e ir';
+  }
   // Principal só pra assinante Meli+ (09/10): o selo e, com reserva, a faixa
   // que manda quem não assina usar o reserva.
   if (dados.meli_mais) {
     document.getElementById('meliSelo').style.display = 'block';
-    if (dados.reserva) {
+    if (dados.reserva && !minRes) {
       document.getElementById('notaMeli').style.display = 'block';
       var rotR = document.getElementById('reservaRot');
       rotR.textContent = 'Sem Meli+? Use este';
@@ -636,7 +718,7 @@ function lerLink(qs) {
     }
   }
   // Mais de 1 cupom (combo ou reserva): o botão diz QUAL copia (08/10).
-  if (dados.cupom2 || dados.reserva) {
+  if ((dados.cupom2 || dados.reserva) && !minPrinc) {
     var tRot = document.getElementById('ticketRot');
     tRot.textContent = 'Cupom principal';
     tRot.classList.add('chip', 'chip--princ');
@@ -685,14 +767,14 @@ function lerLink(qs) {
     } catch (e) { /* contagem é best-effort */ }
   }
 
-  function ga(evento) {
-    contar(evento, { canal: 'c', link: dados.meli || dados.item, cupom: dados.cupom,
+  function ga(evento, cupom) {
+    contar(evento, { canal: 'c', link: dados.meli || dados.item, cupom: cupom || dados.cupom,
                      extra: [dados.cupom2 || '', dados.reserva || ''].join('|'), marca: dados.marca });
     try {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento, sid: sid,
         dl: location.href, dt: 'cupom',
-        'ep.canal': 'c', 'ep.link': dados.meli || dados.item, 'ep.cupom': dados.cupom,
+        'ep.canal': 'c', 'ep.link': dados.meli || dados.item, 'ep.cupom': cupom || dados.cupom,
         'ep.cupom2': dados.cupom2 || '', 'ep.reserva': dados.reserva || ''
       });
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
@@ -770,19 +852,19 @@ function lerLink(qs) {
     btnR.addEventListener('click', function () {
       revelar();
       document.getElementById('dica').style.display = 'none';
-      if (falhouR) { ga('cupom_reserva_foi_sem_copiar'); ir(); return; }
+      if (falhouR) { ga(minRes ? 'cupom_minimo_foi_sem_copiar' : 'cupom_reserva_foi_sem_copiar', dados.reserva); ir(); return; }
       function deuCertoR() {
-        ga('cupom_reserva_copiou');
+        ga(minRes ? 'cupom_minimo_copiou' : 'cupom_reserva_copiou', dados.reserva);
         btnR.classList.add('ok');
-        document.getElementById('btnReservaTxt').textContent = '✓ Reserva copiada';
+        document.getElementById('btnReservaTxt').textContent = minRes ? '✓ Cupom copiado' : '✓ Reserva copiada';
         document.getElementById('btnReservaFim').textContent = 'abrindo…';
         setTimeout(ir, 700);
       }
       function naoDeuR() {
         if (copiarAntigo(dados.reserva)) { deuCertoR(); return; }
         falhouR = true;
-        ga('cupom_reserva_copia_falhou');
-        aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o reserva <b>' + dados.reserva +
+        ga(minRes ? 'cupom_minimo_copia_falhou' : 'cupom_reserva_copia_falhou', dados.reserva);
+        aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o ' + (minRes ? 'cupom' : 'reserva') + ' <b>' + dados.reserva +
           '</b> e toque nele de novo pra ir ao produto.';
         aviso.style.display = 'block';
         caber();
@@ -805,9 +887,9 @@ function lerLink(qs) {
   btn.addEventListener('click', function () {
     revelar();
     document.getElementById('dica').style.display = 'none';
-    if (falhou) { ga('cupom_foi_sem_copiar'); ir(); return; }
+    if (falhou) { ga(minPrinc ? 'cupom_minimo_foi_sem_copiar' : 'cupom_foi_sem_copiar'); ir(); return; }
     function deuCerto() {
-      ga('cupom_copiou_e_foi');
+      ga(minPrinc ? 'cupom_minimo_copiou' : 'cupom_copiou_e_foi');
       btn.classList.add('ok');
       // Com 2 cupons: tempo pra ler o 2º antes de a página sumir.
       btnTxt.textContent = '✓ Cupom copiado!';
@@ -819,7 +901,7 @@ function lerLink(qs) {
     function naoDeu() {
       if (copiarAntigo(dados.cupom)) { deuCerto(); return; }
       falhou = true;
-      ga('cupom_copia_falhou');
+      ga(minPrinc ? 'cupom_minimo_copia_falhou' : 'cupom_copia_falhou');
       aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o código acima e toque de novo pra ir ao produto.';
       aviso.style.display = 'block';
       caber();
