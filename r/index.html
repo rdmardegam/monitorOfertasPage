@@ -43,6 +43,7 @@
 //     /r/?A-<ASIN>-<canal>              Amazon   → /r/?A-B0BP2TGK6W-k
 //     /r/?M-<id>-<MLB>-<canal>          ML       → /r/?M-1zaYcYa-MLB46013144-f
 //     /r/?M-<id>-<canal>                ML sem MLB (3 partes)
+//     /r/?S-<id>-<canal>                perfil de afiliado → mercadolivre.com/sec/<id> (22/10)
 //   LONGO (legado): /r/?to=<id>&o=<MLB>&c=<canal>&mkt=<ml|amz>
 //
 // O legado FICA PRA SEMPRE: as mensagens já enviadas no WhatsApp apontam pra ele
@@ -57,7 +58,7 @@
 // Whitelist por loja → nunca vira redirecionador aberto.
 (function () {
   var AMZ_TAG = 'monitorofe040-20';
-  var to = '', mkt = 'ml', canal = '', mlb = '';
+  var to = '', mkt = 'ml', canal = '', mlb = '', sec = false;
 
   // "?A-B0BP2TGK6W-k" → query sem "=" nenhum. Não usa PATH (/r/A-...) porque o
   // site é GitHub Pages: path inexistente cai no 404 (status 404 de verdade).
@@ -68,9 +69,10 @@
   var marca = '';
   var mm = /\.([a-z0-9]{4,8})$/.exec(bruto);
   if (mm) { marca = mm[1]; bruto = bruto.slice(0, -mm[0].length); }
-  var comp = /^([AM])-([A-Za-z0-9]{4,16})(?:-([A-Za-z0-9]{3,20}))?(?:-([a-z]{1,10}))?$/.exec(bruto);
+  var comp = /^([AMS])-([A-Za-z0-9]{4,16})(?:-([A-Za-z0-9]{3,20}))?(?:-([a-z]{1,10}))?$/.exec(bruto);
   if (comp && bruto.indexOf('=') === -1) {
     mkt = comp[1] === 'A' ? 'amz' : 'ml';
+    sec = comp[1] === 'S';   // perfil de afiliado (22/10): não é o código do meli.la
     to = comp[2];
     // 3 partes → o 3º campo é o CANAL; 4 partes → é o MLB e o 4º é o canal.
     if (comp[4]) { mlb = comp[3] || ''; canal = comp[4]; }
@@ -91,6 +93,8 @@
       dest = 'https://www.amazon.com.br/dp/' + to + '?tag=' + AMZ_TAG +
              '&language=pt_BR' + (canal ? '&ascsubtag=' + encodeURIComponent(canal) : '');
     }
+  } else if (sec && /^[A-Za-z0-9]{4,16}$/.test(to)) {
+    dest = 'https://mercadolivre.com/sec/' + to;
   } else if (/^[A-Za-z0-9]{4,16}$/.test(to)) {
     dest = 'https://meli.la/' + to;
   }
