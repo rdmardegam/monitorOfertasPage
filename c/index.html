@@ -517,6 +517,8 @@
 // assinante Meli+: selo no cupom e, com reserva, "use o reserva". Link SEM o `m`
 // (todos os de antes de 09/10) é lido exatamente como antes.
 // Códigos têm 3+ letras, então os marcadores `h`, `m` e `r` nunca colidem com eles.
+// Mínimas (23/10) e cupons de MEIO DE PAGAMENTO (26/10): ...-q-<código>-<atributos>
+// no fim; atributo em minúscula (n/c mínima, p %, v valor, t teto, g meio).
 // Combo (1 cupom da loja + 1 do ML, que SOMAM): /c/?<link>-<CUPOM>-<CUPOM2>. A
 // área de transferência guarda um só: copia o 1º e mostra o 2º por escrito
 // (decisão do dono, 05/10). O 2º também está na mensagem do grupo.
@@ -543,6 +545,11 @@ function decifrar(s) {
   }
   return out;
 }
+
+// Meio de pagamento do cupom de MEIO DE PAGAMENTO (26/10): `g<n>` no link,
+// espelho do `_MEIOS_PAGAMENTO` do bot. `g0` (ou fora da tabela) = meio que o
+// link não nomeia: a página não escreve nome nenhum, nunca um errado.
+var MEIOS = ['', 'Mercado Parcelado', 'Saldo no Mercado Pago', 'Cartão Mercado Pago Visa'];
 
 function lerLink(qs) {
   var s = String(qs || '').replace(/^[?#]/, '');
@@ -580,11 +587,13 @@ function lerLink(qs) {
   }
   var mins = [];
   toksQ.forEach(function (t) {
-    if (/^[ncpv]\d{1,9}$/.test(t)) {
+    if (/^[ncpvtg]\d{1,9}$/.test(t)) {
       if (mins.length) {
         var k = t.charAt(0), v = parseInt(t.slice(1), 10);
-        // mínima e valor em CENTAVOS; n e v vêm em reais
-        mins[mins.length - 1][{ n: 'minimo', c: 'minimo', p: 'pct', v: 'valor' }[k]] = (k === 'n' || k === 'v') ? v * 100 : v;
+        // mínima, valor e teto em CENTAVOS; n, v e t vêm em reais. `t` e `g`
+        // (meio) são do cupom de MEIO DE PAGAMENTO (26/10).
+        mins[mins.length - 1][{ n: 'minimo', c: 'minimo', p: 'pct', v: 'valor', t: 'teto', g: 'meio' }[k]] =
+          (k === 'n' || k === 'v' || k === 't') ? v * 100 : v;
       }
       return;
     }
@@ -642,8 +651,17 @@ function lerLink(qs) {
     var v = Math.round(cent), i = Math.floor(v / 100), d = v % 100;
     return 'R$ ' + String(i).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (d ? ',' + (d < 10 ? '0' : '') + d : '');
   }
+  // Cupom de MEIO DE PAGAMENTO (26/10, pedido do dono): vem na mesma lista das
+  // mínimas, com o meio (`g`). Só vale pagando daquele jeito, e a página diz.
+  function ehPag(m) { return !!m && m.meio !== undefined; }
+  function pagandoCom(m) {
+    var n = MEIOS[m.meio];
+    return n ? 'pagando com ' + n : 'só com a forma de pagamento da mensagem';
+  }
+  function evExtra(m, fim) { return (ehPag(m) ? 'cupom_pagamento_' : 'cupom_minimo_') + fim; }
   function condMin(m) {
     var desc = m.pct ? m.pct + '% OFF' : (m.valor ? reais(m.valor) + ' OFF' : 'Cupom');
+    if (ehPag(m)) return (m.pct && m.teto ? desc + ' até ' + reais(m.teto) : desc) + ' · ' + pagandoCom(m);
     return desc + (m.minimo ? ' · compra mín. ' + reais(m.minimo) : '');
   }
   var destino = dados.item
@@ -687,12 +705,19 @@ function lerLink(qs) {
   }
   if (minPrinc) {
     var tRotM = document.getElementById('ticketRot');
-    tRotM.textContent = 'Cupom com compra mínima';
+    tRotM.textContent = ehPag(minPrinc) ? 'Cupom de pagamento' : 'Cupom com compra mínima';
     tRotM.classList.add('chip', 'chip--princ');
     var tc = document.getElementById('ticketCond');
     tc.textContent = condMin(minPrinc);
     tc.style.display = 'block';
-    if (minPrinc.minimo) {
+    if (ehPag(minPrinc)) {
+      var mnP = document.getElementById('minNota');
+      mnP.innerHTML = MEIOS[minPrinc.meio]
+        ? '<b>Só vale pagando com ' + MEIOS[minPrinc.meio] + '.</b>' +
+          '<span class="min-nota__mais"> Escolha essa forma de pagamento no ML.</span>'
+        : '<b>Só vale com a forma de pagamento que a mensagem diz.</b>';
+      mnP.style.display = 'block';
+    } else if (minPrinc.minimo) {
       var mn = document.getElementById('minNota');
       mn.innerHTML = '<b>Só vale com ' + reais(minPrinc.minimo) + ' ou mais no carrinho.</b>' +
         '<span class="min-nota__mais"> Leve mais unidades ou junte outros produtos.</span>';
@@ -701,7 +726,8 @@ function lerLink(qs) {
   }
   if (minRes) {
     document.getElementById('reserva').classList.add('reserva--min');
-    document.getElementById('reservaRot').textContent = minPrinc ? 'Outro cupom com mínima' : 'Cupom com compra mínima';
+    document.getElementById('reservaRot').textContent = ehPag(minRes) ? 'Cupom de pagamento'
+      : (minPrinc ? 'Outro cupom com mínima' : 'Cupom com compra mínima');
     document.getElementById('reservaPe').textContent = condMin(minRes);
     document.getElementById('btnReservaTxt').textContent = 'Copiar este e ir';
   }
@@ -852,9 +878,9 @@ function lerLink(qs) {
     btnR.addEventListener('click', function () {
       revelar();
       document.getElementById('dica').style.display = 'none';
-      if (falhouR) { ga(minRes ? 'cupom_minimo_foi_sem_copiar' : 'cupom_reserva_foi_sem_copiar', dados.reserva); ir(); return; }
+      if (falhouR) { ga(minRes ? evExtra(minRes, 'foi_sem_copiar') : 'cupom_reserva_foi_sem_copiar', dados.reserva); ir(); return; }
       function deuCertoR() {
-        ga(minRes ? 'cupom_minimo_copiou' : 'cupom_reserva_copiou', dados.reserva);
+        ga(minRes ? evExtra(minRes, 'copiou') : 'cupom_reserva_copiou', dados.reserva);
         btnR.classList.add('ok');
         document.getElementById('btnReservaTxt').textContent = minRes ? '✓ Cupom copiado' : '✓ Reserva copiada';
         document.getElementById('btnReservaFim').textContent = 'abrindo…';
@@ -863,7 +889,7 @@ function lerLink(qs) {
       function naoDeuR() {
         if (copiarAntigo(dados.reserva)) { deuCertoR(); return; }
         falhouR = true;
-        ga(minRes ? 'cupom_minimo_copia_falhou' : 'cupom_reserva_copia_falhou', dados.reserva);
+        ga(minRes ? evExtra(minRes, 'copia_falhou') : 'cupom_reserva_copia_falhou', dados.reserva);
         aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o ' + (minRes ? 'cupom' : 'reserva') + ' <b>' + dados.reserva +
           '</b> e toque nele de novo pra ir ao produto.';
         aviso.style.display = 'block';
@@ -887,9 +913,9 @@ function lerLink(qs) {
   btn.addEventListener('click', function () {
     revelar();
     document.getElementById('dica').style.display = 'none';
-    if (falhou) { ga(minPrinc ? 'cupom_minimo_foi_sem_copiar' : 'cupom_foi_sem_copiar'); ir(); return; }
+    if (falhou) { ga(minPrinc ? evExtra(minPrinc, 'foi_sem_copiar') : 'cupom_foi_sem_copiar'); ir(); return; }
     function deuCerto() {
-      ga(minPrinc ? 'cupom_minimo_copiou' : 'cupom_copiou_e_foi');
+      ga(minPrinc ? evExtra(minPrinc, 'copiou') : 'cupom_copiou_e_foi');
       btn.classList.add('ok');
       // Com 2 cupons: tempo pra ler o 2º antes de a página sumir.
       btnTxt.textContent = '✓ Cupom copiado!';
@@ -901,7 +927,7 @@ function lerLink(qs) {
     function naoDeu() {
       if (copiarAntigo(dados.cupom)) { deuCerto(); return; }
       falhou = true;
-      ga(minPrinc ? 'cupom_minimo_copia_falhou' : 'cupom_copia_falhou');
+      ga(minPrinc ? evExtra(minPrinc, 'copia_falhou') : 'cupom_copia_falhou');
       aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o código acima e toque de novo pra ir ao produto.';
       aviso.style.display = 'block';
       caber();
