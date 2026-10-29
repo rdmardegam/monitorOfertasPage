@@ -728,7 +728,7 @@ function lerLink(qs) {
     if (dados.reserva) document.getElementById('codReserva').textContent = mostrar(dados.reserva);
     if (dados.reserva2) document.getElementById('codReserva2').textContent = mostrar(dados.reserva2);
   }
-  var PE_ANUNCIO = 'sem código: já vem aplicado no produto';
+  var PE_ANUNCIO = 'sem código: se o ML pedir, toque em “Ativar” no produto';
   // Principal e reserva só aparecem inteiros depois do toque num botão de ir.
   function revelar() {
     if (revelado) return;
@@ -757,10 +757,10 @@ function lerLink(qs) {
     var tRotA = document.getElementById('ticketRot');
     tRotA.textContent = 'Cupom do anúncio';
     tRotA.classList.add('chip', 'chip--princ');
-    document.getElementById('sub').innerHTML = 'O cupom do anúncio <b>já vem aplicado</b> no produto. Toque no botão verde pra ir.';
+    document.getElementById('sub').innerHTML = 'O cupom do anúncio <b>não tem código</b>: se o ML pedir, toque em <b>Ativar</b> no produto.';
     document.getElementById('btnTxt').textContent = 'Ir pro produto';
-    document.getElementById('btnSub').textContent = 'o desconto já vem aplicado';
-    document.getElementById('barraNota').textContent = 'Sem código pra colar: o desconto já vem no produto';
+    document.getElementById('btnSub').textContent = 'o cupom do anúncio está lá';
+    document.getElementById('barraNota').textContent = 'Sem código pra colar: se o ML pedir, toque em Ativar';
     document.getElementById('como').style.display = 'none';
     if (dados.reserva && !minRes) {
       document.getElementById('reservaPe').innerHTML = 'se o do anúncio <b>não aplicar</b>';
@@ -995,7 +995,7 @@ function lerLink(qs) {
       ga('cupom_anuncio_foi', '');
       btn.classList.add('ok');
       btnTxt.textContent = 'Abrindo o produto…';
-      btnSub.textContent = 'o desconto já vem aplicado';
+      btnSub.textContent = 'se o ML pedir, toque em Ativar';
       setTimeout(ir, 400);
       return;
     }
