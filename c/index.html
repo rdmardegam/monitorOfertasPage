@@ -429,7 +429,7 @@
     <img class="robo" src="/c/robo.webp" alt="" width="132" height="148">
     <h1>Seu cupom<br><span class="amarelo">tá pronto!</span></h1>
   </div>
-  <p class="sub">Toque no botão verde: ele <b>copia o cupom</b> e já <b>abre o produto</b>.</p>
+  <p class="sub" id="sub">Toque no botão verde: ele <b>copia o cupom</b> e já <b>abre o produto</b>.</p>
 
   <div class="ticket" aria-label="Cupom">
     <div class="ticket__rot" id="ticketRot">Seu cupom</div>
@@ -455,8 +455,14 @@
     <span class="reserva__codigo" id="codReserva">…</span>
     <div class="reserva__pe" id="reservaPe">se o principal <b>esgotar</b> ou <b>não aplicar</b></div>
     <button class="reserva__btn" id="btnReserva" type="button"><span id="btnReservaTxt">Copiar reserva e ir</span> <span id="btnReservaFim">›</span></button></div>
+  <!-- 2º reserva (29/10): só com o cupom do ANÚNCIO (sem código), que deixa as 2 vagas pras reservas -->
+  <div class="reserva" id="reserva2">
+    <div class="reserva__rot chip chip--res" id="reservaRot2">2º cupom reserva</div>
+    <span class="reserva__codigo" id="codReserva2">…</span>
+    <div class="reserva__pe" id="reservaPe2">se o de cima <b>não aplicar</b></div>
+    <button class="reserva__btn" id="btnReserva2" type="button"><span id="btnReservaTxt2">Copiar reserva e ir</span> <span id="btnReservaFim2">›</span></button></div>
 
-  <section class="como">
+  <section class="como" id="como">
     <span class="como__chip">Como usar?</span>
     <div class="passos">
       <div class="passo">
@@ -489,7 +495,7 @@
       <span class="cta__txt"><b id="btnTxt">Copiar cupom</b><small id="btnSub">e ir pro produto</small></span>
       <svg class="seta-cta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </button>
-    <div class="barra__nota">Depois é só colar o cupom no pagamento</div>
+    <div class="barra__nota" id="barraNota">Depois é só colar o cupom no pagamento</div>
   </div>
 </div>
 
@@ -568,18 +574,37 @@ function lerLink(qs) {
   if (p[0] === 'h') { oculto = true; p.shift(); }
   var meliMais = false;
   if (p[0] === 'm') { meliMais = true; p.shift(); }
+  // Principal do ANÚNCIO, sem código e já aplicado no produto (29/10):
+  // `-a[-p<%>|-v<R$>]` no lugar dos códigos; as reservas em `-r-<R1>[-r-<R2>]`.
+  var anuncio = null;
+  if (p[0] === 'a') {
+    anuncio = {}; p.shift();
+    if (/^[pv]\d{1,9}$/.test(p[0] || '')) {
+      var va = parseInt(p[0].slice(1), 10);
+      anuncio = p[0].charAt(0) === 'p' ? { pct: va } : { valor: va * 100 };
+      p.shift();
+    }
+  }
   // Cupons de COMPRA MÍNIMA (23/10): `-q-<código>-n<R$>|c<cent>[-p<%>|-v<R$>]` no
   // fim. Atributo em minúscula (nunca aparece num código); cupom ilegível some
   // com os atributos dele, nunca derruba a página.
   var toksQ = [], iq = p.indexOf('q');
   if (iq >= 0) { toksQ = p.slice(iq + 1); p = p.slice(0, iq); }
-  var reserva = null, ir = p.indexOf('r');
+  // Reservas: `-r-<R1>` e, com o cupom do anúncio (29/10), até `-r-<R1>-r-<R2>`.
+  var reservasTxt = [], ir = p.indexOf('r');
   if (ir >= 0) {
-    if (ir !== p.length - 2) return null;
-    reserva = p[ir + 1];
+    var cauda = p.slice(ir);
     p = p.slice(0, ir);
+    if (cauda.length % 2 || cauda.length > 4) return null;
+    for (var ic = 0; ic < cauda.length; ic += 2) {
+      if (cauda[ic] !== 'r') return null;
+      reservasTxt.push(cauda[ic + 1]);
+    }
   }
-  if (p.length > 2 || (p.length < 1 && !toksQ.length)) return null;
+  var reserva = reservasTxt.length ? reservasTxt[0] : null;
+  if (anuncio) {
+    if (p.length || !(reservasTxt.length || toksQ.length)) return null;
+  } else if (reservasTxt.length > 1 || p.length > 2 || (p.length < 1 && !toksQ.length)) return null;
   function cod(x) {
     x = String(x || '').toUpperCase();
     if (oculto) { x = decifrar(x); if (!x) return null; }
@@ -601,6 +626,19 @@ function lerLink(qs) {
     mins.push(c ? { cupom: c } : { _ruim: true });
   });
   mins = mins.filter(function (m) { return !m._ruim; }).slice(0, 4);
+  if (anuncio) {
+    var ra = item ? { item: item } : { meli: meli };
+    ra.anuncio = anuncio;
+    if (oculto) ra.oculto = true;
+    if (marca) ra.marca = marca;
+    var res = [];
+    reservasTxt.forEach(function (x) { var c = cod(x); if (c && res.indexOf(c) < 0) res.push(c); });
+    if (res.length) ra.reserva = res[0];
+    if (res.length > 1) ra.reserva2 = res[1];
+    mins = mins.filter(function (m) { return res.indexOf(m.cupom) < 0; });
+    if (mins.length) ra.minimos = mins;
+    return ra;
+  }
   if (!p.length) {
     // Só cupom de compra mínima: o 1º vira o cupom do botão verde.
     if (!mins.length) return null;
@@ -644,9 +682,14 @@ function lerLink(qs) {
   // bloco de baixo, onde fica a reserva. A condição sai sempre escrita: o cupom
   // só vale com a compra mínima no carrinho.
   var minimos = (dados.minimos || []).slice();
-  var minPrinc = null, minRes = null;
-  if (!dados.cupom && minimos.length) { minPrinc = minimos.shift(); dados.cupom = minPrinc.cupom; }
+  var minPrinc = null, minRes = null, minRes2 = null;
+  // Cupom do ANÚNCIO (29/10, pedido do dono): o principal não tem código e já
+  // vem aplicado no produto. Ele ocupa o lugar do cupom, o botão verde só abre o
+  // produto e as 2 vagas de baixo ficam pras reservas (ou mínimas).
+  var anuncio = dados.anuncio || null;
+  if (!dados.cupom && !anuncio && minimos.length) { minPrinc = minimos.shift(); dados.cupom = minPrinc.cupom; }
   if (!dados.reserva && minimos.length) { minRes = minimos.shift(); dados.reserva = minRes.cupom; }
+  if (anuncio && !dados.reserva2 && minimos.length) { minRes2 = minimos.shift(); dados.reserva2 = minRes2.cupom; }
   function reais(cent) {
     var v = Math.round(cent), i = Math.floor(v / 100), d = v % 100;
     return 'R$ ' + String(i).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (d ? ',' + (d < 10 ? '0' : '') + d : '');
@@ -673,23 +716,30 @@ function lerLink(qs) {
   var MASCARA = '•••••';   // "•••••", igual `_MASCARA_CUPOM`
   var revelado = !dados.oculto;
   function mostrar(c) { return revelado ? c : c.slice(0, 3) + MASCARA; }
+  function descAnuncio() {
+    return anuncio.pct ? anuncio.pct + '% OFF' : (anuncio.valor ? reais(anuncio.valor) + ' OFF' : 'Desconto');
+  }
   function pintar() {
-    document.getElementById('codigo').textContent = mostrar(dados.cupom);
+    document.getElementById('codigo').textContent = anuncio ? descAnuncio() : mostrar(dados.cupom);
     // O 2º do combo (o da loja) sempre ABERTO (10/10, pedido do dono): a
     // mensagem já o mostra inteiro, e a área de transferência guarda um código
     // só — ele é copiado à parte, aqui ou no WhatsApp.
     if (dados.cupom2) document.getElementById('codigo2Txt').textContent = dados.cupom2;
     if (dados.reserva) document.getElementById('codReserva').textContent = mostrar(dados.reserva);
+    if (dados.reserva2) document.getElementById('codReserva2').textContent = mostrar(dados.reserva2);
   }
+  var PE_ANUNCIO = 'sem código: já vem aplicado no produto';
   // Principal e reserva só aparecem inteiros depois do toque num botão de ir.
   function revelar() {
     if (revelado) return;
     revelado = true;
     pintar();
-    document.getElementById('ticketPe').textContent = 'pra colar no pagamento';
+    document.getElementById('ticketPe').textContent = anuncio ? PE_ANUNCIO : 'pra colar no pagamento';
   }
   pintar();
-  if (!revelado) {
+  if (anuncio) {
+    document.getElementById('ticketPe').textContent = PE_ANUNCIO;
+  } else if (!revelado) {
     document.getElementById('ticketPe').textContent = 'aparece ao tocar no botão verde';
   }
   if (dados.cupom2) {
@@ -702,6 +752,28 @@ function lerLink(qs) {
   }
   if (dados.reserva) {
     document.getElementById('reserva').style.display = 'block';
+  }
+  if (anuncio) {
+    var tRotA = document.getElementById('ticketRot');
+    tRotA.textContent = 'Cupom do anúncio';
+    tRotA.classList.add('chip', 'chip--princ');
+    document.getElementById('sub').innerHTML = 'O cupom do anúncio <b>já vem aplicado</b> no produto. Toque no botão verde pra ir.';
+    document.getElementById('btnTxt').textContent = 'Ir pro produto';
+    document.getElementById('btnSub').textContent = 'o desconto já vem aplicado';
+    document.getElementById('barraNota').textContent = 'Sem código pra colar: o desconto já vem no produto';
+    document.getElementById('como').style.display = 'none';
+    if (dados.reserva && !minRes) {
+      document.getElementById('reservaPe').innerHTML = 'se o do anúncio <b>não aplicar</b>';
+    }
+    if (dados.reserva2) {
+      document.getElementById('reserva2').style.display = 'block';
+      if (minRes2) {
+        document.getElementById('reserva2').classList.add('reserva--min');
+        document.getElementById('reservaRot2').textContent = ehPag(minRes2) ? 'Cupom de pagamento' : 'Cupom com compra mínima';
+        document.getElementById('reservaPe2').textContent = condMin(minRes2);
+        document.getElementById('btnReservaTxt2').textContent = 'Copiar este e ir';
+      }
+    }
   }
   if (minPrinc) {
     var tRotM = document.getElementById('ticketRot');
@@ -744,7 +816,7 @@ function lerLink(qs) {
     }
   }
   // Mais de 1 cupom (combo ou reserva): o botão diz QUAL copia (08/10).
-  if ((dados.cupom2 || dados.reserva) && !minPrinc) {
+  if ((dados.cupom2 || dados.reserva) && !minPrinc && !anuncio) {
     var tRot = document.getElementById('ticketRot');
     tRot.textContent = 'Cupom principal';
     tRot.classList.add('chip', 'chip--princ');
@@ -760,7 +832,7 @@ function lerLink(qs) {
   });
   document.addEventListener('copy', function (e) {
     var sel = window.getSelection && String(window.getSelection()).trim();
-    if (sel && sel !== dados.cupom2 && sel.indexOf(dados.cupom) >= 0) e.preventDefault();
+    if (sel && dados.cupom && sel !== dados.cupom2 && sel.indexOf(dados.cupom) >= 0) e.preventDefault();
   });
 
   // Medição (GA4, mesmo jeito do /r/: sendBeacon, nunca segura a navegação).
@@ -795,12 +867,13 @@ function lerLink(qs) {
 
   function ga(evento, cupom) {
     contar(evento, { canal: 'c', link: dados.meli || dados.item, cupom: cupom || dados.cupom,
-                     extra: [dados.cupom2 || '', dados.reserva || ''].join('|'), marca: dados.marca });
+                     extra: [dados.cupom2 || '', dados.reserva || ''].concat(dados.reserva2 ? [dados.reserva2] : []).join('|'),
+                     marca: dados.marca });
     try {
       var p = new URLSearchParams({
         v: '2', tid: 'G-6959NQX27C', cid: cid, en: evento, sid: sid,
         dl: location.href, dt: 'cupom',
-        'ep.canal': 'c', 'ep.link': dados.meli || dados.item, 'ep.cupom': cupom || dados.cupom,
+        'ep.canal': 'c', 'ep.link': dados.meli || dados.item, 'ep.cupom': cupom || dados.cupom || '',
         'ep.cupom2': dados.cupom2 || '', 'ep.reserva': dados.reserva || ''
       });
       navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
@@ -872,38 +945,42 @@ function lerLink(qs) {
     el2.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); copiar2(); } });
   }
 
-  if (dados.reserva) {
-    var btnR = document.getElementById('btnReserva');
+  // Botão de cada vaga de baixo (reserva, mínima ou pagamento). A 2ª vaga
+  // (sufixo `2`) só existe com o cupom do ANÚNCIO (29/10).
+  function ligarReserva(suf, codigo, minR) {
+    var btnR = document.getElementById('btnReserva' + suf);
     var falhouR = false;
     btnR.addEventListener('click', function () {
       revelar();
       document.getElementById('dica').style.display = 'none';
-      if (falhouR) { ga(minRes ? evExtra(minRes, 'foi_sem_copiar') : 'cupom_reserva_foi_sem_copiar', dados.reserva); ir(); return; }
+      if (falhouR) { ga(minR ? evExtra(minR, 'foi_sem_copiar') : 'cupom_reserva_foi_sem_copiar', codigo); ir(); return; }
       function deuCertoR() {
-        ga(minRes ? evExtra(minRes, 'copiou') : 'cupom_reserva_copiou', dados.reserva);
+        ga(minR ? evExtra(minR, 'copiou') : 'cupom_reserva_copiou', codigo);
         btnR.classList.add('ok');
-        document.getElementById('btnReservaTxt').textContent = minRes ? '✓ Cupom copiado' : '✓ Reserva copiada';
-        document.getElementById('btnReservaFim').textContent = 'abrindo…';
+        document.getElementById('btnReservaTxt' + suf).textContent = minR ? '✓ Cupom copiado' : '✓ Reserva copiada';
+        document.getElementById('btnReservaFim' + suf).textContent = 'abrindo…';
         setTimeout(ir, 700);
       }
       function naoDeuR() {
-        if (copiarAntigo(dados.reserva)) { deuCertoR(); return; }
+        if (copiarAntigo(codigo)) { deuCertoR(); return; }
         falhouR = true;
-        ga(minRes ? evExtra(minRes, 'copia_falhou') : 'cupom_reserva_copia_falhou', dados.reserva);
-        aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o ' + (minRes ? 'cupom' : 'reserva') + ' <b>' + dados.reserva +
+        ga(minR ? evExtra(minR, 'copia_falhou') : 'cupom_reserva_copia_falhou', codigo);
+        aviso.innerHTML = '<b>Não deu pra copiar sozinho.</b> Anote o ' + (minR ? 'cupom' : 'reserva') + ' <b>' + codigo +
           '</b> e toque nele de novo pra ir ao produto.';
         aviso.style.display = 'block';
         caber();
       }
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(dados.reserva).then(deuCertoR, naoDeuR);
+          navigator.clipboard.writeText(codigo).then(deuCertoR, naoDeuR);
         } else {
           naoDeuR();
         }
       } catch (e) { naoDeuR(); }
     });
   }
+  if (dados.reserva) ligarReserva('', dados.reserva, minRes);
+  if (anuncio && dados.reserva2) ligarReserva('2', dados.reserva2, minRes2);
 
   var btn = document.getElementById('btn');
   var btnTxt = document.getElementById('btnTxt');
@@ -913,6 +990,15 @@ function lerLink(qs) {
   btn.addEventListener('click', function () {
     revelar();
     document.getElementById('dica').style.display = 'none';
+    // Cupom do ANÚNCIO (29/10): sem código pra copiar — o botão só abre o produto.
+    if (anuncio) {
+      ga('cupom_anuncio_foi', '');
+      btn.classList.add('ok');
+      btnTxt.textContent = 'Abrindo o produto…';
+      btnSub.textContent = 'o desconto já vem aplicado';
+      setTimeout(ir, 400);
+      return;
+    }
     if (falhou) { ga(minPrinc ? evExtra(minPrinc, 'foi_sem_copiar') : 'cupom_foi_sem_copiar'); ir(); return; }
     function deuCerto() {
       ga(minPrinc ? evExtra(minPrinc, 'copiou') : 'cupom_copiou_e_foi');
