@@ -567,8 +567,9 @@ function lerLink(qs) {
   // Sem comissão (21/10): no lugar do meli.la vem o NÚMERO do anúncio
   // (`MLB` + dígitos) e a página abre o produto direto no ML. Testado ANTES do
   // meli.la: o link curto do ML tem 7 caracteres, nunca `MLB` + 7 dígitos.
+  // `MLBU` + dígitos (01/11) é o produto `/up/`, que abre noutro endereço.
   var item = null;
-  if (/^MLB\d{7,12}$/.test(meli || '')) { item = meli; meli = null; }
+  if (/^MLBU?\d{7,12}$/.test(meli || '')) { item = meli; meli = null; }
   else if (!/^[A-Za-z0-9]{4,12}$/.test(meli || '')) return null;
   var oculto = false;
   if (p[0] === 'h') { oculto = true; p.shift(); }
@@ -708,7 +709,9 @@ function lerLink(qs) {
     return desc + (m.minimo ? ' · compra mín. ' + reais(m.minimo) : '');
   }
   var destino = dados.item
-    ? 'https://produto.mercadolivre.com.br/MLB-' + dados.item.slice(3)
+    ? (dados.item.indexOf('MLBU') === 0
+        ? 'https://www.mercadolivre.com.br/up/' + dados.item
+        : 'https://produto.mercadolivre.com.br/MLB-' + dados.item.slice(3))
     : 'https://meli.la/' + dados.meli;
   // Link direto (sem comissão): não passa pela vitrine do nosso perfil, então
   // não existe o botão "Ir para produto" que o aviso do carrinho manda tocar.
