@@ -525,6 +525,8 @@
 // Códigos têm 3+ letras, então os marcadores `h`, `m` e `r` nunca colidem com eles.
 // Mínimas (23/10) e cupons de MEIO DE PAGAMENTO (26/10): ...-q-<código>-<atributos>
 // no fim; atributo em minúscula (n/c mínima, p %, v valor, t teto, g meio).
+// `s` depois do `g` (03/11): o preço do cartão é SEM o outro cupom (a mínima
+// dele não bate com os dois juntos) — o bloco diz "use sem o cupom de cima".
 // Combo (1 cupom da loja + 1 do ML, que SOMAM): /c/?<link>-<CUPOM>-<CUPOM2>. A
 // área de transferência guarda um só: copia o 1º e mostra o 2º por escrito
 // (decisão do dono, 05/10). O 2º também está na mensagem do grupo.
@@ -613,6 +615,7 @@ function lerLink(qs) {
   }
   var mins = [];
   toksQ.forEach(function (t) {
+    if (t === 's') { if (mins.length) mins[mins.length - 1].sem_outro = true; return; }
     if (/^[ncpvtg]\d{1,9}$/.test(t)) {
       if (mins.length) {
         var k = t.charAt(0), v = parseInt(t.slice(1), 10);
@@ -702,6 +705,15 @@ function lerLink(qs) {
     var n = MEIOS[m.meio];
     return n ? 'pagando com ' + n : 'só com a forma de pagamento da mensagem';
   }
+  // Cupom de pagamento cujo preço é SEM o outro cupom (03/11): aviso no bloco.
+  // Embaixo de um cupom com código, "de cima"; senão, "sem outro cupom".
+  function pintarCond(el, m, deCima) {
+    if (ehPag(m) && m.sem_outro) {
+      el.innerHTML = condMin(m) + ' · <b>' + (deCima ? 'use sem o cupom de cima' : 'use sem outro cupom') + '</b>';
+    } else {
+      el.textContent = condMin(m);
+    }
+  }
   function evExtra(m, fim) { return (ehPag(m) ? 'cupom_pagamento_' : 'cupom_minimo_') + fim; }
   function condMin(m) {
     var desc = m.pct ? m.pct + '% OFF' : (m.valor ? reais(m.valor) + ' OFF' : 'Cupom');
@@ -773,7 +785,7 @@ function lerLink(qs) {
       if (minRes2) {
         document.getElementById('reserva2').classList.add('reserva--min');
         document.getElementById('reservaRot2').textContent = ehPag(minRes2) ? 'Cupom de pagamento' : 'Cupom com compra mínima';
-        document.getElementById('reservaPe2').textContent = condMin(minRes2);
+        pintarCond(document.getElementById('reservaPe2'), minRes2, false);
         document.getElementById('btnReservaTxt2').textContent = 'Copiar este e ir';
       }
     }
@@ -788,7 +800,7 @@ function lerLink(qs) {
     if (ehPag(minPrinc)) {
       var mnP = document.getElementById('minNota');
       mnP.innerHTML = MEIOS[minPrinc.meio]
-        ? '<b>Só vale pagando com ' + MEIOS[minPrinc.meio] + '.</b>' +
+        ? '<b>Só vale pagando com ' + MEIOS[minPrinc.meio] + (minPrinc.sem_outro ? ', sem outro cupom' : '') + '.</b>' +
           '<span class="min-nota__mais"> Escolha essa forma de pagamento no ML.</span>'
         : '<b>Só vale com a forma de pagamento que a mensagem diz.</b>';
       mnP.style.display = 'block';
@@ -803,7 +815,7 @@ function lerLink(qs) {
     document.getElementById('reserva').classList.add('reserva--min');
     document.getElementById('reservaRot').textContent = ehPag(minRes) ? 'Cupom de pagamento'
       : (minPrinc ? 'Outro cupom com mínima' : 'Cupom com compra mínima');
-    document.getElementById('reservaPe').textContent = condMin(minRes);
+    pintarCond(document.getElementById('reservaPe'), minRes, !!dados.cupom && !dados.cupom2 && !minPrinc);
     document.getElementById('btnReservaTxt').textContent = 'Copiar este e ir';
   }
   // Principal só pra assinante Meli+ (09/10): o selo e, com reserva, a faixa
