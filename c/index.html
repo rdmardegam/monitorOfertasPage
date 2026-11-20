@@ -650,6 +650,12 @@ function lerLink(qs) {
     if (oculto) r0.oculto = true;
     if (marca) r0.marca = marca;
     r0.minimos = mins;
+    // Cupom do SALDO na frente (20/11): o de sempre vem como reserva ("Sem
+    // saldo? Use este"). Ilegível ou repetido: some, nunca derruba a página.
+    if (reserva !== null) {
+      var rc0 = cod(reserva);
+      if (rc0 && !mins.some(function (m) { return m.cupom === rc0; })) r0.reserva = rc0;
+    }
     return r0;
   }
   var c1 = cod(p[0]);
@@ -817,6 +823,13 @@ function lerLink(qs) {
       : (minPrinc ? 'Outro cupom com mínima' : 'Cupom com compra mínima');
     pintarCond(document.getElementById('reservaPe'), minRes, !!dados.cupom && !dados.cupom2 && !minPrinc);
     document.getElementById('btnReservaTxt').textContent = 'Copiar este e ir';
+  }
+  // Cupom do SALDO como principal (20/11): o de sempre vem embaixo, pra quem
+  // não paga com saldo.
+  if (minPrinc && ehPag(minPrinc) && dados.reserva && !minRes) {
+    document.getElementById('reservaRot').textContent =
+      /saldo/i.test(MEIOS[minPrinc.meio] || '') ? 'Sem saldo? Use este' : 'Pagando de outro jeito? Use este';
+    document.getElementById('reservaPe').innerHTML = 'vale pra <b>todo mundo</b>';
   }
   // Principal só pra assinante Meli+ (09/10): o selo e, com reserva, a faixa
   // que manda quem não assina usar o reserva.
