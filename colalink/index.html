@@ -395,7 +395,47 @@
     50%, 88%  { opacity: 1; }
     95%, 100% { opacity: 0; }
   }
+
+  /* ══ BLACK FRIDAY (21/11, pedido do dono) ═════════════════════════════════
+     Faixa AO LADO da logo, não em cima: a linha não cresce (a logo encolhe de
+     58 pra 42px) e o botão até SOBE uns 16px. Mais um cartão do plano do
+     carrinho abaixo da dobra. Os dois somem sozinhos em 01/12 (classe `sem-bf`
+     no <html>, posta por um script no <head> — sem piscar), e a logo volta.
+     ⚠️ Só o que é verdade hoje: o plano do carrinho está ligado no Cola-Links
+     (até 10 produtos). */
+  .topo { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .topo--bf .logo { width: 42px; height: 42px; }
+  .bf {
+    display: flex; flex-direction: column; align-items: flex-start;
+    text-align: left; line-height: 1.15;
+    background: #000; border: 1px solid var(--yellow); border-radius: 10px;
+    padding: 5px 11px 6px;
+  }
+  .bf b { font-size: 13px; font-weight: 800; letter-spacing: 1.4px; color: var(--white); }
+  .bf span { font-size: 11px; font-weight: 700; color: var(--yellow); }
+  .bfcar {
+    width: 100%; margin-top: 10px; text-align: left;
+    background: #000; border: 1px solid rgba(255,204,0,0.55);
+    border-radius: 14px; padding: 13px 15px 14px;
+  }
+  .bfcar__tag {
+    display: inline-block; font-size: 10.5px; font-weight: 800; letter-spacing: 1px;
+    color: #000; background: var(--yellow); border-radius: 6px; padding: 3px 8px;
+  }
+  .bfcar__t { font-size: 16px; font-weight: 700; margin-top: 9px; line-height: 1.3; text-wrap: balance; }
+  .bfcar__t b { color: var(--yellow); font-weight: 800; }
+  .bfcar__p { font-size: 13px; color: var(--gray); margin-top: 6px; line-height: 1.5; }
+  .bfcar__p b { color: #D8E2EE; font-weight: 700; }
+  .sem-bf .bf, .sem-bf .bfcar { display: none; }
+  .sem-bf .topo--bf .logo { width: 58px; height: 58px; }
 </style>
+<script>
+  // Black Friday (21/11): a faixa e o cartão somem sozinhos a partir de 01/12
+  // (00h de Brasília). No <head> pra a página já nascer sem eles — sem piscar.
+  try {
+    if (Date.now() >= Date.parse('2026-12-01T03:00:00Z')) document.documentElement.classList.add('sem-bf');
+  } catch (e) { /* sem data: fica como está */ }
+</script>
 </head>
 <body>
 
@@ -411,7 +451,10 @@
        acao. Tudo que CONVENCE quem ficou em duvida (promessa, passos, fecho)
        desceu, com um segundo botao la embaixo pra ninguem ter que voltar. -->
 
-  <img class="logo" src="/colalink/logo.png" alt="Cola Link ML">
+  <div class="topo topo--bf">
+    <img class="logo" src="/colalink/logo.png" alt="Cola Link ML">
+    <div class="bf"><b>🖤 BLACK FRIDAY</b><span>o cupom muda a toda hora</span></div>
+  </div>
 
   <h1>Cole ou compartilhe<br>o link do <span class="accent">Mercado Livre</span></h1>
 
@@ -489,6 +532,15 @@
   <div class="mais" aria-hidden="true">como funciona <span>⌄</span></div>
 
   <!-- ══ ABAIXO DA DOBRA — pra quem ficou em duvida ═══════════════════════ -->
+
+  <!-- Black Friday (21/11): o plano do carrinho, ligado no Cola-Links. Some em 01/12. -->
+  <div class="bfcar">
+    <span class="bfcar__tag">🖤 ESPECIAL BLACK FRIDAY</span>
+    <p class="bfcar__t">Carrinho cheio? <b>Manda o carrinho inteiro.</b></p>
+    <p class="bfcar__p">Compartilhe o carrinho do Mercado Livre no grupo (até 10 produtos).
+      A gente monta o plano: <b>em quantas compras dividir</b> e <b>qual cupom usar
+      em cada uma</b>.</p>
+  </div>
 
   <div class="promessa">
     <p class="promessa__t">Acredite: se existir cupom pra esse produto,
@@ -618,10 +670,33 @@
     } catch (e) { /* contagem é best-effort */ }
   }
 
+  // Origem da visita (21/11, antes do tráfego pago): vai no `extra` do contador
+  // pra o painel separar ANÚNCIO do resto em tempo real (a UTM já ia pro GA no
+  // `dl`, mas o GA atrasa horas). Anúncio = URL com utm_campaign (ou utm_medium
+  // pago) → `ad:<campanha>`; UTM sem campanha → `src:<fonte>`; fbclid sem UTM →
+  // `meta` (o Instagram/Facebook põe fbclid também em link que NÃO é anúncio);
+  // nada → ''. `?v=b` = versão da página num teste A/B → `/vb` no fim.
+  var ORIGEM = (function () {
+    try {
+      var q = new URLSearchParams(location.search);
+      var limpa = function (v, n) {
+        return String(v || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, n);
+      };
+      var camp = limpa(q.get('utm_campaign'), 40);
+      var fonte = limpa(q.get('utm_source'), 40);
+      var pago = /^(paid|cpc|ppc|ads?|pago|paid_?social)$/.test(limpa(q.get('utm_medium'), 20));
+      var o = (camp || pago) ? 'ad:' + (camp || fonte || 'anuncio')
+            : fonte ? 'src:' + fonte
+            : q.get('fbclid') ? 'meta' : '';
+      var v = limpa(q.get('v'), 8);
+      return v ? (o || 'direto') + '/v' + v : o;
+    } catch (e) { return ''; }
+  })();
+
   function ga(evento, extras) {
     if (!/monitorofertas\.com\.br$/.test(location.hostname)) return;  // preview não conta
     contar(evento, { canal: 'colalink', via: extras && extras['ep.via'],
-                     extra: extras && extras['ep.revisita'] ? 'revisita' : '' });
+                     extra: ORIGEM });
     try {
       var p = new URLSearchParams(Object.assign({
         v: '2', tid: GA_ID, cid: _cid, sid: _sid, en: evento,
