@@ -436,6 +436,27 @@
     if (Date.now() >= Date.parse('2026-12-01T03:00:00Z')) document.documentElement.classList.add('sem-bf');
   } catch (e) { /* sem data: fica como está */ }
 </script>
+<script>
+  // Pixel da Meta (23/11, pedido do dono): mede os anúncios do Instagram/Facebook
+  // que trazem pra cá. PageView na abertura; Lead no TOQUE do botão de entrar no
+  // grupo (no script de baixo). O ?go=1 (redirect automático) só manda PageView.
+  // Só no monitorofertas.com.br: a cópia do melli.lat (/links/, a da assinatura
+  // das respostas) e a prévia local não carregam. Nome e telefone nunca vão pra
+  // Meta (LGPD): só a visita e o toque. Bloco SEPARADO e best-effort.
+  try {
+    if (/(^|\.)monitorofertas\.com\.br$/.test(location.hostname)) {
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1174113504959108');
+      fbq('track', 'PageView');
+    }
+  } catch (e) { /* sem pixel: a página segue igual */ }
+</script>
 </head>
 <body>
 
@@ -810,6 +831,9 @@
     var via = /Android/i.test(ua) ? 'ig_app_android'
             : /iPad|iPhone|iPod/i.test(ua) ? 'ig_app_ios' : 'ig_web';
     ga('entrar_grupo_links', { 'ep.via': via });
+    // Pixel da Meta (23/11): o toque é a conversão do anúncio. O fbevents manda
+    // por sendBeacon, que sobrevive à saída pro WhatsApp. Sem pixel, nada.
+    try { if (window.fbq) window.fbq('track', 'Lead'); } catch (e) { /* best-effort */ }
     // ⚠️ Sem preventDefault e sem location.href: o próprio <a> leva pro
     // WhatsApp. Navegar por script aqui reintroduziria o alerta prematuro.
   }
