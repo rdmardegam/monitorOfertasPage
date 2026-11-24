@@ -957,6 +957,55 @@
   for (var i = 0; i < botoes.length; i++) {
     botoes[i].addEventListener('click', aoTocar);
   }
+
+  // ── o que a pessoa fez na página (24/11) ──────────────────────────────────
+  // ~60 visitas do anúncio em 2 dias e NENHUM toque em "entrar": separa "abriu
+  // mas ninguém viu" (o Instagram carregando a página sozinho, toque sem querer
+  // no anúncio) de "viu e não quis". Só no contador (o GA não recebe), um evento
+  // por marco por visita, com a ORIGEM no `extra` como os outros:
+  //   colalink_viu    a página apareceu na tela (via: 'na_hora' | 'depois')
+  //   colalink_mexeu  1º toque ou rolagem (via: 'toque' | 'rolou')
+  //   colalink_tempo  tempo com a página NA TELA (via: '3s' | '10s' | '30s')
+  //   colalink_rolou  até onde rolou (via: 'meio' | 'fim')
+  // Best-effort: erro aqui nunca atrapalha a página nem o botão.
+  try {
+    if (/monitorofertas\.com\.br$/.test(location.hostname)) (function () {
+      var feitos = {};
+      function marco(ev, via) {
+        if (feitos[ev + ':' + via]) return;
+        feitos[ev + ':' + via] = 1;
+        contar(ev, { canal: 'colalink', via: via, extra: ORIGEM });
+      }
+      function naTela() { return document.visibilityState !== 'hidden'; }
+      var desde = naTela() ? Date.now() : 0, somado = 0;
+      if (desde) marco('colalink_viu', 'na_hora');
+      document.addEventListener('visibilitychange', function () {
+        if (naTela()) {
+          if (!desde) desde = Date.now();
+          if (!feitos['colalink_viu:na_hora']) marco('colalink_viu', 'depois');
+        } else if (desde) {
+          somado += Date.now() - desde;
+          desde = 0;
+        }
+      });
+      var relogio = setInterval(function () {
+        var s = (somado + (desde ? Date.now() - desde : 0)) / 1000;
+        if (s >= 3) marco('colalink_tempo', '3s');
+        if (s >= 10) marco('colalink_tempo', '10s');
+        if (s >= 30) { marco('colalink_tempo', '30s'); clearInterval(relogio); }
+      }, 1000);
+      ['touchstart', 'pointerdown', 'keydown'].forEach(function (n) {
+        document.addEventListener(n, function () { marco('colalink_mexeu', 'toque'); }, { passive: true });
+      });
+      window.addEventListener('scroll', function () {
+        marco('colalink_mexeu', 'rolou');
+        var h = document.documentElement, fim = h.scrollHeight - h.clientHeight;
+        var p = fim > 0 ? (window.pageYOffset || h.scrollTop) / fim : 1;
+        if (p >= 0.5) marco('colalink_rolou', 'meio');
+        if (p >= 0.95) marco('colalink_rolou', 'fim');
+      }, { passive: true });
+    })();
+  } catch (e) { /* medição é best-effort */ }
 })();
 </script>
 
