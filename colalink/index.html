@@ -969,12 +969,15 @@
   //   colalink_rolou  até onde rolou (via: 'meio' | 'fim')
   // Best-effort: erro aqui nunca atrapalha a página nem o botão.
   try {
-    if (/monitorofertas\.com\.br$/.test(location.hostname)) (function () {
-      var feitos = {};
+    // ⚠️ A checagem tem que ser DIFERENTE da do `ga()`: o publicador do melli.lat
+    // troca aquela (tem que aparecer uma vez só). Esta mantém a medição só aqui.
+    if (/(^|\.)monitorofertas\.com\.br$/.test(location.hostname)) (function () {
+      // (o canal numa variável: o publicador do melli.lat troca o texto do canal do ga())
+      var feitos = {}, CANAL = 'colalink';
       function marco(ev, via) {
         if (feitos[ev + ':' + via]) return;
         feitos[ev + ':' + via] = 1;
-        contar(ev, { canal: 'colalink', via: via, extra: ORIGEM });
+        contar(ev, { via: via, extra: ORIGEM, canal: CANAL });
       }
       function naTela() { return document.visibilityState !== 'hidden'; }
       var desde = naTela() ? Date.now() : 0, somado = 0;
