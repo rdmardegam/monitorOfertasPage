@@ -3,6 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>
+  // Teste A/B (24/11, pedido do dono): metade de quem chega vai pra versão B
+  // (/colalink/b/). O sorteio é por APARELHO (guardado no navegador: a pessoa vê
+  // sempre a mesma) e marca a URL com ?v=a|b — a ORIGEM leva "/va" ou "/vb" pro
+  // contador e o painel separa as duas. Fica de fora: ?go=1 (redirect
+  // automático), link que já diz a versão (?v=) e qualquer domínio que não seja
+  // o monitorofertas (a cópia do melli.lat segue igual). Erro aqui = versão A.
+  // ⚠️ Checagem de domínio DIFERENTE da do ga(): o publicador do melli.lat troca
+  // aquela e exige que ela apareça uma vez só.
+  (function () {
+    try {
+      if (!/(^|\.)monitorofertas\.com\.br$/.test(location.hostname)) return;
+      var q = location.search || '';
+      if (/[?&](go|v)=/.test(q)) return;
+      var v = null;
+      try { v = window.localStorage.getItem('mo_ab_colalink'); } catch (e) { /* sem armazenamento */ }
+      if (v !== 'a' && v !== 'b') {
+        v = Math.random() < 0.5 ? 'a' : 'b';
+        try { window.localStorage.setItem('mo_ab_colalink', v); } catch (e) { /* sem armazenamento */ }
+      }
+      var nova = (q ? q + '&' : '?') + 'v=' + v;
+      if (v === 'b') location.replace('/colalink/b/' + nova + location.hash);
+      else history.replaceState(null, '', location.pathname + nova + location.hash);
+    } catch (e) { /* fica a versão A */ }
+  })();
+</script>
 <title>Cola Link ML — Cole o link, a gente acha o cupom</title>
 <meta name="theme-color" content="#0A1424">
 <meta name="description" content="Grupo grátis no WhatsApp. Você manda o link de um produto do Mercado Livre e a gente devolve o melhor preço, com cupom se existir.">

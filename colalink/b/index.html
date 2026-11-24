@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Cola Link ML — veja quanto saiu no grupo</title>
+<meta name="theme-color" content="#0A1424">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://www.monitorofertas.com.br/colalink/">
+<meta name="description" content="Grupo grátis no WhatsApp. Você manda o link de um produto do Mercado Livre e a gente devolve o melhor preço, com cupom se existir.">
+<meta property="og:title" content="Cola Link ML — Cole o link, a gente acha o cupom">
+<meta property="og:description" content="Grupo grátis no WhatsApp. Manda o link do produto, a gente devolve o melhor preço com cupom.">
+<meta property="og:image" content="https://www.monitorofertas.com.br/links/assets/og-image.jpg">
+<meta property="og:url" content="https://www.monitorofertas.com.br/colalink/">
+<!--
+  Versão B da página do anúncio (teste A/B de 24/11). A /colalink/ sorteia a
+  versão por aparelho e manda metade pra cá com ?v=b. Ideia desta versão: a
+  pessoa EXPERIMENTA antes de entrar — toca num produto e vê quanto ele saiu no
+  grupo (achados reais, com a data) — e a página responde o medo de entrar em
+  grupo ("pode silenciar: quando for o seu link, a gente te marca").
+  Mede igual à A: page_view, toque em entrar (`entrar_grupo_links`), Pixel
+  (PageView/Lead) e o que a pessoa fez (colalink_viu/mexeu/tempo/rolou), com
+  "/vb" na origem pra o painel separar A de B.
+-->
+<style>
+  :root {
+    --yellow: #FFCC00;
+    --navy: #0A1424;
+    --navy-2: #111E33;
+    --navy-3: #172842;
+    --line: rgba(255,255,255,0.10);
+    --white: #F4F7FB;
+    --gray: #93A3B8;
+    --green: #25D366;
+    --green-ink: #062B14;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 60% at 50% -10%, rgba(255,204,0,.10), transparent 60%);
+  }
+  .wrap { position: relative; max-width: 480px; margin: 0 auto; padding: 12px 16px 120px; }
+
+  /* topo */
+  .topo { display: flex; align-items: center; gap: 10px; }
+  .topo img { width: 38px; height: 38px; object-fit: contain; }
+  .marca { font-weight: 800; font-size: 16px; letter-spacing: .2px; }
+  .marca small { display: block; font-weight: 600; font-size: 11.5px; color: var(--gray); }
+  .bf { margin-left: auto; white-space: nowrap; font-size: 11px; font-weight: 800; letter-spacing: .4px;
+    padding: 6px 10px; border-radius: 999px; background: #000; border: 1px solid var(--yellow); color: var(--yellow); }
+  .sem-bf .bf, .sem-bf .sub-bf { display: none; }
+
+  h1 { margin-top: 14px; font-size: clamp(23px, 6.6vw, 28px); line-height: 1.15; font-weight: 800; letter-spacing: -.3px; }
+  h1 em { font-style: normal; color: var(--yellow); }
+  .sub { margin-top: 6px; font-size: 14.5px; color: var(--gray); }
+
+  /* produtos */
+  .grade { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .prod { position: relative; border: 0; text-align: left; cursor: pointer; color: inherit; font: inherit;
+    background: var(--navy-2); border: 1px solid var(--line); border-radius: 16px; padding: 8px 8px 10px; overflow: hidden;
+    -webkit-tap-highlight-color: transparent; transition: transform .12s, border-color .2s; }
+  .prod:active { transform: scale(.98); }
+  .prod .foto { display: block; width: 100%; height: 104px; object-fit: contain; background: #fff; border-radius: 11px; }
+  .prod .nome { display: block; margin-top: 7px; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .prod .cheio { display: block; font-size: 12px; color: var(--gray); }
+  .prod .cheio s { color: #B8C4D3; }
+  .prod .toque { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 800; color: var(--navy);
+    background: var(--yellow); border-radius: 999px; padding: 3px 8px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+  .prod.aberto { border-color: var(--yellow); }
+  .prod.aberto .toque { display: none; }
+  .res { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; text-align: center; padding: 10px; background: rgba(10,20,36,.94); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .prod.buscando .res, .prod.aberto .res { opacity: 1; }
+  .busca { display: none; font-size: 13px; color: var(--gray); align-items: center; gap: 7px; }
+  .prod.buscando .busca { display: flex; }
+  .roda { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,.2); border-top-color: var(--yellow);
+    animation: gira .7s linear infinite; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+  .achou { display: none; flex-direction: column; align-items: center; gap: 3px; }
+  .prod.aberto .achou { display: flex; animation: sobe .35s ease-out; }
+  @keyframes sobe { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .achou .rot { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; }
+  .achou .de { font-size: 12px; color: #B8C4D3; text-decoration: line-through; }
+  .achou .por { font-size: 21px; font-weight: 900; color: var(--yellow); line-height: 1.05; }
+  .achou .eco { font-size: 12px; font-weight: 800; color: var(--green-ink); background: var(--green); border-radius: 999px; padding: 2px 8px; }
+  .achou .cup { font-size: 11px; color: var(--gray); }
+  .achou .cup code { font-family: ui-monospace, Menlo, monospace; color: var(--white); }
+
+  .dica { margin-top: 12px; display: flex; gap: 10px; align-items: center; padding: 11px 13px; border-radius: 14px;
+    background: var(--navy-2); border: 1px dashed rgba(255,204,0,.45); font-size: 14px; }
+  .dica .ic { font-size: 20px; }
+  .dica b { color: var(--yellow); }
+  .dica.vez { border-style: solid; border-color: var(--green); background: rgba(37,211,102,.08); }
+  .dica.vez b { color: var(--green); }
+
+  /* seções abaixo da dobra */
+  .sec { margin-top: 18px; padding: 14px; border-radius: 16px; background: var(--navy-2); border: 1px solid var(--line); }
+  .sec h2 { font-size: 17px; font-weight: 800; }
+  .sec p { margin-top: 6px; font-size: 14.5px; color: #C9D3E0; }
+  .mute { display: flex; gap: 12px; align-items: flex-start; }
+  .mute .ic { font-size: 28px; line-height: 1; }
+  .passos { margin-top: 8px; display: grid; gap: 8px; }
+  .passo { display: flex; gap: 10px; align-items: center; font-size: 14.5px; }
+  .passo .n { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+    font-weight: 800; font-size: 13px; color: var(--navy); background: var(--yellow); }
+  .nums { margin-top: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+  .nums b { display: block; font-size: 20px; font-weight: 900; color: var(--yellow); }
+  .nums span { font-size: 11.5px; color: var(--gray); }
+  .nota { margin-top: 14px; font-size: 11.5px; color: var(--gray); text-align: center; }
+  .rod { margin-top: 18px; font-size: 12px; color: var(--gray); text-align: center; }
+
+  /* botão sempre na tela */
+  .barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(10,20,36,1) 70%, rgba(10,20,36,0)); }
+  .cta { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 448px; margin: 0 auto;
+    min-height: 56px; padding: 0 18px; border-radius: 16px; background: var(--green); color: var(--green-ink);
+    font-weight: 900; font-size: 17px; letter-spacing: .2px; text-decoration: none; text-transform: uppercase;
+    box-shadow: 0 6px 22px rgba(37,211,102,.35); -webkit-tap-highlight-color: transparent; }
+  .cta svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .cta:active { transform: scale(.985); }
+  .barra small { display: block; margin-top: 6px; text-align: center; font-size: 11.5px; color: var(--gray); }
+  .cta.pulsa { animation: pulsa 1.4s ease-in-out 3; }
+  @keyframes pulsa { 0%, 100% { box-shadow: 0 6px 22px rgba(37,211,102,.35); } 50% { box-shadow: 0 0 0 8px rgba(37,211,102,.25), 0 6px 22px rgba(37,211,102,.5); } }
+  .fim { margin-top: 16px; }
+  @media (prefers-reduced-motion: reduce) { .roda, .cta.pulsa, .prod.aberto .achou { animation: none; } }
+</style>
+<script>
+  // Black Friday (até 30/11): faixa no topo; some sozinha às 00h de 01/12 (BRT).
+  try { if (Date.now() >= Date.parse('2026-12-01T03:00:00Z')) document.documentElement.className += ' sem-bf'; } catch (e) {}
+</script>
+<script>
+  // Pixel da Meta, igual à versão A: PageView na abertura, Lead no toque em entrar.
+  try {
+    if (/(^|\.)monitorofertas\.com\.br$/.test(location.hostname)) {
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1174113504959108');
+      fbq('track', 'PageView');
+    }
+  } catch (e) { /* sem pixel: a página segue igual */ }
+</script>
+</head>
+<body>
+<main class="wrap">
+  <header class="topo">
+    <img src="/c/robo.webp" alt="" width="38" height="38">
+    <div class="marca">Cola Link ML<small>grupo grátis</small></div>
+    <div class="bf">🖤 BLACK FRIDAY</div>
+  </header>
+
+  <h1>Toque num produto e veja <em>quanto ele saiu no grupo</em></h1>
+  <p class="sub">Achados reais do Cola Link, com cupom.<span class="sub-bf"> Na Black o cupom muda a toda hora.</span></p>
+
+  <div class="grade" id="grade">
+    <button class="prod" type="button" data-k="switch2" data-por="R$ 3.509,10" data-de="R$ 4.099" data-eco="R$ 589,90" data-dia="06/11" data-cup="FAV•••••">
+      <img class="foto" src="/colalink/b/img/switch2.webp" alt="Nintendo Switch 2" width="320" height="320">
+      <span class="nome">Switch 2 + EA FC 27</span><span class="cheio">cheio: <s>R$ 4.099</s></span>
+      <span class="toque">toque 👆</span>
+      <span class="res"><span class="busca"><span class="roda"></span>procurando cupom…</span>
+        <span class="achou"><span class="rot">Saiu no grupo</span><span class="por"></span><span class="eco"></span><span class="cup"></span></span></span>
+    </button>
+    <button class="prod" type="button" data-k="dualsense" data-por="R$ 219,60" data-de="R$ 562,02" data-eco="R$ 342,42" data-dia="09/10" data-cup="BOL•••••">
+      <img class="foto" src="/colalink/b/img/dualsense.webp" alt="Controle DualSense" width="320" height="320">
+      <span class="nome">Controle DualSense</span><span class="cheio">cheio: <s>R$ 562,02</s></span>
+      <span class="toque">toque 👆</span>
+      <span class="res"><span class="busca"><span class="roda"></span>procurando cupom…</span>
+        <span class="achou"><span class="rot">Saiu no grupo</span><span class="por"></span><span class="eco"></span><span class="cup"></span></span></span>
+    </button>
+    <button class="prod" type="button" data-k="airfryer" data-por="R$ 174,09" data-de="R$ 209,90" data-eco="R$ 35,81" data-dia="22/11" data-cup="ENT•••••">
+      <img class="foto" src="/colalink/b/img/airfryer.webp" alt="Air fryer Dako 5 litros" width="320" height="320">
+      <span class="nome">Air fryer Dako 5 L</span><span class="cheio">cheio: <s>R$ 209,90</s></span>
+      <span class="toque">toque 👆</span>
+      <span class="res"><span class="busca"><span class="roda"></span>procurando cupom…</span>
+        <span class="achou"><span class="rot">Saiu no grupo</span><span class="por"></span><span class="eco"></span><span class="cup"></span></span></span>
+    </button>
+    <button class="prod" type="button" data-k="fogao" data-por="R$ 474,93" data-de="R$ 859,90" data-eco="R$ 384,97" data-dia="08/11" data-cup="BOR•••••">
+      <img class="foto" src="/colalink/b/img/fogao.webp" alt="Fogão Atlas 4 bocas" width="320" height="320">
+      <span class="nome">Fogão Atlas 4 bocas</span><span class="cheio">cheio: <s>R$ 859,90</s></span>
+      <span class="toque">toque 👆</span>
+      <span class="res"><span class="busca"><span class="roda"></span>procurando cupom…</span>
+        <span class="achou"><span class="rot">Saiu no grupo</span><span class="por"></span><span class="eco"></span><span class="cup"></span></span></span>
+    </button>
+  </div>
+
+  <p class="dica" id="dica"><span class="ic">👆</span><span>Toque num produto. É assim que o grupo responde quando você manda um link.</span></p>
+
+  <section class="sec mute">
+    <span class="ic">🔕</span>
+    <div>
+      <h2>Pode silenciar o grupo</h2>
+      <p>Quando for o seu link, a resposta vem <b>te marcando</b>, e o WhatsApp mostra o <b>@</b> no grupo pra você achar na hora.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Como funciona</h2>
+    <div class="passos">
+      <div class="passo"><span class="n">1</span><span>Entra no grupo (grátis, sem cadastro)</span></div>
+      <div class="passo"><span class="n">2</span><span>Cola o link do produto do Mercado Livre</span></div>
+      <div class="passo"><span class="n">3</span><span>Recebe o melhor preço, com cupom se existir. Se aparecer cupom depois, a gente avisa.</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Só nos últimos 14 dias</h2>
+    <div class="nums">
+      <div><b>880</b><span>links respondidos</span></div>
+      <div><b>446</b><span>avisos de preço baixo</span></div>
+      <div><b>R$ 26 mil</b><span>em quedas avisadas</span></div>
+    </div>
+  </section>
+
+  <div class="fim">
+    <a class="cta" id="entrar2" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413A11.815 11.815 0 0012.05 0zm-.001 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+      Quero entrar no grupo
+    </a>
+  </div>
+  <p class="nota">Preços de achados reais do grupo, na data indicada. Cupom acaba rápido: o do seu produto a gente confere na hora.</p>
+  <p class="rod">Cola Link ML · grupo grátis no WhatsApp · monitorofertas.com.br</p>
+</main>
+
+<div class="barra">
+  <a class="cta" id="entrar" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413A11.815 11.815 0 0012.05 0zm-.001 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+    Entrar no grupo grátis
+  </a>
+  <small>Grátis · sem cadastro · sai quando quiser</small>
+</div>
+
+<script>
+(function () {
+  var ua = navigator.userAgent || '';
+  var NO_SITE = /(^|\.)monitorofertas\.com\.br$/.test(location.hostname);
+
+  // ── medição (a mesma da versão A, com "/vb" na origem) ───────────────────
+  var GA_ID = 'G-6959NQX27C';
+  var _cid = '', _sid = '';
+  try {
+    var ck = document.cookie || '';
+    var mc = /(?:^|;\s*)_ga=GA\d\.\d\.([\d.]+)/.exec(ck);
+    if (mc) _cid = mc[1];
+    var ms = /(?:^|;\s*)_ga_6959NQX27C=GS\d\.\d\.(\d+)/.exec(ck);
+    if (ms) _sid = ms[1];
+  } catch (e) { /* anônimo */ }
+  if (!_cid) _cid = Math.floor(Math.random() * 1e10) + '.' + Math.floor(Date.now() / 1000);
+  if (!_sid) _sid = String(Math.floor(Date.now() / 1000));
+
+  function contar(ev, campos) {
+    if (!NO_SITE) return;
+    try {
+      var d = { ev: ev, cid: _cid };
+      try {
+        var _s = window.localStorage, _u = _s.getItem('mo_cid');
+        if (!_u) { _u = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); _s.setItem('mo_cid', _u); }
+        d.cid = _u;
+        var _a = _s.getItem('mo_adm');
+        if (_a) d.adm = _a;
+      } catch (e) { /* sem localStorage */ }
+      for (var k in (campos || {})) {
+        if (campos[k] !== undefined && campos[k] !== null && campos[k] !== '') d[k] = String(campos[k]);
+      }
+      navigator.sendBeacon('https://contador.monitorofertas.workers.dev/e', JSON.stringify(d));
+    } catch (e) { /* contagem é best-effort */ }
+  }
+
+  // Origem (a mesma regra da A) + "/vb": esta página é SEMPRE a versão B.
+  var ORIGEM = (function () {
+    try {
+      var q = new URLSearchParams(location.search);
+      var limpa = function (v, n) { return String(v || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, n); };
+      var camp = limpa(q.get('utm_campaign'), 40);
+      var fonte = limpa(q.get('utm_source'), 40);
+      var pago = /^(paid|cpc|ppc|ads?|pago|paid_?social)$/.test(limpa(q.get('utm_medium'), 20));
+      var o = (camp || pago) ? 'ad:' + (camp || fonte || 'anuncio')
+            : fonte ? 'src:' + fonte
+            : q.get('fbclid') ? 'meta' : '';
+      return (o || 'direto') + '/vb';
+    } catch (e) { return 'direto/vb'; }
+  })();
+  var CANAL = 'colalink';
+
+  function ga(evento, extras) {
+    if (!NO_SITE) return;
+    contar(evento, { canal: CANAL, via: extras && extras['ep.via'], extra: ORIGEM });
+    try {
+      var p = new URLSearchParams(Object.assign({
+        v: '2', tid: GA_ID, cid: _cid, sid: _sid, en: evento,
+        dl: location.href, dt: CANAL + '_b'
+      }, extras || {}));
+      navigator.sendBeacon('https://www.google-analytics.com/g/collect?' + p.toString());
+    } catch (e) { /* best-effort */ }
+  }
+  ga('page_view');
+
+  // ── toque em entrar (o mesmo evento da A; via ig_app_* = intenção) ────────
+  function aoTocar() {
+    var via = /Android/i.test(ua) ? 'ig_app_android' : /iPad|iPhone|iPod/i.test(ua) ? 'ig_app_ios' : 'ig_web';
+    ga('entrar_grupo_links', { 'ep.via': via });
+    try { if (window.fbq) window.fbq('track', 'Lead'); } catch (e) { /* best-effort */ }
+  }
+  var ctas = document.querySelectorAll('.cta');
+  for (var i = 0; i < ctas.length; i++) ctas[i].addEventListener('click', aoTocar);
+
+  // ── a demonstração: toca no produto, "procura o cupom" e mostra quanto saiu ─
+  var vistos = 0;
+  var botao = document.getElementById('entrar');
+  var dica = document.getElementById('dica');
+  var prods = document.querySelectorAll('.prod');
+  function revelar(el) {
+    if (el.classList.contains('aberto') || el.classList.contains('buscando')) return;
+    el.classList.add('buscando');
+    contar('colalink_demo', { canal: CANAL, via: el.getAttribute('data-k'), extra: ORIGEM });
+    setTimeout(function () {
+      el.querySelector('.por').textContent = el.getAttribute('data-por');
+      el.querySelector('.eco').textContent = '−' + el.getAttribute('data-eco') + ' · ' + el.getAttribute('data-dia');
+      el.querySelector('.cup').innerHTML = 'cupom <code>' + el.getAttribute('data-cup') + '</code>';
+      el.classList.remove('buscando');
+      el.classList.add('aberto');
+      vistos++;
+      if (vistos === 1) {
+        dica.className = 'dica vez';
+        dica.innerHTML = '<span class="ic">🔎</span><span><b>Quer isso pro SEU produto?</b> Entra no grupo e manda o link: a gente responde na hora.</span>';
+        botao.classList.remove('pulsa'); void botao.offsetWidth; botao.classList.add('pulsa');
+      }
+    }, 1100);
+  }
+  for (var j = 0; j < prods.length; j++) {
+    prods[j].addEventListener('click', function () { revelar(this); });
+  }
+
+  // ── o que a pessoa fez na página (igual à A) ─────────────────────────────
+  try {
+    if (NO_SITE) (function () {
+      var feitos = {};
+      function marco(ev, via) {
+        if (feitos[ev + ':' + via]) return;
+        feitos[ev + ':' + via] = 1;
+        contar(ev, { via: via, extra: ORIGEM, canal: CANAL });
+      }
+      function naTela() { return document.visibilityState !== 'hidden'; }
+      var desde = naTela() ? Date.now() : 0, somado = 0;
+      if (desde) marco('colalink_viu', 'na_hora');
+      document.addEventListener('visibilitychange', function () {
+        if (naTela()) {
+          if (!desde) desde = Date.now();
+          if (!feitos['colalink_viu:na_hora']) marco('colalink_viu', 'depois');
+        } else if (desde) {
+          somado += Date.now() - desde;
+          desde = 0;
+        }
+      });
+      var relogio = setInterval(function () {
+        var s = (somado + (desde ? Date.now() - desde : 0)) / 1000;
+        if (s >= 3) marco('colalink_tempo', '3s');
+        if (s >= 10) marco('colalink_tempo', '10s');
+        if (s >= 30) { marco('colalink_tempo', '30s'); clearInterval(relogio); }
+      }, 1000);
+      ['touchstart', 'pointerdown', 'keydown'].forEach(function (n) {
+        document.addEventListener(n, function () { marco('colalink_mexeu', 'toque'); }, { passive: true });
+      });
+      window.addEventListener('scroll', function () {
+        marco('colalink_mexeu', 'rolou');
+        var h = document.documentElement, fim = h.scrollHeight - h.clientHeight;
+        var p = fim > 0 ? (window.pageYOffset || h.scrollTop) / fim : 1;
+        if (p >= 0.5) marco('colalink_rolou', 'meio');
+        if (p >= 0.95) marco('colalink_rolou', 'fim');
+      }, { passive: true });
+    })();
+  } catch (e) { /* medição é best-effort */ }
+})();
+</script>
+</body>
+</html>
