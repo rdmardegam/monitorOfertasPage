@@ -166,12 +166,15 @@
   <p class="sub">Achados reais do Cola Link, com cupom.<span class="sub-bf"> Na Black o cupom muda a toda hora.</span></p>
 
   <div class="grade" id="grade">
-    <button class="prod" type="button" data-k="switch2" data-por="R$ 3.509,10" data-de="R$ 4.099" data-eco="R$ 589,90" data-dia="06/11" data-cup="FAV•••••">
+    <!-- 25/11 (pedido do dono): o 1º já vem ABERTO, pra o valor aparecer sem
+         esforço (em 24/11 ninguém tocou nos produtos). Não conta como toque
+         (`colalink_demo`) nem dispara o "Quer isso pro SEU produto?". -->
+    <button class="prod aberto" type="button" data-k="switch2" data-por="R$ 3.509,10" data-de="R$ 4.099" data-eco="R$ 589,90" data-dia="06/11" data-cup="FAV•••••">
       <img class="foto" src="/colalink/b/img/switch2.webp" alt="Nintendo Switch 2" width="320" height="320">
       <span class="nome">Switch 2 + EA FC 27</span><span class="cheio">cheio: <s>R$ 4.099</s></span>
       <span class="toque">toque 👆</span>
       <span class="res"><span class="busca"><span class="roda"></span>procurando cupom…</span>
-        <span class="achou"><span class="rot">Saiu no grupo</span><span class="por"></span><span class="eco"></span><span class="cup"></span></span></span>
+        <span class="achou"><span class="rot">Saiu no grupo</span><span class="por">R$ 3.509,10</span><span class="eco">−R$ 589,90 · 06/11</span><span class="cup">cupom <code>FAV•••••</code></span></span></span>
     </button>
     <button class="prod" type="button" data-k="dualsense" data-por="R$ 219,60" data-de="R$ 562,02" data-eco="R$ 342,42" data-dia="09/10" data-cup="BOL•••••">
       <img class="foto" src="/colalink/b/img/dualsense.webp" alt="Controle DualSense" width="320" height="320">
@@ -196,7 +199,7 @@
     </button>
   </div>
 
-  <p class="dica" id="dica"><span class="ic">👆</span><span>Toque num produto. É assim que o grupo responde quando você manda um link.</span></p>
+  <p class="dica" id="dica"><span class="ic">👆</span><span>Toque nos outros produtos. É assim que o grupo responde quando você manda um link.</span></p>
 
   <section class="sec mute">
     <span class="ic">🔕</span>

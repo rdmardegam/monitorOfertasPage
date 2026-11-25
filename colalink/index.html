@@ -208,6 +208,12 @@
   .cartaomsg  { animation-name: entraBot; }
   .bolha--eu, .digitando, .cartaomsg {
     animation-duration: 9s; animation-iteration-count: infinite;
+    /* 25/11 (pedido do dono): a página abre JÁ com a resposta na tela. Medido
+       em 24/11: metade de quem vem do anúncio sai antes de 3 s, e a resposta só
+       entrava aos 3 s — o que essa metade via era o quadro vazio ou "procurando
+       cupom…". Com o atraso negativo o 1º ciclo começa no ponto em que o card
+       já está (37,8%): ele fica ~5 s e aí a conversa inteira se repete. */
+    animation-delay: -3.4s;
   }
   @keyframes entraEu {
     0%, 2%    { opacity: 0; transform: translateY(7px); }
@@ -561,10 +567,12 @@
     <div class="bf"><b>🖤 BLACK FRIDAY</b><span>o cupom muda a toda hora</span></div>
   </div>
 
-  <h1>Cole ou compartilhe<br>o link do <span class="accent">Mercado Livre</span></h1>
+  <!-- 25/11 (pedido do dono): o título diz o BENEFÍCIO; a tarefa ("cole o
+       link") desceu pro subtítulo. -->
+  <h1>Manda o link,<br>a gente <span class="accent">acha o cupom</span></h1>
 
-  <p class="sub">A gente devolve o <strong>melhor preço</strong> — com o cupom
-    que funciona nele.</p>
+  <p class="sub">Cole o link do <strong>Mercado Livre</strong> no grupo e receba o
+    <strong>melhor preço</strong>, com o cupom que funciona nele.</p>
 
   <!-- ⚠️ MOSTRA em vez de descrever. Substitui os dois cartões de preço: eles
        diziam o resultado, isto mostra o caminho inteiro (manda → procura →
