@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <script>
   // Teste A/B (24/11, pedido do dono): metade de quem chega vai pra versão B
-  // (/colalink/b/). O sorteio é por APARELHO (guardado no navegador: a pessoa vê
+  // (/colalink/b/); desde 25/11 um terço em A, B e C (C = direto pro WhatsApp). O sorteio é por APARELHO (guardado no navegador: a pessoa vê
   // sempre a mesma) e marca a URL com ?v=a|b — a ORIGEM leva "/va" ou "/vb" pro
   // contador e o painel separa as duas. Fica de fora: ?go=1 (redirect
   // automático), link que já diz a versão (?v=) e qualquer domínio que não seja
@@ -19,11 +19,15 @@
       if (/[?&](go|v)=/.test(q)) return;
       var v = null;
       try { v = window.localStorage.getItem('mo_ab_colalink'); } catch (e) { /* sem armazenamento */ }
-      if (v !== 'a' && v !== 'b') {
-        v = Math.random() < 0.5 ? 'a' : 'b';
+      // 25/11 (pedido do dono): a versão C vai DIRETO pro WhatsApp (o ?go=1, sem
+      // recarregar: a URL troca antes do script da página ler). Quem já tinha A
+      // ou B segue na mesma; aparelho novo: um terço em cada.
+      if (v !== 'a' && v !== 'b' && v !== 'c') {
+        var r = Math.random();
+        v = r < 1 / 3 ? 'a' : r < 2 / 3 ? 'b' : 'c';
         try { window.localStorage.setItem('mo_ab_colalink', v); } catch (e) { /* sem armazenamento */ }
       }
-      var nova = (q ? q + '&' : '?') + 'v=' + v;
+      var nova = (q ? q + '&' : '?') + 'v=' + v + (v === 'c' ? '&go=1' : '');
       if (v === 'b') location.replace('/colalink/b/' + nova + location.hash);
       else history.replaceState(null, '', location.pathname + nova + location.hash);
     } catch (e) { /* fica a versão A */ }
@@ -53,6 +57,8 @@
     --green: #25D366;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* 25/11: o exemplo da conversa é link pro WhatsApp (sem cara de link) */
+  a.chat { display: block; color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
   body {
     background: var(--navy);
     color: var(--white);
@@ -574,10 +580,30 @@
   <p class="sub">Cole o link do <strong>Mercado Livre</strong> no grupo e receba o
     <strong>melhor preço</strong>, com o cupom que funciona nele.</p>
 
+  <!-- 25/11 (pedido do dono): 35 pessoas do anúncio e nenhum toque no botão —
+       ele ficava no pé da tela (no Instagram, escondido pelas barras) e o que
+       mais parecia clicável era o "Toque aqui" do exemplo, que não levava a
+       nada. Agora o botão vem logo abaixo do subtítulo e o exemplo inteiro
+       também leva pro WhatsApp. -->
+  <a class="cta" id="entrar" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    ENTRAR NO GRUPO GRÁTIS
+  </a>
+
+  <!-- ⚠️ Fica COLADO no botao de proposito: e a objecao que aparece 1 segundo
+       depois do toque. Adiantar o alerta do Instagram e o que o transforma de
+       alarme de seguranca em etapa esperada. -->
+  <div class="aviso">
+    <span class="ico" aria-hidden="true">💬</span>
+    <span>Abre a página do WhatsApp — toque em <b>Entrar na conversa</b>
+      e pronto.</span>
+  </div>
+
   <!-- ⚠️ MOSTRA em vez de descrever. Substitui os dois cartões de preço: eles
        diziam o resultado, isto mostra o caminho inteiro (manda → procura →
        volta com cupom) e ainda entrega o mesmo par de preços dentro. -->
-  <div class="chat" aria-hidden="true">
+  <a class="chat" id="exemplo" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener"
+     aria-label="Entrar no grupo Cola Link ML no WhatsApp">
     <div class="chat__top">
       <span class="chat__ava"></span>
       <span class="chat__nome">COLA LINK ML<i>online</i></span>
@@ -604,7 +630,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </a>
 
   <!-- ⚠️ O "antes e depois" do criativo, em UMA faixa. Os dois cartões grandes
        custavam 118px e jogavam o botão pra fora da tela; esta faixa entrega a
@@ -621,20 +647,6 @@
       <span class="ad__v ad__v--novo">R$ 273</span>
     </div>
     <span class="ad__eco">−R$&nbsp;177</span>
-  </div>
-
-  <a class="cta" id="entrar" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    ENTRAR NO GRUPO GRÁTIS
-  </a>
-
-  <!-- ⚠️ Fica COLADO no botao de proposito: e a objecao que aparece 1 segundo
-       depois do toque. Adiantar o alerta do Instagram e o que o transforma de
-       alarme de seguranca em etapa esperada. -->
-  <div class="aviso">
-    <span class="ico" aria-hidden="true">💬</span>
-    <span>Abre a página do WhatsApp — toque em <b>Entrar na conversa</b>
-      e pronto.</span>
   </div>
 
   <div class="selos">
@@ -987,7 +999,7 @@
     // WhatsApp. Navegar por script aqui reintroduziria o alerta prematuro.
   }
 
-  var botoes = document.querySelectorAll('.cta');
+  var botoes = document.querySelectorAll('.cta, #exemplo');
   for (var i = 0; i < botoes.length; i++) {
     botoes[i].addEventListener('click', aoTocar);
   }
@@ -1008,18 +1020,20 @@
     if (/(^|\.)monitorofertas\.com\.br$/.test(location.hostname)) (function () {
       // (o canal numa variável: o publicador do melli.lat troca o texto do canal do ga())
       var feitos = {}, CANAL = 'colalink';
-      function marco(ev, via) {
+      function marco(ev, via, link) {
         if (feitos[ev + ':' + via]) return;
         feitos[ev + ':' + via] = 1;
-        contar(ev, { via: via, extra: ORIGEM, canal: CANAL });
+        contar(ev, { via: via, extra: ORIGEM, canal: CANAL, link: link });
       }
+      // 25/11: altura da tela de quem abriu (o botão cabe nela?)
+      var ALTURA = 'h' + (window.innerHeight || 0);
       function naTela() { return document.visibilityState !== 'hidden'; }
       var desde = naTela() ? Date.now() : 0, somado = 0;
-      if (desde) marco('colalink_viu', 'na_hora');
+      if (desde) marco('colalink_viu', 'na_hora', ALTURA);
       document.addEventListener('visibilitychange', function () {
         if (naTela()) {
           if (!desde) desde = Date.now();
-          if (!feitos['colalink_viu:na_hora']) marco('colalink_viu', 'depois');
+          if (!feitos['colalink_viu:na_hora']) marco('colalink_viu', 'depois', ALTURA);
         } else if (desde) {
           somado += Date.now() - desde;
           desde = 0;
@@ -1031,6 +1045,28 @@
         if (s >= 10) marco('colalink_tempo', '10s');
         if (s >= 30) { marco('colalink_tempo', '30s'); clearInterval(relogio); }
       }, 1000);
+      // 25/11 (pedido do dono): ONDE tocou — no botão, no exemplo da conversa ou
+      // em outro lugar (o nome do bloco vai no `link`) — e se o botão chegou a
+      // aparecer inteiro na tela (na hora ou só depois de rolar).
+      document.addEventListener('click', function (ev) {
+        var t = ev.target && ev.target.closest ? ev.target : null;
+        if (t && t.closest('#exemplo')) marco('colalink_toque', 'exemplo');
+        else if (t && t.closest('.cta')) marco('colalink_toque', 'botao');
+        else {
+          var bl = t && t.closest('[class]');
+          marco('colalink_toque', 'outro', bl ? String(bl.className).split(' ')[0].slice(0, 30) : '');
+        }
+      }, true);
+      try {
+        var t0b = Date.now(), ob = new IntersectionObserver(function (es) {
+          es.forEach(function (x) {
+            if (!x.isIntersecting || x.intersectionRatio < 0.9) return;
+            marco('colalink_botao_viu', Date.now() - t0b < 1500 ? 'na_hora' : 'depois', ALTURA);
+            ob.disconnect();
+          });
+        }, { threshold: [0, 0.9, 1] });
+        ob.observe(document.getElementById('entrar'));
+      } catch (e) { /* sem a medida do botão */ }
       ['touchstart', 'pointerdown', 'keydown'].forEach(function (n) {
         document.addEventListener(n, function () { marco('colalink_mexeu', 'toque'); }, { passive: true });
       });

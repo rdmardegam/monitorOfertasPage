@@ -350,18 +350,20 @@
   try {
     if (NO_SITE) (function () {
       var feitos = {};
-      function marco(ev, via) {
+      function marco(ev, via, link) {
         if (feitos[ev + ':' + via]) return;
         feitos[ev + ':' + via] = 1;
-        contar(ev, { via: via, extra: ORIGEM, canal: CANAL });
+        contar(ev, { via: via, extra: ORIGEM, canal: CANAL, link: link });
       }
+      // 25/11: altura da tela de quem abriu
+      var ALTURA = 'h' + (window.innerHeight || 0);
       function naTela() { return document.visibilityState !== 'hidden'; }
       var desde = naTela() ? Date.now() : 0, somado = 0;
-      if (desde) marco('colalink_viu', 'na_hora');
+      if (desde) marco('colalink_viu', 'na_hora', ALTURA);
       document.addEventListener('visibilitychange', function () {
         if (naTela()) {
           if (!desde) desde = Date.now();
-          if (!feitos['colalink_viu:na_hora']) marco('colalink_viu', 'depois');
+          if (!feitos['colalink_viu:na_hora']) marco('colalink_viu', 'depois', ALTURA);
         } else if (desde) {
           somado += Date.now() - desde;
           desde = 0;
@@ -373,6 +375,27 @@
         if (s >= 10) marco('colalink_tempo', '10s');
         if (s >= 30) { marco('colalink_tempo', '30s'); clearInterval(relogio); }
       }, 1000);
+      // 25/11 (pedido do dono, igual à A): ONDE tocou — botão, produto ou outro
+      // lugar (o bloco no `link`) — e se o botão apareceu inteiro na tela.
+      document.addEventListener('click', function (ev) {
+        var t = ev.target && ev.target.closest ? ev.target : null;
+        if (t && t.closest('.prod')) marco('colalink_toque', 'produto');
+        else if (t && t.closest('.cta')) marco('colalink_toque', 'botao');
+        else {
+          var bl = t && t.closest('[class]');
+          marco('colalink_toque', 'outro', bl ? String(bl.className).split(' ')[0].slice(0, 30) : '');
+        }
+      }, true);
+      try {
+        var t0b = Date.now(), ob = new IntersectionObserver(function (es) {
+          es.forEach(function (x) {
+            if (!x.isIntersecting || x.intersectionRatio < 0.9) return;
+            marco('colalink_botao_viu', Date.now() - t0b < 1500 ? 'na_hora' : 'depois', ALTURA);
+            ob.disconnect();
+          });
+        }, { threshold: [0, 0.9, 1] });
+        ob.observe(document.getElementById('entrar'));
+      } catch (e) { /* sem a medida do botão */ }
       ['touchstart', 'pointerdown', 'keydown'].forEach(function (n) {
         document.addEventListener(n, function () { marco('colalink_mexeu', 'toque'); }, { passive: true });
       });
