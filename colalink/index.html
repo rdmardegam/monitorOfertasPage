@@ -952,9 +952,24 @@
       'background:rgba(255,255,255,.13);overflow:hidden">' +
       '<span style="display:block;width:100%;height:100%;background:#25d366;' +
       'animation:mo-bar 1.2s linear forwards"></span></div>' +
-      '<a href="' + WEB + '" rel="noopener" style="color:#25d366;font-weight:700;' +
-      'text-decoration:underline;padding:12px;font-size:15px">Não abriu? Toque aqui</a>';
+      // 25/11 (pedido do dono): se o WhatsApp não abrir sozinho, um BOTÃO de
+      // verdade (era um texto pequeno sublinhado).
+      '<a id="entrarC" href="' + WEB + '" rel="noopener" style="display:flex;align-items:center;' +
+      'justify-content:center;min-height:54px;padding:0 26px;margin-top:10px;border-radius:16px;' +
+      'background:#25d366;color:#04210f;font-weight:900;font-size:16px;letter-spacing:.2px;' +
+      'text-decoration:none;text-transform:uppercase;box-shadow:0 6px 22px rgba(37,211,102,.35)">' +
+      'Entrar no grupo grátis</a>' +
+      '<div style="font-size:13px;color:#8696a0">Não abriu sozinho? Toque no botão</div>';
     document.body.appendChild(capa);
+    // quem toca no botão = o automático não abriu (só no monitorofertas, só no contador)
+    try {
+      var CANAL_C = 'colalink';
+      document.getElementById('entrarC').addEventListener('click', function () {
+        if (/(^|\.)monitorofertas\.com\.br$/.test(location.hostname)) {
+          contar('colalink_toque', { via: 'botao_c', extra: ORIGEM, canal: CANAL_C });
+        }
+      });
+    } catch (e) { /* o botão funciona sem a contagem */ }
 
     // 900ms: o `sendBeacon` já é feito pra sobreviver ao unload, então a espera
     // não é pra ele — é pra a pessoa ver de onde veio antes de trocar de app.
