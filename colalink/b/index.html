@@ -131,6 +131,10 @@
   .cta.pulsa { animation: pulsa 1.4s ease-in-out 3; }
   @keyframes pulsa { 0%, 100% { box-shadow: 0 6px 22px rgba(37,211,102,.35); } 50% { box-shadow: 0 0 0 8px rgba(37,211,102,.25), 0 6px 22px rgba(37,211,102,.5); } }
   .fim { margin-top: 16px; }
+  .topo-cta { margin: 14px auto 4px; }
+  /* a barra do rodapé só aparece quando os botões da página saem da tela (25/11) */
+  .barra { transform: translateY(110%); transition: transform .25s ease-out; }
+  .barra.on { transform: none; }
   @media (prefers-reduced-motion: reduce) { .roda, .cta.pulsa, .prod.aberto .achou { animation: none; } }
 </style>
 <script>
@@ -164,6 +168,15 @@
 
   <h1>Toque num produto e veja <em>quanto ele saiu no grupo</em></h1>
   <p class="sub">Achados reais do Cola Link, com cupom.<span class="sub-bf"> Na Black o cupom muda a toda hora.</span></p>
+
+  <!-- 25/11 (pedido do dono): o botão sobe pro meio da 1ª tela, logo abaixo
+       do subtítulo (antes só existia preso no rodapé, que no Instagram fica
+       colado nas barras dele). A barra do rodapé aparece só quando este botão e
+       o do fim saem da tela. -->
+  <a class="cta topo-cta" id="entrar" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413A11.815 11.815 0 0012.05 0zm-.001 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+    Entrar no grupo grátis
+  </a>
 
   <div class="grade" id="grade">
     <!-- 25/11 (pedido do dono): o 1º já vem ABERTO, pra o valor aparecer sem
@@ -237,8 +250,8 @@
   <p class="rod">Cola Link ML · grupo grátis no WhatsApp · monitorofertas.com.br</p>
 </main>
 
-<div class="barra">
-  <a class="cta" id="entrar" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
+<div class="barra" id="gruda">
+  <a class="cta" id="entrar3" href="https://chat.whatsapp.com/Eeb9DTGUWbL5kD6sirkvKQ" rel="noopener">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413A11.815 11.815 0 0012.05 0zm-.001 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
     Entrar no grupo grátis
   </a>
@@ -321,7 +334,6 @@
 
   // ── a demonstração: toca no produto, "procura o cupom" e mostra quanto saiu ─
   var vistos = 0;
-  var botao = document.getElementById('entrar');
   var dica = document.getElementById('dica');
   var prods = document.querySelectorAll('.prod');
   function revelar(el) {
@@ -338,7 +350,9 @@
       if (vistos === 1) {
         dica.className = 'dica vez';
         dica.innerHTML = '<span class="ic">🔎</span><span><b>Quer isso pro SEU produto?</b> Entra no grupo e manda o link: a gente responde na hora.</span>';
-        botao.classList.remove('pulsa'); void botao.offsetWidth; botao.classList.add('pulsa');
+        for (var b2 = 0; b2 < ctas.length; b2++) {
+          ctas[b2].classList.remove('pulsa'); void ctas[b2].offsetWidth; ctas[b2].classList.add('pulsa');
+        }
       }
     }, 1100);
   }
@@ -408,6 +422,22 @@
       }, { passive: true });
     })();
   } catch (e) { /* medição é best-effort */ }
+})();
+</script>
+<script>
+(function () {
+  // 25/11: a barra do rodapé aparece quando os botões da página saem da tela.
+  // Sem IntersectionObserver, a barra fica sempre (o de antes).
+  try {
+    var g = document.getElementById('gruda'), vis = {};
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { vis[e.target.id] = e.isIntersecting; });
+      g.classList.toggle('on', !vis.entrar && !vis.entrar2);
+    });
+    io.observe(document.getElementById('entrar')); io.observe(document.getElementById('entrar2'));
+  } catch (e) {
+    try { document.getElementById('gruda').classList.add('on'); } catch (e2) { /* nada */ }
+  }
 })();
 </script>
 </body>
