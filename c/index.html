@@ -634,6 +634,7 @@ function lerLink(qs) {
     var ra = item ? { item: item } : { meli: meli };
     ra.anuncio = anuncio;
     if (oculto) ra.oculto = true;
+    if (meliMais) ra.meli_mais = true;
     if (marca) ra.marca = marca;
     var res = [];
     reservasTxt.forEach(function (x) { var c = cod(x); if (c && res.indexOf(c) < 0) res.push(c); });
